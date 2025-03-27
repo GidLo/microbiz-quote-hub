@@ -2,12 +2,14 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { ReactNode } from 'react';
 
 interface HeroProps {
   title: string;
   subtitle: string;
   ctaText?: string;
   ctaLink?: string;
+  cta?: ReactNode;
   showStats?: boolean;
 }
 
@@ -16,6 +18,7 @@ const Hero = ({
   subtitle, 
   ctaText = "Get Your Free Quote", 
   ctaLink = "/quote",
+  cta,
   showStats = true 
 }: HeroProps) => {
   const containerVariants = {
@@ -67,11 +70,15 @@ const Hero = ({
           </motion.p>
           
           <motion.div variants={itemVariants}>
-            <Link to={ctaLink}>
-              <Button size="lg" className="rounded-full font-medium px-8 py-6 text-base">
-                {ctaText}
-              </Button>
-            </Link>
+            {cta ? (
+              cta
+            ) : (
+              <Link to={ctaLink}>
+                <Button size="lg" className="rounded-full font-medium px-8 py-6 text-base">
+                  {ctaText}
+                </Button>
+              </Link>
+            )}
           </motion.div>
           
           {showStats && (
