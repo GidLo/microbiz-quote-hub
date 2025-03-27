@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
@@ -15,7 +14,7 @@ const Index = () => {
       <Hero 
         title="Insurance for South African Micro Businesses"
         subtitle="Affordable, specialized insurance coverage to protect what you've built"
-        ctaComponent={
+        cta={
           <Link to="/quote">
             <Button size="lg" className="rounded-full px-8">
               Get My Quote <ArrowRight className="ml-2 h-4 w-4" />
@@ -42,11 +41,9 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <InsuranceCard
-                  title={insurance.title}
-                  description={insurance.description}
-                  icon={insurance.icon}
-                  href={`/coverage/${insurance.id}`}
+                <InsuranceCard 
+                  insurance={insurance} 
+                  index={index} 
                 />
               </motion.div>
             ))}
