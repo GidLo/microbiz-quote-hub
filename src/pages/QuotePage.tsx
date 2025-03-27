@@ -53,6 +53,7 @@ const QuotePage = () => {
   };
   
   const handleUnderwritingSubmit = (data: Record<string, any>) => {
+    console.log('Underwriting data:', data);
     setUnderwritingAnswers(data);
     setCurrentStep(3);
   };
