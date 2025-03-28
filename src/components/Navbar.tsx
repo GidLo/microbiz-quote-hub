@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogIn } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -109,10 +109,15 @@ const Navbar = () => {
           </Link>
         </nav>
 
-        <div className="hidden md:flex items-center ml-4">
+        <div className="hidden md:flex items-center ml-4 space-x-2">
           <Link to="/quote">
             <Button variant="default" className="font-medium">
               Get Your Quote
+            </Button>
+          </Link>
+          <Link to="/login">
+            <Button variant="outline" size="sm" className="font-medium">
+              <LogIn className="mr-1 h-4 w-4" /> Login
             </Button>
           </Link>
         </div>
@@ -182,10 +187,15 @@ const Navbar = () => {
               Contact
             </Link>
             
-            <div className="mt-6">
-              <Link to="/quote">
+            <div className="mt-6 space-y-3">
+              <Link to="/quote" className="block">
                 <Button variant="default" className="w-full">
                   Get Your Quote
+                </Button>
+              </Link>
+              <Link to="/login" className="block">
+                <Button variant="outline" className="w-full">
+                  <LogIn className="mr-1 h-4 w-4" /> Login
                 </Button>
               </Link>
             </div>

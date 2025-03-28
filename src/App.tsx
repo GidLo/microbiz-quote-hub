@@ -12,6 +12,7 @@ import ContractorsAllRisk from "./pages/coverage/ContractorsAllRisk";
 import PublicLiability from "./pages/coverage/PublicLiability";
 import EventLiability from "./pages/coverage/EventLiability";
 import QuotePage from "./pages/QuotePage";
+import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,9 @@ const App = () => (
             
             {/* Quote Journey */}
             <Route path="/quote" element={<QuotePage />} />
+            
+            {/* Auth Pages */}
+            <Route path="/login" element={<LoginPage />} />
             
             {/* Catch-all for 404 */}
             <Route path="*" element={<NotFound />} />
