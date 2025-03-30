@@ -13,6 +13,7 @@ import PublicLiability from "./pages/coverage/PublicLiability";
 import EventLiability from "./pages/coverage/EventLiability";
 import QuotePage from "./pages/QuotePage";
 import LoginPage from "./pages/LoginPage";
+import UploadSchedulePage from "./pages/UploadSchedulePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             
             {/* Quote Journey */}
             <Route path="/quote" element={<QuotePage />} />
+            <Route path="/upload-schedule" element={<UploadSchedulePage />} />
             
             {/* Auth Pages */}
             <Route path="/login" element={<LoginPage />} />

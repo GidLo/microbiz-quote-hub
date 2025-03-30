@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LogIn } from 'lucide-react';
+import { Menu, X, LogIn, Upload } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -110,6 +110,11 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden md:flex items-center ml-4 space-x-2">
+          <Link to="/upload-schedule">
+            <Button variant="secondary" className="font-medium">
+              <Upload className="mr-1 h-4 w-4" /> Upload Schedule to Get Quote
+            </Button>
+          </Link>
           <Link to="/quote">
             <Button variant="default" className="font-medium">
               Get Your Quote
@@ -188,6 +193,11 @@ const Navbar = () => {
             </Link>
             
             <div className="mt-6 space-y-3">
+              <Link to="/upload-schedule" className="block">
+                <Button variant="secondary" className="w-full">
+                  <Upload className="mr-1 h-4 w-4" /> Upload Schedule to Get Quote
+                </Button>
+              </Link>
               <Link to="/quote" className="block">
                 <Button variant="default" className="w-full">
                   Get Your Quote
