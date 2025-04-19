@@ -1,10 +1,11 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { ContactDetail } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ContactFormProps {
   initialData?: ContactDetail;
@@ -21,6 +22,8 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
   });
   
   const [errors, setErrors] = useState<Partial<Record<keyof ContactDetail, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -61,11 +64,39 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit(formData);
+      setIsSubmitting(true);
+      try {
+        const { error } = await supabase
+          .from('contacts')
+          .insert({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            position: formData.position
+          });
+
+        if (error) throw error;
+
+        onSubmit(formData);
+        toast({
+          title: "Success",
+          description: "Your contact information has been saved.",
+        });
+      } catch (error) {
+        console.error('Error saving contact:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "There was a problem saving your contact information. Please try again.",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
   
@@ -108,6 +139,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
             value={formData.firstName}
             onChange={handleChange}
             className={errors.firstName ? 'border-red-300' : ''}
+            disabled={isSubmitting}
           />
           {errors.firstName && (
             <p className="text-sm text-red-500">{errors.firstName}</p>
@@ -123,6 +155,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
             value={formData.lastName}
             onChange={handleChange}
             className={errors.lastName ? 'border-red-300' : ''}
+            disabled={isSubmitting}
           />
           {errors.lastName && (
             <p className="text-sm text-red-500">{errors.lastName}</p>
@@ -140,6 +173,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
           value={formData.email}
           onChange={handleChange}
           className={errors.email ? 'border-red-300' : ''}
+          disabled={isSubmitting}
         />
         {errors.email && (
           <p className="text-sm text-red-500">{errors.email}</p>
@@ -155,6 +189,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
           value={formData.phone}
           onChange={handleChange}
           className={errors.phone ? 'border-red-300' : ''}
+          disabled={isSubmitting}
         />
         {errors.phone && (
           <p className="text-sm text-red-500">{errors.phone}</p>
@@ -170,6 +205,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
           value={formData.position}
           onChange={handleChange}
           className={errors.position ? 'border-red-300' : ''}
+          disabled={isSubmitting}
         />
         {errors.position && (
           <p className="text-sm text-red-500">{errors.position}</p>
@@ -177,8 +213,12 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
       </motion.div>
       
       <motion.div variants={itemVariants} className="pt-4">
-        <Button type="submit" className="w-full md:w-auto">
-          Continue
+        <Button 
+          type="submit" 
+          className="w-full md:w-auto"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Saving...' : 'Continue'}
         </Button>
       </motion.div>
     </motion.form>
