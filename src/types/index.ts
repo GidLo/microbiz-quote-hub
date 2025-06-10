@@ -44,3 +44,31 @@ export interface UnderwritingQuestion {
   required: boolean;
   insuranceTypes: InsuranceType[];
 }
+
+export interface InsurerQuote {
+  insurerId: string;
+  insurerName: string;
+  insurerLogo?: string;
+  monthlyPremium: string;
+  annualPremium: string;
+  coverageAmount: string;
+  deductible: string;
+  savingsWithAnnual: string;
+  rating: number; // 1-5 stars
+  features: string[];
+  isRecommended?: boolean;
+}
+
+export interface QuoteRequest {
+  insuranceType: InsuranceType;
+  contactDetails: ContactDetail;
+  businessDetails: BusinessDetail;
+  underwritingAnswers: Record<string, any>;
+}
+
+export interface QuoteResponse {
+  insuranceType: InsuranceType;
+  quotes: InsurerQuote[];
+  requestId: string;
+  validUntil: string;
+}

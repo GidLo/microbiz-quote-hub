@@ -1,35 +1,75 @@
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Shield } from 'lucide-react';
+import { Shield, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { InsuranceType } from '@/types';
+import { InsuranceType, InsurerQuote } from '@/types';
 import { INSURANCE_TYPES } from '@/utils/constants';
+import InsurerQuoteCard from './InsurerQuoteCard';
 
 interface QuoteResultProps {
   insuranceType: InsuranceType;
   businessName: string;
-  onProceed: () => void;
+  onProceed: (selectedQuote: InsurerQuote) => void;
   onBack: () => void;
 }
 
 const QuoteResult = ({ insuranceType, businessName, onProceed, onBack }: QuoteResultProps) => {
+  const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
+  
   const insurance = INSURANCE_TYPES.find(i => i.id === insuranceType);
   
-  // Mock quote details - in a real application, this would come from the backend
-  const quoteDetails = {
-    monthlyPremium: 'R 450',
-    annualPremium: 'R 4,860',
-    coverageAmount: 'R 1,000,000',
-    deductible: 'R 5,000',
-    savingsWithAnnual: 'R 540'
-  };
-  
-  const benefits = [
-    'No long-term contracts - cancel anytime',
-    'Immediate coverage after payment',
-    'Dedicated claims support',
-    'Digital policy documents',
-    'Flexible payment options'
+  // Mock quotes from different insurers - will be replaced with backend data
+  const mockQuotes: InsurerQuote[] = [
+    {
+      insurerId: 'insurer-1',
+      insurerName: 'SafeGuard Insurance',
+      monthlyPremium: 'R 420',
+      annualPremium: 'R 4,536',
+      coverageAmount: 'R 1,000,000',
+      deductible: 'R 5,000',
+      savingsWithAnnual: 'R 504',
+      rating: 4.8,
+      features: [
+        'No long-term contracts',
+        'Immediate coverage',
+        'Dedicated claims support',
+        '24/7 helpline'
+      ],
+      isRecommended: true
+    },
+    {
+      insurerId: 'insurer-2',
+      insurerName: 'Premier Coverage',
+      monthlyPremium: 'R 450',
+      annualPremium: 'R 4,860',
+      coverageAmount: 'R 1,000,000',
+      deductible: 'R 4,000',
+      savingsWithAnnual: 'R 540',
+      rating: 4.5,
+      features: [
+        'Flexible payment options',
+        'Digital policy management',
+        'Quick claim processing',
+        'Legal assistance included'
+      ]
+    },
+    {
+      insurerId: 'insurer-3',
+      insurerName: 'Reliable Protect',
+      monthlyPremium: 'R 385',
+      annualPremium: 'R 4,158',
+      coverageAmount: 'R 750,000',
+      deductible: 'R 7,500',
+      savingsWithAnnual: 'R 462',
+      rating: 4.2,
+      features: [
+        'Budget-friendly option',
+        'Essential coverage',
+        'Online support',
+        'Basic claims service'
+      ]
+    }
   ];
   
   const containerVariants = {
@@ -53,6 +93,16 @@ const QuoteResult = ({ insuranceType, businessName, onProceed, onBack }: QuoteRe
     }
   };
   
+  const handleQuoteSelect = (quote: InsurerQuote) => {
+    setSelectedQuote(quote);
+  };
+  
+  const handleProceed = () => {
+    if (selectedQuote) {
+      onProceed(selectedQuote);
+    }
+  };
+  
   return (
     <motion.div
       variants={containerVariants}
@@ -64,71 +114,45 @@ const QuoteResult = ({ insuranceType, businessName, onProceed, onBack }: QuoteRe
         <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-4">
           <Shield className="h-8 w-8" />
         </div>
-        <h2 className="text-2xl font-bold mb-2">Your Quote is Ready!</h2>
+        <h2 className="text-2xl font-bold mb-2">Your Quotes are Ready!</h2>
         <p className="text-muted-foreground">
-          Here's your personalized {insurance?.title} quote for {businessName}
+          Compare {insurance?.title} quotes for {businessName} from our trusted partners
         </p>
       </motion.div>
       
       <motion.div 
-        className="bg-card rounded-xl overflow-hidden border border-border shadow-sm"
+        className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
         variants={itemVariants}
       >
-        <div className="bg-primary text-white p-6 text-center">
-          <h3 className="text-xl font-medium mb-4">{insurance?.title} Coverage</h3>
-          <div className="text-3xl font-bold">{quoteDetails.monthlyPremium}<span className="text-sm font-normal"> / month</span></div>
-          <p className="text-sm mt-2 text-white/80">or {quoteDetails.annualPremium} annually (save {quoteDetails.savingsWithAnnual})</p>
-        </div>
-        
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <p className="text-sm text-muted-foreground">Coverage Amount</p>
-              <p className="font-semibold">{quoteDetails.coverageAmount}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Deductible</p>
-              <p className="font-semibold">{quoteDetails.deductible}</p>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <h4 className="font-medium">Coverage Includes:</h4>
-            <ul className="space-y-2">
-              {insurance?.coverPoints.map((point, index) => (
-                <li key={index} className="flex gap-2 text-sm">
-                  <div className="text-primary mt-0.5">
-                    <Check className="h-4 w-4" />
-                  </div>
-                  <span>{point}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        {mockQuotes.map((quote) => (
+          <InsurerQuoteCard
+            key={quote.insurerId}
+            quote={quote}
+            onSelect={handleQuoteSelect}
+            isSelected={selectedQuote?.insurerId === quote.insurerId}
+          />
+        ))}
       </motion.div>
       
-      <motion.div variants={itemVariants}>
-        <h3 className="font-medium mb-3">Additional Benefits:</h3>
-        <ul className="space-y-2 mb-6">
-          {benefits.map((benefit, index) => (
-            <li key={index} className="flex gap-2 text-sm">
-              <div className="text-primary mt-0.5">
-                <Check className="h-4 w-4" />
-              </div>
-              <span>{benefit}</span>
-            </li>
-          ))}
-        </ul>
-      </motion.div>
-      
-      <motion.div className="flex justify-between" variants={itemVariants}>
-        <Button variant="outline" onClick={onBack}>
+      <motion.div className="flex justify-between items-center" variants={itemVariants}>
+        <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+          <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        <Button onClick={onProceed}>
-          Proceed to Checkout
-        </Button>
+        
+        <div className="flex items-center gap-4">
+          {selectedQuote && (
+            <p className="text-sm text-muted-foreground">
+              Selected: {selectedQuote.insurerName} - {selectedQuote.monthlyPremium}/month
+            </p>
+          )}
+          <Button 
+            onClick={handleProceed}
+            disabled={!selectedQuote}
+          >
+            Proceed to Checkout
+          </Button>
+        </div>
       </motion.div>
     </motion.div>
   );

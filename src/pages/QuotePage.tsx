@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -17,7 +16,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { InsuranceType, ContactDetail, BusinessDetail } from '@/types';
+import { InsuranceType, ContactDetail, BusinessDetail, InsurerQuote } from '@/types';
 import { QUOTE_STEPS, INSURANCE_TYPES } from '@/utils/constants';
 
 const QuotePage = () => {
@@ -29,6 +28,7 @@ const QuotePage = () => {
   const [contactDetails, setContactDetails] = useState<ContactDetail | null>(null);
   const [businessDetails, setBusinessDetails] = useState<BusinessDetail | null>(null);
   const [underwritingAnswers, setUnderwritingAnswers] = useState<Record<string, any> | null>(null);
+  const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
   
   useEffect(() => {
     if (typeParam && INSURANCE_TYPES.some(i => i.id === typeParam)) {
@@ -56,6 +56,12 @@ const QuotePage = () => {
     console.log('Underwriting data:', data);
     setUnderwritingAnswers(data);
     setCurrentStep(3);
+  };
+  
+  const handleQuoteSelect = (quote: InsurerQuote) => {
+    console.log('Selected quote:', quote);
+    setSelectedQuote(quote);
+    setCurrentStep(4);
   };
   
   const handleInsuranceTypeChange = (value: string) => {
@@ -118,7 +124,7 @@ const QuotePage = () => {
           <QuoteResult 
             insuranceType={selectedInsuranceType as InsuranceType}
             businessName={businessDetails?.businessName || ''}
-            onProceed={() => setCurrentStep(4)}
+            onProceed={handleQuoteSelect}
             onBack={() => setCurrentStep(2)}
           />
         );
