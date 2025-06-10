@@ -97,7 +97,7 @@ export class RatingService {
           deductible: parseFloat(quote.deductible.replace(/[^\d.]/g, '')),
           business_details: quote.businessDetails,
           underwriting_answers: quote.underwritingAnswers,
-          valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+          valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         });
 
       if (error) throw error;
