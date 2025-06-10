@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Label } from '@/components/ui/label';
@@ -135,6 +134,84 @@ const ContractorsAllRiskForm = ({
         />
         {errors['equipment-value'] && (
           <p className="text-sm text-red-500">{errors['equipment-value']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="public-liability-addon">
+          Do you require Public Liability coverage?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('public-liability-addon', value === 'yes')}
+          defaultValue={formData['public-liability-addon'] === true ? 'yes' : 
+                       formData['public-liability-addon'] === false ? 'no' : undefined}
+          className={`flex space-x-4 ${errors['public-liability-addon'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="yes" id="public-liability-addon-yes" />
+            <Label htmlFor="public-liability-addon-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="no" id="public-liability-addon-no" />
+            <Label htmlFor="public-liability-addon-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['public-liability-addon'] && (
+          <p className="text-sm text-red-500">{errors['public-liability-addon']}</p>
+        )}
+      </motion.div>
+
+      {formData['public-liability-addon'] === true && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label htmlFor="public-liability-amount">
+            Public Liability Coverage Amount
+            <span className="text-red-500 ml-1">*</span>
+          </Label>
+          <Select
+            onValueChange={(value) => handleChange('public-liability-amount', value)}
+            defaultValue={formData['public-liability-amount'] || ''}
+          >
+            <SelectTrigger className={errors['public-liability-amount'] ? 'border-red-300' : ''}>
+              <SelectValue placeholder="Select coverage amount" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1000000">R1,000,000</SelectItem>
+              <SelectItem value="2000000">R2,000,000</SelectItem>
+              <SelectItem value="5000000">R5,000,000</SelectItem>
+              <SelectItem value="10000000">R10,000,000</SelectItem>
+              <SelectItem value="20000000">R20,000,000</SelectItem>
+              <SelectItem value="50000000">R50,000,000</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors['public-liability-amount'] && (
+            <p className="text-sm text-red-500">{errors['public-liability-amount']}</p>
+          )}
+        </motion.div>
+      )}
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="sasria-cover">
+          Do you require SASRIA coverage?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('sasria-cover', value === 'yes')}
+          defaultValue={formData['sasria-cover'] === true ? 'yes' : 
+                       formData['sasria-cover'] === false ? 'no' : undefined}
+          className={`flex space-x-4 ${errors['sasria-cover'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="yes" id="sasria-cover-yes" />
+            <Label htmlFor="sasria-cover-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="no" id="sasria-cover-no" />
+            <Label htmlFor="sasria-cover-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['sasria-cover'] && (
+          <p className="text-sm text-red-500">{errors['sasria-cover']}</p>
         )}
       </motion.div>
 

@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -211,11 +210,15 @@ function calculateContractorsAllRiskPremium(
   // Calculate base premium as percentage of contract value
   let basePremium = contractValue * (contractRate / 100);
   
-  // Add public liability if selected
+  // Add public liability if selected - now percentage-based
   const publicLiabilityFactor = ratingFactors.find(f => f.factor_name === 'Public Liability Add-on');
   if (underwritingAnswers['public-liability-addon'] === true && publicLiabilityFactor) {
-    basePremium += publicLiabilityFactor.factor_value;
-    console.log(`Added public liability: R${publicLiabilityFactor.factor_value}`);
+    const publicLiabilityAmount = parseFloat(underwritingAnswers['public-liability-amount'] || '0');
+    if (publicLiabilityAmount > 0) {
+      const publicLiabilityPremium = publicLiabilityAmount * (publicLiabilityFactor.factor_value / 100);
+      basePremium += publicLiabilityPremium;
+      console.log(`Added public liability: R${publicLiabilityPremium} (${publicLiabilityFactor.factor_value}% of R${publicLiabilityAmount})`);
+    }
   }
   
   // Add SASRIA if selected
