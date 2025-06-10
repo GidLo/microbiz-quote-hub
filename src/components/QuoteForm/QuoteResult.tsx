@@ -5,72 +5,46 @@ import { Shield, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { InsuranceType, InsurerQuote } from '@/types';
 import { INSURANCE_TYPES } from '@/utils/constants';
+import { RatingService } from '@/services/ratingService';
 import InsurerQuoteCard from './InsurerQuoteCard';
+import { useQuery } from '@tanstack/react-query';
 
 interface QuoteResultProps {
   insuranceType: InsuranceType;
   businessName: string;
+  contactDetails: any;
+  businessDetails: any;
+  underwritingAnswers: any;
   onProceed: (selectedQuote: InsurerQuote) => void;
   onBack: () => void;
 }
 
-const QuoteResult = ({ insuranceType, businessName, onProceed, onBack }: QuoteResultProps) => {
+const QuoteResult = ({ 
+  insuranceType, 
+  businessName, 
+  contactDetails,
+  businessDetails,
+  underwritingAnswers,
+  onProceed, 
+  onBack 
+}: QuoteResultProps) => {
   const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
   
   const insurance = INSURANCE_TYPES.find(i => i.id === insuranceType);
   
-  // Mock quotes from different insurers - will be replaced with backend data
-  const mockQuotes: InsurerQuote[] = [
-    {
-      insurerId: 'insurer-1',
-      insurerName: 'SafeGuard Insurance',
-      monthlyPremium: 'R 420',
-      annualPremium: 'R 4,536',
-      coverageAmount: 'R 1,000,000',
-      deductible: 'R 5,000',
-      savingsWithAnnual: 'R 504',
-      rating: 4.8,
-      features: [
-        'No long-term contracts',
-        'Immediate coverage',
-        'Dedicated claims support',
-        '24/7 helpline'
-      ],
-      isRecommended: true
+  // Fetch quotes from backend
+  const { data: quotesResponse, isLoading, error } = useQuery({
+    queryKey: ['quotes', insuranceType, contactDetails, businessDetails, underwritingAnswers],
+    queryFn: async () => {
+      return await RatingService.calculateRates({
+        insuranceType,
+        contactDetails,
+        businessDetails,
+        underwritingAnswers
+      });
     },
-    {
-      insurerId: 'insurer-2',
-      insurerName: 'Premier Coverage',
-      monthlyPremium: 'R 450',
-      annualPremium: 'R 4,860',
-      coverageAmount: 'R 1,000,000',
-      deductible: 'R 4,000',
-      savingsWithAnnual: 'R 540',
-      rating: 4.5,
-      features: [
-        'Flexible payment options',
-        'Digital policy management',
-        'Quick claim processing',
-        'Legal assistance included'
-      ]
-    },
-    {
-      insurerId: 'insurer-3',
-      insurerName: 'Reliable Protect',
-      monthlyPremium: 'R 385',
-      annualPremium: 'R 4,158',
-      coverageAmount: 'R 750,000',
-      deductible: 'R 7,500',
-      savingsWithAnnual: 'R 462',
-      rating: 4.2,
-      features: [
-        'Budget-friendly option',
-        'Essential coverage',
-        'Online support',
-        'Basic claims service'
-      ]
-    }
-  ];
+    enabled: !!(contactDetails && businessDetails && underwritingAnswers)
+  });
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -102,6 +76,71 @@ const QuoteResult = ({ insuranceType, businessName, onProceed, onBack }: QuoteRe
       onProceed(selectedQuote);
     }
   };
+
+  if (isLoading) {
+    return (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
+        <motion.div className="text-center" variants={itemVariants}>
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-4">
+            <Shield className="h-8 w-8" />
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Calculating Your Quotes...</h2>
+          <p className="text-muted-foreground">
+            Please wait while we get the best rates for your {insurance?.title}
+          </p>
+        </motion.div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card rounded-xl border p-6 animate-pulse">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-secondary rounded-lg"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-secondary rounded w-24"></div>
+                  <div className="h-3 bg-secondary rounded w-16"></div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="h-8 bg-secondary rounded w-20"></div>
+                <div className="h-4 bg-secondary rounded w-full"></div>
+                <div className="h-4 bg-secondary rounded w-3/4"></div>
+                <div className="h-10 bg-secondary rounded w-full"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (error) {
+    return (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
+        <motion.div className="text-center" variants={itemVariants}>
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600 mx-auto mb-4">
+            <Shield className="h-8 w-8" />
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Error Loading Quotes</h2>
+          <p className="text-muted-foreground mb-4">
+            There was an error calculating your quotes. Please try again.
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </motion.div>
+      </motion.div>
+    );
+  }
   
   return (
     <motion.div
@@ -124,7 +163,7 @@ const QuoteResult = ({ insuranceType, businessName, onProceed, onBack }: QuoteRe
         className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
         variants={itemVariants}
       >
-        {mockQuotes.map((quote) => (
+        {quotesResponse?.quotes.map((quote) => (
           <InsurerQuoteCard
             key={quote.insurerId}
             quote={quote}

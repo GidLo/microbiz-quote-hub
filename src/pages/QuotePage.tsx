@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -124,6 +125,9 @@ const QuotePage = () => {
           <QuoteResult 
             insuranceType={selectedInsuranceType as InsuranceType}
             businessName={businessDetails?.businessName || ''}
+            contactDetails={contactDetails}
+            businessDetails={businessDetails}
+            underwritingAnswers={underwritingAnswers}
             onProceed={handleQuoteSelect}
             onBack={() => setCurrentStep(2)}
           />

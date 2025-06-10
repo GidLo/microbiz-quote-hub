@@ -1,116 +1,110 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { QuoteRequest, QuoteResponse, InsurerQuote, InsuranceType } from '@/types';
+import { InsuranceType, QuoteRequest, QuoteResponse, InsurerQuote } from '@/types';
 
 export class RatingService {
-  /**
-   * Get quotes from multiple insurers for a given quote request
-   */
-  static async getQuotes(quoteRequest: QuoteRequest): Promise<QuoteResponse> {
+  static async calculateRates(request: QuoteRequest): Promise<QuoteResponse> {
     try {
-      // Call the backend rating function
-      const { data, error } = await supabase.functions.invoke('calculate-rates', {
-        body: quoteRequest
+      console.log('Calculating rates for request:', request);
+      
+      // Call the edge function to calculate quotes
+      const { data, error } = await supabase.functions.invoke('calculate-quotes', {
+        body: request
       });
 
       if (error) {
-        console.error('Error fetching quotes:', error);
-        throw new Error('Failed to fetch quotes from insurers');
+        console.error('Error calculating rates:', error);
+        throw new Error(error.message || 'Failed to calculate rates');
       }
 
-      return data as QuoteResponse;
+      console.log('Calculated rates response:', data);
+      return data;
     } catch (error) {
       console.error('Rating service error:', error);
-      // Return fallback mock data for development
-      return this.getMockQuotes(quoteRequest.insuranceType);
-    }
-  }
-
-  /**
-   * Get rates for a specific insurance type and insurer
-   */
-  static async getRateForInsurer(
-    insuranceType: InsuranceType,
-    insurerId: string,
-    quoteRequest: QuoteRequest
-  ): Promise<InsurerQuote> {
-    try {
-      const { data, error } = await supabase.functions.invoke('calculate-single-rate', {
-        body: {
-          insurerId,
-          quoteRequest
-        }
-      });
-
-      if (error) throw error;
-      return data as InsurerQuote;
-    } catch (error) {
-      console.error('Error fetching single rate:', error);
       throw error;
     }
   }
 
-  /**
-   * Mock quotes for development/fallback
-   */
-  private static getMockQuotes(insuranceType: InsuranceType): QuoteResponse {
-    const baseQuotes: InsurerQuote[] = [
-      {
-        insurerId: 'safeguard-001',
-        insurerName: 'SafeGuard Insurance',
-        monthlyPremium: 'R 420',
-        annualPremium: 'R 4,536',
-        coverageAmount: 'R 1,000,000',
-        deductible: 'R 5,000',
-        savingsWithAnnual: 'R 504',
-        rating: 4.8,
-        features: [
-          'No long-term contracts',
-          'Immediate coverage',
-          'Dedicated claims support',
-          '24/7 helpline'
-        ],
-        isRecommended: true
-      },
-      {
-        insurerId: 'premier-002',
-        insurerName: 'Premier Coverage',
-        monthlyPremium: 'R 450',
-        annualPremium: 'R 4,860',
-        coverageAmount: 'R 1,000,000',
-        deductible: 'R 4,000',
-        savingsWithAnnual: 'R 540',
-        rating: 4.5,
-        features: [
-          'Flexible payment options',
-          'Digital policy management',
-          'Quick claim processing',
-          'Legal assistance included'
-        ]
-      },
-      {
-        insurerId: 'reliable-003',
-        insurerName: 'Reliable Protect',
-        monthlyPremium: 'R 385',
-        annualPremium: 'R 4,158',
-        coverageAmount: 'R 750,000',
-        deductible: 'R 7,500',
-        savingsWithAnnual: 'R 462',
-        rating: 4.2,
-        features: [
-          'Budget-friendly option',
-          'Essential coverage',
-          'Online support',
-          'Basic claims service'
-        ]
-      }
-    ];
+  static async getInsurers() {
+    try {
+      const { data, error } = await supabase
+        .from('insurers')
+        .select('*')
+        .eq('is_active', true)
+        .order('rating', { ascending: false });
 
-    return {
-      insuranceType,
-      quotes: baseQuotes,
-      requestId: `req_${Date.now()}`,
-      validUntil: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
-    };
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching insurers:', error);
+      throw error;
+    }
+  }
+
+  static async getInsuranceProducts(insuranceType: InsuranceType) {
+    try {
+      const { data, error } = await supabase
+        .from('insurance_products')
+        .select(`
+          *,
+          insurers (
+            id,
+            name,
+            rating,
+            logo_url
+          )
+        `)
+        .eq('insurance_type', insuranceType)
+        .eq('is_active', true);
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching insurance products:', error);
+      throw error;
+    }
+  }
+
+  static async getRatingFactors(insuranceType: InsuranceType) {
+    try {
+      const { data, error } = await supabase
+        .from('rating_factors')
+        .select('*')
+        .eq('insurance_type', insuranceType)
+        .eq('is_active', true);
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching rating factors:', error);
+      throw error;
+    }
+  }
+
+  static async saveQuote(quote: InsurerQuote, requestId: string, contactId: string) {
+    try {
+      const { data, error } = await supabase
+        .from('quotes')
+        .insert({
+          request_id: requestId,
+          contact_id: contactId,
+          insurance_type: quote.insuranceType,
+          insurer_id: quote.insurerId,
+          product_id: quote.productId,
+          monthly_premium: parseFloat(quote.monthlyPremium.replace(/[^\d.]/g, '')),
+          annual_premium: parseFloat(quote.annualPremium.replace(/[^\d.]/g, '')),
+          coverage_amount: parseFloat(quote.coverageAmount.replace(/[^\d.]/g, '')),
+          deductible: parseFloat(quote.deductible.replace(/[^\d.]/g, '')),
+          business_details: quote.businessDetails,
+          underwriting_answers: quote.underwritingAnswers,
+          valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+        });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error saving quote:', error);
+      throw error;
+    }
   }
 }

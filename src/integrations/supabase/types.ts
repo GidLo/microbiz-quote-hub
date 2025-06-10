@@ -42,6 +42,225 @@ export type Database = {
         }
         Relationships: []
       }
+      insurance_products: {
+        Row: {
+          base_premium: number
+          created_at: string
+          default_coverage: number
+          default_deductible: number
+          features: Json | null
+          id: string
+          insurance_type: string
+          insurer_id: string
+          is_active: boolean
+          is_recommended: boolean | null
+          max_coverage: number
+          max_deductible: number
+          min_coverage: number
+          min_deductible: number
+          product_name: string
+          updated_at: string
+        }
+        Insert: {
+          base_premium: number
+          created_at?: string
+          default_coverage: number
+          default_deductible: number
+          features?: Json | null
+          id?: string
+          insurance_type: string
+          insurer_id: string
+          is_active?: boolean
+          is_recommended?: boolean | null
+          max_coverage: number
+          max_deductible: number
+          min_coverage: number
+          min_deductible: number
+          product_name: string
+          updated_at?: string
+        }
+        Update: {
+          base_premium?: number
+          created_at?: string
+          default_coverage?: number
+          default_deductible?: number
+          features?: Json | null
+          id?: string
+          insurance_type?: string
+          insurer_id?: string
+          is_active?: boolean
+          is_recommended?: boolean | null
+          max_coverage?: number
+          max_deductible?: number
+          min_coverage?: number
+          min_deductible?: number
+          product_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_products_insurer_id_fkey"
+            columns: ["insurer_id"]
+            isOneToOne: false
+            referencedRelation: "insurers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurers: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          rating: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          rating?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          rating?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quotes: {
+        Row: {
+          annual_premium: number
+          business_details: Json
+          contact_id: string
+          coverage_amount: number
+          created_at: string
+          deductible: number
+          id: string
+          insurance_type: string
+          insurer_id: string
+          is_selected: boolean | null
+          monthly_premium: number
+          product_id: string
+          request_id: string
+          underwriting_answers: Json
+          updated_at: string
+          valid_until: string
+        }
+        Insert: {
+          annual_premium: number
+          business_details: Json
+          contact_id: string
+          coverage_amount: number
+          created_at?: string
+          deductible: number
+          id?: string
+          insurance_type: string
+          insurer_id: string
+          is_selected?: boolean | null
+          monthly_premium: number
+          product_id: string
+          request_id: string
+          underwriting_answers: Json
+          updated_at?: string
+          valid_until: string
+        }
+        Update: {
+          annual_premium?: number
+          business_details?: Json
+          contact_id?: string
+          coverage_amount?: number
+          created_at?: string
+          deductible?: number
+          id?: string
+          insurance_type?: string
+          insurer_id?: string
+          is_selected?: boolean | null
+          monthly_premium?: number
+          product_id?: string
+          request_id?: string
+          underwriting_answers?: Json
+          updated_at?: string
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_insurer_id_fkey"
+            columns: ["insurer_id"]
+            isOneToOne: false
+            referencedRelation: "insurers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rating_factors: {
+        Row: {
+          condition_field: string
+          condition_operator: string
+          condition_value: Json
+          created_at: string
+          description: string | null
+          factor_name: string
+          factor_type: string
+          factor_value: number
+          id: string
+          insurance_type: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          condition_field: string
+          condition_operator: string
+          condition_value: Json
+          created_at?: string
+          description?: string | null
+          factor_name: string
+          factor_type: string
+          factor_value: number
+          id?: string
+          insurance_type: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          condition_field?: string
+          condition_operator?: string
+          condition_value?: Json
+          created_at?: string
+          description?: string | null
+          factor_name?: string
+          factor_type?: string
+          factor_value?: number
+          id?: string
+          insurance_type?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

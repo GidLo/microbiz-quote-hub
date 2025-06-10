@@ -57,6 +57,10 @@ export interface InsurerQuote {
   rating: number; // 1-5 stars
   features: string[];
   isRecommended?: boolean;
+  productId?: string;
+  insuranceType?: InsuranceType;
+  businessDetails?: any;
+  underwritingAnswers?: any;
 }
 
 export interface QuoteRequest {
