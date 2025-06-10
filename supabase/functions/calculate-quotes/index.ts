@@ -79,26 +79,35 @@ serve(async (req) => {
     const quotes = products.map(product => {
       let adjustedPremium = product.base_premium;
 
-      // Apply rating factors
-      ratingFactors.forEach(factor => {
-        const conditionValue = request.underwritingAnswers[factor.condition_field];
-        
-        if (shouldApplyFactor(factor, conditionValue)) {
-          console.log(`Applying factor: ${factor.factor_name}, value: ${factor.factor_value}`);
+      // Special handling for Contractors All Risk insurance
+      if (request.insuranceType === 'contractors-all-risk') {
+        adjustedPremium = calculateContractorsAllRiskPremium(
+          product, 
+          request.underwritingAnswers, 
+          ratingFactors
+        );
+      } else {
+        // Standard rating logic for other insurance types
+        ratingFactors.forEach(factor => {
+          const conditionValue = request.underwritingAnswers[factor.condition_field];
           
-          switch (factor.factor_type) {
-            case 'multiplier':
-              adjustedPremium *= factor.factor_value;
-              break;
-            case 'addition':
-              adjustedPremium += factor.factor_value;
-              break;
-            case 'percentage':
-              adjustedPremium *= (1 + factor.factor_value / 100);
-              break;
+          if (shouldApplyFactor(factor, conditionValue)) {
+            console.log(`Applying factor: ${factor.factor_name}, value: ${factor.factor_value}`);
+            
+            switch (factor.factor_type) {
+              case 'multiplier':
+                adjustedPremium *= factor.factor_value;
+                break;
+              case 'addition':
+                adjustedPremium += factor.factor_value;
+                break;
+              case 'percentage':
+                adjustedPremium *= (1 + factor.factor_value / 100);
+                break;
+            }
           }
-        }
-      });
+        });
+      }
 
       const monthlyPremium = Math.round(adjustedPremium);
       const annualPremium = Math.round(monthlyPremium * 12 * 0.9); // 10% discount for annual
@@ -170,6 +179,58 @@ serve(async (req) => {
     );
   }
 });
+
+function calculateContractorsAllRiskPremium(
+  product: any, 
+  underwritingAnswers: Record<string, any>, 
+  ratingFactors: any[]
+): number {
+  // Get the contract value from equipment-value field (this maps to project value)
+  const contractValueStr = underwritingAnswers['equipment-value'] || '0';
+  const contractValue = parseFloat(contractValueStr.replace(/[^\d.]/g, '')) || 0;
+  
+  console.log(`Calculating Contractors All Risk premium for contract value: R${contractValue}`);
+  
+  // Find the appropriate contract value rate
+  let contractRate = 0;
+  const contractValueFactors = ratingFactors.filter(f => 
+    f.factor_name.includes('Contract Value') && f.factor_type === 'percentage'
+  );
+  
+  for (const factor of contractValueFactors) {
+    if (factor.condition_operator === 'range' && Array.isArray(factor.condition_value)) {
+      const [min, max] = factor.condition_value;
+      if (contractValue >= min && contractValue <= max) {
+        contractRate = factor.factor_value;
+        console.log(`Applied contract rate: ${contractRate}% for range R${min}-R${max}`);
+        break;
+      }
+    }
+  }
+  
+  // Calculate base premium as percentage of contract value
+  let basePremium = contractValue * (contractRate / 100);
+  
+  // Add public liability if selected
+  const publicLiabilityFactor = ratingFactors.find(f => f.factor_name === 'Public Liability Add-on');
+  if (underwritingAnswers['public-liability-addon'] === true && publicLiabilityFactor) {
+    basePremium += publicLiabilityFactor.factor_value;
+    console.log(`Added public liability: R${publicLiabilityFactor.factor_value}`);
+  }
+  
+  // Add SASRIA if selected
+  const sasriaFactor = ratingFactors.find(f => f.factor_name === 'SASRIA Coverage');
+  if (underwritingAnswers['sasria-cover'] === true && sasriaFactor) {
+    // SASRIA is calculated on contract value up to R20M
+    const sasriaContractValue = Math.min(contractValue, 20000000);
+    const sasriaPremium = sasriaContractValue * (sasriaFactor.factor_value / 100);
+    basePremium += sasriaPremium;
+    console.log(`Added SASRIA: R${sasriaPremium} (${sasriaFactor.factor_value}% of R${sasriaContractValue})`);
+  }
+  
+  console.log(`Final Contractors All Risk premium: R${basePremium}`);
+  return basePremium;
+}
 
 function shouldApplyFactor(factor: any, conditionValue: any): boolean {
   const { condition_operator, condition_value } = factor;
