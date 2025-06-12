@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
 import CoveragePage from "./pages/CoveragePage";
-import ProfessionalIndemnity from "./pages/coverage/ProfessionalIndemnity";
 import ContractorsAllRisk from "./pages/coverage/ContractorsAllRisk";
 import PublicLiability from "./pages/coverage/PublicLiability";
 import EventLiability from "./pages/coverage/EventLiability";
@@ -28,9 +27,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             
-            {/* Coverage Pages */}
+            {/* Coverage Pages - Use dynamic route for all coverage pages */}
             <Route path="/coverage/:type" element={<CoveragePage />} />
-            <Route path="/coverage/professional-indemnity" element={<ProfessionalIndemnity />} />
             <Route path="/coverage/contractors-all-risk" element={<ContractorsAllRisk />} />
             <Route path="/coverage/public-liability" element={<PublicLiability />} />
             <Route path="/coverage/event-liability" element={<EventLiability />} />
