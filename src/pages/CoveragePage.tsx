@@ -1,7 +1,6 @@
-
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Calculator, User, Stethoscope, Dumbbell, Scale, Camera, Briefcase, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link, useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -24,6 +23,59 @@ const CoveragePage = () => {
   if (!insurance) {
     return null;
   }
+
+  const professionalCategories = [
+    {
+      title: "Accounting & Consulting",
+      description: "For accountants, tax professionals, management consultants and more",
+      icon: Calculator,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Built & Design",
+      description: "For architects, draughtsman, engineers, designers, interior decorators and more",
+      icon: User,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Doctors",
+      description: "For general practitioners, specialists, dentists, psychiatrists and more",
+      icon: Stethoscope,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Health & Fitness",
+      description: "For health professionals including psychologist, physios and many more",
+      icon: Dumbbell,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Legal Practitioners",
+      description: "For attorneys, advocates, conveyancers, liquidators and more",
+      icon: Scale,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Marketing & Multi-media",
+      description: "For advertising, market research, graphic design and publishers",
+      icon: Camera,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Miscellaneous",
+      description: "For assessors, loss adjusters, graphic designers and more",
+      icon: Briefcase,
+      buttonText: "GET MY PRICE"
+    },
+    {
+      title: "Other Occupations",
+      description: "Designed for professionals who's profession is not listed above",
+      icon: Users,
+      buttonText: "REQUEST QUOTE"
+    }
+  ];
+
+  const isProfessionalIndemnity = insurance.id === 'professional-indemnity';
   
   const FAQs = [
     {
@@ -46,11 +98,63 @@ const CoveragePage = () => {
 
   return (
     <Layout>
-      <Hero 
-        title={insurance.title}
-        subtitle={insurance.description}
-        showStats={false}
-      />
+      {isProfessionalIndemnity ? (
+        <section className="relative overflow-hidden py-20 md:py-28 lg:py-32">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/30 z-0"></div>
+          <div className="absolute w-96 h-96 bg-primary/20 rounded-full filter blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0"></div>
+          
+          <div className="container max-w-6xl mx-auto px-6 md:px-8 relative z-10">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-4 h-4 rounded-full border-2 border-primary mr-2"></div>
+                <span className="text-muted-foreground">Professional Indemnity Insurance | South Africa</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+                Professional Indemnity Insurance As Fast As You Can Click
+              </h1>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {professionalCategories.map((category, index) => (
+                <motion.div
+                  key={category.title}
+                  className="bg-background/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-border/50 text-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4 mx-auto">
+                    <category.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">{category.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    {category.description}
+                  </p>
+                  <Link to={`/quote?type=${insurance.id}`}>
+                    <Button 
+                      className="w-full bg-[#00BCD4] hover:bg-[#00ACC1] text-white font-medium rounded-full"
+                      size="sm"
+                    >
+                      {category.buttonText}
+                    </Button>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <Hero 
+          title={insurance.title}
+          subtitle={insurance.description}
+          showStats={false}
+        />
+      )}
       
       <section className="py-16">
         <div className="container max-w-6xl mx-auto px-6 md:px-8">
