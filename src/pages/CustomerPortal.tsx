@@ -1,8 +1,8 @@
 
-import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, LogOut, Settings, User } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -18,8 +18,8 @@ interface Policy {
 }
 
 const CustomerPortal = () => {
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
-  const [selectedSection, setSelectedSection] = useState('policies');
 
   // Mock policy data - in real app this would come from API
   const policies: Policy[] = [
@@ -43,20 +43,14 @@ const CustomerPortal = () => {
     }
   ];
 
-  const handleLogout = () => {
-    // In real app, handle actual logout
+  const handleLogout = async () => {
+    await signOut();
     navigate('/login');
   };
 
   const handlePolicyClick = (policyId: string) => {
-    navigate(`/customer-portal/policy/${policyId}`);
+    navigate(`/policy/${policyId}`);
   };
-
-  const sidebarItems = [
-    { id: 'policies', label: 'Your policies', icon: User },
-    { id: 'settings', label: 'Account settings', icon: Settings },
-    { id: 'logout', label: 'Log out', icon: LogOut, onClick: handleLogout }
-  ];
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -64,23 +58,26 @@ const CustomerPortal = () => {
       <div className="w-64 bg-card border-r border-border">
         <div className="p-6">
           <h2 className="text-lg font-semibold mb-6">Customer Portal</h2>
+          <div className="mb-4 p-3 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground">Welcome back,</p>
+            <p className="font-medium">{user?.email}</p>
+          </div>
           <nav className="space-y-2">
-            {sidebarItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={item.onClick || (() => setSelectedSection(item.id))}
-                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
-                  selectedSection === item.id
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </div>
-              </button>
-            ))}
+            <div className="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-md">
+              <User className="h-4 w-4" />
+              Your policies
+            </div>
+            <button className="w-full text-left px-3 py-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-3">
+              <Settings className="h-4 w-4" />
+              Account settings
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="w-full text-left px-3 py-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-3"
+            >
+              <LogOut className="h-4 w-4" />
+              Log out
+            </button>
           </nav>
         </div>
       </div>
