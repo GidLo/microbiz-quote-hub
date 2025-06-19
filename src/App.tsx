@@ -12,6 +12,8 @@ import PublicLiability from "./pages/coverage/PublicLiability";
 import EventLiability from "./pages/coverage/EventLiability";
 import QuotePage from "./pages/QuotePage";
 import LoginPage from "./pages/LoginPage";
+import CustomerPortal from "./pages/CustomerPortal";
+import PolicyDetails from "./pages/PolicyDetails";
 import UploadSchedulePage from "./pages/UploadSchedulePage";
 import NotFound from "./pages/NotFound";
 

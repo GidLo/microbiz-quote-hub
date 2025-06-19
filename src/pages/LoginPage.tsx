@@ -24,7 +24,7 @@ const LoginPage = () => {
       
       if (email && password) {
         toast.success("Login successful!");
-        navigate('/');
+        navigate('/customer-portal');
       } else {
         toast.error("Please enter both email and password.");
       }
