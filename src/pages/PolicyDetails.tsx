@@ -1,13 +1,13 @@
-
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, FileText, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
-
 const PolicyDetails = () => {
-  const { id } = useParams();
+  const {
+    id
+  } = useParams();
   const navigate = useNavigate();
 
   // Mock policy data - in real app this would be fetched based on ID
@@ -24,25 +24,25 @@ const PolicyDetails = () => {
     type: 'Cyber Liability Insurance',
     description: 'Comprehensive cyber liability coverage for your business, protecting against data breaches, cyber attacks, and digital risks.'
   };
-
-  const coverageDetails = [
-    { title: 'Data Breach Response', description: 'Coverage for notification costs and credit monitoring' },
-    { title: 'Cyber Extortion', description: 'Protection against ransomware and cyber extortion threats' },
-    { title: 'Business Interruption', description: 'Coverage for lost income due to cyber incidents' },
-    { title: 'Third Party Liability', description: 'Protection against claims from affected third parties' }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const coverageDetails = [{
+    title: 'Data Breach Response',
+    description: 'Coverage for notification costs and credit monitoring'
+  }, {
+    title: 'Cyber Extortion',
+    description: 'Protection against ransomware and cyber extortion threats'
+  }, {
+    title: 'Business Interruption',
+    description: 'Coverage for lost income due to cyber incidents'
+  }, {
+    title: 'Third Party Liability',
+    description: 'Protection against claims from affected third parties'
+  }];
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-border bg-card">
         <div className="container max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => navigate('/customer-portal')}
-            >
+            <Button variant="ghost" size="icon" onClick={() => navigate('/customer-portal')}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
@@ -55,22 +55,22 @@ const PolicyDetails = () => {
 
       {/* Main Content */}
       <div className="container max-w-6xl mx-auto px-6 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-6"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} className="space-y-6">
           {/* Policy Overview Card */}
           <Card>
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="default"
-                      className="bg-green-100 text-green-800"
-                    >
+                    <Badge variant="default" className="bg-green-100 text-green-800">
                       {policy.status}
                     </Badge>
                   </div>
@@ -107,25 +107,8 @@ const PolicyDetails = () => {
 
           {/* Coverage Details */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Coverage Details
-              </CardTitle>
-              <CardDescription>
-                Your policy includes the following coverage areas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {coverageDetails.map((coverage, index) => (
-                  <div key={index} className="p-4 border border-border rounded-lg">
-                    <h4 className="font-medium mb-2">{coverage.title}</h4>
-                    <p className="text-sm text-muted-foreground">{coverage.description}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
+            
+            
           </Card>
 
           {/* Policy Documents */}
@@ -172,8 +155,6 @@ const PolicyDetails = () => {
           </Card>
         </motion.div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default PolicyDetails;
