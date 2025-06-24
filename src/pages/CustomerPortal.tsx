@@ -1,10 +1,9 @@
-
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChevronRight, LogOut, Settings, User } from 'lucide-react';
+import { ChevronRight, LogOut, Settings, User, FileEdit } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import AccountSettings from '@/components/AccountSettings';
@@ -22,7 +21,7 @@ interface Policy {
 const CustomerPortal = () => {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
-  const [activeView, setActiveView] = useState<'policies' | 'settings'>('policies');
+  const [activeView, setActiveView] = useState<'policies' | 'settings' | 'amend'>('policies');
 
   // Mock policy data - in real app this would come from API
   const policies: Policy[] = [
@@ -87,6 +86,17 @@ const CustomerPortal = () => {
             >
               <Settings className="h-4 w-4" />
               Account settings
+            </button>
+            <button 
+              onClick={() => setActiveView('amend')}
+              className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-3 ${
+                activeView === 'amend' 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              }`}
+            >
+              <FileEdit className="h-4 w-4" />
+              Amend my policy
             </button>
             <button 
               onClick={handleLogout}
@@ -164,8 +174,29 @@ const CustomerPortal = () => {
                 ))}
               </div>
             </>
-          ) : (
+          ) : activeView === 'settings' ? (
             <AccountSettings />
+          ) : (
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-2xl font-bold">Amend My Policy</h1>
+                <p className="text-muted-foreground">Request changes to your existing policies</p>
+              </div>
+              
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <FileEdit className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Policy Amendment Request</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Need to make changes to your policy? Our team will help you with any amendments.
+                  </p>
+                  <Button>
+                    <FileEdit className="h-4 w-4 mr-2" />
+                    Start Amendment Request
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </motion.div>
       </div>

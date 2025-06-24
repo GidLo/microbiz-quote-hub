@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -44,10 +43,16 @@ const AccountSettings = () => {
       setProfileData({
         full_name: data?.full_name || '',
         email: data?.email || user?.email || '',
-        phone: data?.phone || ''
+        phone: data?.phone || '' // This will be empty string if phone doesn't exist
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
+      // Set default values if profile doesn't exist or phone field is missing
+      setProfileData({
+        full_name: '',
+        email: user?.email || '',
+        phone: ''
+      });
     }
   };
 
