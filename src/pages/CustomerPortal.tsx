@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, LogOut, Settings, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import AccountSettings from '@/components/AccountSettings';
 
 interface Policy {
   id: string;
@@ -20,6 +22,7 @@ interface Policy {
 const CustomerPortal = () => {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<'policies' | 'settings'>('policies');
 
   // Mock policy data - in real app this would come from API
   const policies: Policy[] = [
@@ -63,11 +66,25 @@ const CustomerPortal = () => {
             <p className="font-medium">{user?.email}</p>
           </div>
           <nav className="space-y-2">
-            <div className="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-md">
+            <button
+              onClick={() => setActiveView('policies')}
+              className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-3 ${
+                activeView === 'policies' 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              }`}
+            >
               <User className="h-4 w-4" />
               Your policies
-            </div>
-            <button className="w-full text-left px-3 py-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-3">
+            </button>
+            <button 
+              onClick={() => setActiveView('settings')}
+              className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-3 ${
+                activeView === 'settings' 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              }`}
+            >
               <Settings className="h-4 w-4" />
               Account settings
             </button>
@@ -89,61 +106,67 @@ const CustomerPortal = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-2xl font-bold mb-8">Your policies</h1>
-          
-          <div className="space-y-4">
-            {policies.map((policy) => (
-              <Card 
-                key={policy.id}
-                className="cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => handlePolicyClick(policy.id)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      {/* Policy Icon */}
-                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <span className="text-sm font-medium text-primary">
-                          {policy.type.substring(0, 3)}
-                        </span>
-                      </div>
-                      
-                      {/* Policy Details */}
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Badge 
-                            variant={policy.status === 'Active' ? 'default' : 'secondary'}
-                            className={policy.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}
-                          >
-                            {policy.status}
-                          </Badge>
+          {activeView === 'policies' ? (
+            <>
+              <h1 className="text-2xl font-bold mb-8">Your policies</h1>
+              
+              <div className="space-y-4">
+                {policies.map((policy) => (
+                  <Card 
+                    key={policy.id}
+                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => handlePolicyClick(policy.id)}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          {/* Policy Icon */}
+                          <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <span className="text-sm font-medium text-primary">
+                              {policy.type.substring(0, 3)}
+                            </span>
+                          </div>
+                          
+                          {/* Policy Details */}
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant={policy.status === 'Active' ? 'default' : 'secondary'}
+                                className={policy.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}
+                              >
+                                {policy.status}
+                              </Badge>
+                            </div>
+                            <h3 className="font-medium text-primary">
+                              {policy.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              Policy Number
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Expires on
+                            </p>
+                          </div>
                         </div>
-                        <h3 className="font-medium text-primary">
-                          {policy.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Policy Number
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Expires on
-                        </p>
+                        
+                        {/* Right Side */}
+                        <div className="flex items-center gap-6">
+                          <div className="text-right">
+                            <div className="font-bold text-lg">{policy.logo}</div>
+                            <div className="text-sm font-medium">{policy.policyNumber}</div>
+                            <div className="text-sm font-medium">{policy.expiresOn}</div>
+                          </div>
+                          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                        </div>
                       </div>
-                    </div>
-                    
-                    {/* Right Side */}
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <div className="font-bold text-lg">{policy.logo}</div>
-                        <div className="text-sm font-medium">{policy.policyNumber}</div>
-                        <div className="text-sm font-medium">{policy.expiresOn}</div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          ) : (
+            <AccountSettings />
+          )}
         </motion.div>
       </div>
     </div>
