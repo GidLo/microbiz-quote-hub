@@ -1,4 +1,3 @@
-
 export type InsuranceType = 
   | 'professional-indemnity'
   | 'contractors-all-risk'
@@ -32,7 +31,8 @@ export interface ContactDetail {
   lastName: string;
   email: string;
   phone: string;
-  position: string;
+  industryId: string;
+  occupationId: string;
 }
 
 export interface QuoteStep {

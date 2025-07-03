@@ -15,9 +15,10 @@ export type Database = {
           email: string
           first_name: string
           id: string
+          industry_id: string | null
           last_name: string
+          occupation_id: string | null
           phone: string
-          position: string
           updated_at: string
         }
         Insert: {
@@ -25,9 +26,10 @@ export type Database = {
           email: string
           first_name: string
           id?: string
+          industry_id?: string | null
           last_name: string
+          occupation_id?: string | null
           phone: string
-          position: string
           updated_at?: string
         }
         Update: {
@@ -35,9 +37,49 @@ export type Database = {
           email?: string
           first_name?: string
           id?: string
+          industry_id?: string | null
           last_name?: string
+          occupation_id?: string | null
           phone?: string
-          position?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_industry_id_fkey"
+            columns: ["industry_id"]
+            isOneToOne: false
+            referencedRelation: "industries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_occupation_id_fkey"
+            columns: ["occupation_id"]
+            isOneToOne: false
+            referencedRelation: "occupations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      industries: {
+        Row: {
+          created_at: string
+          id: string
+          insurance_type: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          insurance_type: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          insurance_type?: string
+          name?: string
           updated_at?: string
         }
         Relationships: []
@@ -136,6 +178,38 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      occupations: {
+        Row: {
+          created_at: string
+          id: string
+          industry_id: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          industry_id?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          industry_id?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "occupations_industry_id_fkey"
+            columns: ["industry_id"]
+            isOneToOne: false
+            referencedRelation: "industries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

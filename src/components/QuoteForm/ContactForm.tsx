@@ -1,8 +1,10 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ContactDetail } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
@@ -12,18 +14,89 @@ interface ContactFormProps {
   onSubmit: (data: ContactDetail) => void;
 }
 
+interface Industry {
+  id: string;
+  name: string;
+  insurance_type: string;
+}
+
+interface Occupation {
+  id: string;
+  name: string;
+  industry_id: string;
+}
+
 const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
   const [formData, setFormData] = useState<ContactDetail>(initialData || {
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    position: ''
+    industryId: '',
+    occupationId: ''
   });
   
   const [errors, setErrors] = useState<Partial<Record<keyof ContactDetail, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [industries, setIndustries] = useState<Industry[]>([]);
+  const [occupations, setOccupations] = useState<Occupation[]>([]);
+  const [filteredOccupations, setFilteredOccupations] = useState<Occupation[]>([]);
   const { toast } = useToast();
+  
+  // Fetch industries on component mount
+  useEffect(() => {
+    const fetchIndustries = async () => {
+      const { data, error } = await supabase
+        .from('industries')
+        .select('*')
+        .eq('insurance_type', 'professional-indemnity')
+        .order('name');
+      
+      if (error) {
+        console.error('Error fetching industries:', error);
+        return;
+      }
+      
+      setIndustries(data || []);
+    };
+    
+    fetchIndustries();
+  }, []);
+  
+  // Fetch occupations on component mount
+  useEffect(() => {
+    const fetchOccupations = async () => {
+      const { data, error } = await supabase
+        .from('occupations')
+        .select('*')
+        .order('name');
+      
+      if (error) {
+        console.error('Error fetching occupations:', error);
+        return;
+      }
+      
+      setOccupations(data || []);
+    };
+    
+    fetchOccupations();
+  }, []);
+  
+  // Filter occupations when industry changes
+  useEffect(() => {
+    if (formData.industryId) {
+      const filtered = occupations.filter(occ => occ.industry_id === formData.industryId);
+      setFilteredOccupations(filtered);
+      
+      // Reset occupation if it's not valid for the new industry
+      if (formData.occupationId && !filtered.some(occ => occ.id === formData.occupationId)) {
+        setFormData(prev => ({ ...prev, occupationId: '' }));
+      }
+    } else {
+      setFilteredOccupations([]);
+      setFormData(prev => ({ ...prev, occupationId: '' }));
+    }
+  }, [formData.industryId, occupations]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,6 +104,15 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
     
     // Clear error when field is edited
     if (errors[name as keyof ContactDetail]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+  
+  const handleSelectChange = (name: keyof ContactDetail, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error when field is edited
+    if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
@@ -56,8 +138,12 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
       newErrors.phone = 'Phone number is required';
     }
     
-    if (!formData.position.trim()) {
-      newErrors.position = 'Position is required';
+    if (!formData.industryId) {
+      newErrors.industryId = 'Industry is required';
+    }
+    
+    if (!formData.occupationId) {
+      newErrors.occupationId = 'Occupation is required';
     }
     
     setErrors(newErrors);
@@ -77,7 +163,8 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
             last_name: formData.lastName,
             email: formData.email,
             phone: formData.phone,
-            position: formData.position
+            industry_id: formData.industryId,
+            occupation_id: formData.occupationId
           });
 
         if (error) {
@@ -200,18 +287,48 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
       </motion.div>
       
       <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="position">Position in Company</Label>
-        <Input
-          id="position"
-          name="position"
-          placeholder="Business Owner"
-          value={formData.position}
-          onChange={handleChange}
-          className={errors.position ? 'border-red-300' : ''}
+        <Label htmlFor="industry">Industry</Label>
+        <Select 
+          value={formData.industryId} 
+          onValueChange={(value) => handleSelectChange('industryId', value)}
           disabled={isSubmitting}
-        />
-        {errors.position && (
-          <p className="text-sm text-red-500">{errors.position}</p>
+        >
+          <SelectTrigger id="industry" className={errors.industryId ? 'border-red-300' : ''}>
+            <SelectValue placeholder="Select your industry" />
+          </SelectTrigger>
+          <SelectContent>
+            {industries.map(industry => (
+              <SelectItem key={industry.id} value={industry.id}>
+                {industry.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {errors.industryId && (
+          <p className="text-sm text-red-500">{errors.industryId}</p>
+        )}
+      </motion.div>
+      
+      <motion.div className="space-y-2" variants={itemVariants}>
+        <Label htmlFor="occupation">Occupation</Label>
+        <Select 
+          value={formData.occupationId} 
+          onValueChange={(value) => handleSelectChange('occupationId', value)}
+          disabled={isSubmitting || !formData.industryId}
+        >
+          <SelectTrigger id="occupation" className={errors.occupationId ? 'border-red-300' : ''}>
+            <SelectValue placeholder={formData.industryId ? "Select your occupation" : "Select an industry first"} />
+          </SelectTrigger>
+          <SelectContent>
+            {filteredOccupations.map(occupation => (
+              <SelectItem key={occupation.id} value={occupation.id}>
+                {occupation.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {errors.occupationId && (
+          <p className="text-sm text-red-500">{errors.occupationId}</p>
         )}
       </motion.div>
       
