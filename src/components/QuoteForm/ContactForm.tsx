@@ -1,17 +1,17 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ContactDetail } from '@/types';
+import { ContactDetail, InsuranceType } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 interface ContactFormProps {
   initialData?: ContactDetail;
   onSubmit: (data: ContactDetail) => void;
+  selectedInsuranceType: InsuranceType;
 }
 
 interface Industry {
@@ -26,7 +26,7 @@ interface Occupation {
   industry_id: string;
 }
 
-const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
+const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFormProps) => {
   const [formData, setFormData] = useState<ContactDetail>(initialData || {
     firstName: '',
     lastName: '',
@@ -43,13 +43,16 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
   const [filteredOccupations, setFilteredOccupations] = useState<Occupation[]>([]);
   const { toast } = useToast();
   
-  // Fetch industries on component mount
+  // Check if fields should be disabled based on insurance type
+  const isFieldsDisabled = selectedInsuranceType === 'contractors-all-risk' || selectedInsuranceType === 'event-liability';
+  
+  // Fetch industries based on selected insurance type
   useEffect(() => {
     const fetchIndustries = async () => {
       const { data, error } = await supabase
         .from('industries')
         .select('*')
-        .eq('insurance_type', 'professional-indemnity')
+        .eq('insurance_type', selectedInsuranceType)
         .order('name');
       
       if (error) {
@@ -60,10 +63,12 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
       setIndustries(data || []);
     };
     
-    fetchIndustries();
-  }, []);
+    if (selectedInsuranceType) {
+      fetchIndustries();
+    }
+  }, [selectedInsuranceType]);
   
-  // Fetch occupations on component mount
+  // Fetch all occupations
   useEffect(() => {
     const fetchOccupations = async () => {
       const { data, error } = await supabase
@@ -82,21 +87,52 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
     fetchOccupations();
   }, []);
   
+  // Auto-populate fields for specific insurance types
+  useEffect(() => {
+    if (industries.length > 0 && occupations.length > 0) {
+      if (selectedInsuranceType === 'contractors-all-risk') {
+        const constructionIndustry = industries.find(i => i.name === 'Construction and Trade');
+        const contractorOccupation = occupations.find(o => o.name === 'Contractor' && o.industry_id === constructionIndustry?.id);
+        
+        if (constructionIndustry && contractorOccupation) {
+          setFormData(prev => ({
+            ...prev,
+            industryId: constructionIndustry.id,
+            occupationId: contractorOccupation.id
+          }));
+        }
+      } else if (selectedInsuranceType === 'event-liability') {
+        const eventIndustry = industries.find(i => i.name === 'Event Organiser');
+        const eventOccupation = occupations.find(o => o.name === 'Event organiser' && o.industry_id === eventIndustry?.id);
+        
+        if (eventIndustry && eventOccupation) {
+          setFormData(prev => ({
+            ...prev,
+            industryId: eventIndustry.id,
+            occupationId: eventOccupation.id
+          }));
+        }
+      }
+    }
+  }, [industries, occupations, selectedInsuranceType]);
+  
   // Filter occupations when industry changes
   useEffect(() => {
     if (formData.industryId) {
       const filtered = occupations.filter(occ => occ.industry_id === formData.industryId);
       setFilteredOccupations(filtered);
       
-      // Reset occupation if it's not valid for the new industry
-      if (formData.occupationId && !filtered.some(occ => occ.id === formData.occupationId)) {
+      // Reset occupation if it's not valid for the new industry (only for non-disabled fields)
+      if (!isFieldsDisabled && formData.occupationId && !filtered.some(occ => occ.id === formData.occupationId)) {
         setFormData(prev => ({ ...prev, occupationId: '' }));
       }
     } else {
       setFilteredOccupations([]);
-      setFormData(prev => ({ ...prev, occupationId: '' }));
+      if (!isFieldsDisabled) {
+        setFormData(prev => ({ ...prev, occupationId: '' }));
+      }
     }
-  }, [formData.industryId, occupations]);
+  }, [formData.industryId, occupations, isFieldsDisabled]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -291,7 +327,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
         <Select 
           value={formData.industryId} 
           onValueChange={(value) => handleSelectChange('industryId', value)}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isFieldsDisabled}
         >
           <SelectTrigger id="industry" className={errors.industryId ? 'border-red-300' : ''}>
             <SelectValue placeholder="Select your industry" />
@@ -314,7 +350,7 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
         <Select 
           value={formData.occupationId} 
           onValueChange={(value) => handleSelectChange('occupationId', value)}
-          disabled={isSubmitting || !formData.industryId}
+          disabled={isSubmitting || isFieldsDisabled || !formData.industryId}
         >
           <SelectTrigger id="occupation" className={errors.occupationId ? 'border-red-300' : ''}>
             <SelectValue placeholder={formData.industryId ? "Select your occupation" : "Select an industry first"} />

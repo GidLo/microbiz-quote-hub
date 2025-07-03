@@ -97,6 +97,7 @@ const QuotePage = () => {
               <ContactForm 
                 initialData={contactDetails || undefined} 
                 onSubmit={handleContactSubmit} 
+                selectedInsuranceType={selectedInsuranceType as InsuranceType}
               />
             )}
           </div>
