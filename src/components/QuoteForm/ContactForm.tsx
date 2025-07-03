@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -61,6 +60,7 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
         return;
       }
       
+      console.log('Fetched industries:', data);
       setIndustries(data || []);
     };
     
@@ -82,18 +82,24 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
         return;
       }
       
+      console.log('Fetched occupations:', data);
       setOccupations(data || []);
     };
     
     fetchOccupations();
   }, []);
   
-  // Auto-populate fields for specific insurance types
+  // Auto-populate fields for specific insurance types and update filtered occupations
   useEffect(() => {
     if (industries.length > 0 && occupations.length > 0) {
+      console.log('Auto-populating for insurance type:', selectedInsuranceType);
+      
       if (selectedInsuranceType === 'contractors-all-risk') {
         const constructionIndustry = industries.find(i => i.name === 'Construction and Trade');
         const contractorOccupation = occupations.find(o => o.name === 'Contractor' && o.industry_id === constructionIndustry?.id);
+        
+        console.log('Construction industry:', constructionIndustry);
+        console.log('Contractor occupation:', contractorOccupation);
         
         if (constructionIndustry && contractorOccupation) {
           setFormData(prev => ({
@@ -101,10 +107,18 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
             industryId: constructionIndustry.id,
             occupationId: contractorOccupation.id
           }));
+          
+          // Immediately update filtered occupations for this industry
+          const filtered = occupations.filter(occ => occ.industry_id === constructionIndustry.id);
+          console.log('Filtered occupations for construction:', filtered);
+          setFilteredOccupations(filtered);
         }
       } else if (selectedInsuranceType === 'event-liability') {
         const eventIndustry = industries.find(i => i.name === 'Event Organiser');
         const eventOccupation = occupations.find(o => o.name === 'Event organiser' && o.industry_id === eventIndustry?.id);
+        
+        console.log('Event industry:', eventIndustry);
+        console.log('Event occupation:', eventOccupation);
         
         if (eventIndustry && eventOccupation) {
           setFormData(prev => ({
@@ -112,26 +126,34 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
             industryId: eventIndustry.id,
             occupationId: eventOccupation.id
           }));
+          
+          // Immediately update filtered occupations for this industry
+          const filtered = occupations.filter(occ => occ.industry_id === eventIndustry.id);
+          console.log('Filtered occupations for events:', filtered);
+          setFilteredOccupations(filtered);
         }
       }
     }
   }, [industries, occupations, selectedInsuranceType]);
   
-  // Filter occupations when industry changes
+  // Filter occupations when industry changes (for non-disabled fields)
   useEffect(() => {
+    // Skip this effect if fields are disabled and auto-population has already handled filtering
+    if (isFieldsDisabled) {
+      return;
+    }
+    
     if (formData.industryId) {
       const filtered = occupations.filter(occ => occ.industry_id === formData.industryId);
       setFilteredOccupations(filtered);
       
-      // Reset occupation if it's not valid for the new industry (only for non-disabled fields)
-      if (!isFieldsDisabled && formData.occupationId && !filtered.some(occ => occ.id === formData.occupationId)) {
+      // Reset occupation if it's not valid for the new industry
+      if (formData.occupationId && !filtered.some(occ => occ.id === formData.occupationId)) {
         setFormData(prev => ({ ...prev, occupationId: '' }));
       }
     } else {
       setFilteredOccupations([]);
-      if (!isFieldsDisabled) {
-        setFormData(prev => ({ ...prev, occupationId: '' }));
-      }
+      setFormData(prev => ({ ...prev, occupationId: '' }));
     }
   }, [formData.industryId, occupations, isFieldsDisabled]);
   
@@ -247,6 +269,11 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
       }
     }
   };
+  
+  // Debug logging
+  console.log('Current form data:', formData);
+  console.log('Filtered occupations:', filteredOccupations);
+  console.log('Is fields disabled:', isFieldsDisabled);
   
   return (
     <motion.form 
