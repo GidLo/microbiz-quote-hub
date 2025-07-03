@@ -25,20 +25,41 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
     businessName: '',
     registrationNumber: '',
     industry: '',
-    yearEstablished: '',
     annualRevenue: '',
-    numberOfEmployees: ''
+    numberOfEmployees: '',
+    address: {
+      street: '',
+      city: '',
+      province: '',
+      postalCode: ''
+    }
   });
   
-  const [errors, setErrors] = useState<Partial<Record<keyof BusinessDetail, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof BusinessDetail | string, string>>>({});
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear error when field is edited
-    if (errors[name as keyof BusinessDetail]) {
+    if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value
+      }
+    }));
+    
+    // Clear error when field is edited
+    if (errors[`address.${name}`]) {
+      setErrors(prev => ({ ...prev, [`address.${name}`]: '' }));
     }
   };
   
@@ -52,7 +73,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
   };
   
   const validateForm = () => {
-    const newErrors: Partial<Record<keyof BusinessDetail, string>> = {};
+    const newErrors: Record<string, string> = {};
     
     if (!formData.businessName.trim()) {
       newErrors.businessName = 'Business name is required';
@@ -60,14 +81,6 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
     
     if (!formData.industry) {
       newErrors.industry = 'Industry is required';
-    }
-    
-    if (!formData.yearEstablished.trim()) {
-      newErrors.yearEstablished = 'Year established is required';
-    } else if (!/^\d{4}$/.test(formData.yearEstablished) || 
-               parseInt(formData.yearEstablished) < 1900 || 
-               parseInt(formData.yearEstablished) > new Date().getFullYear()) {
-      newErrors.yearEstablished = 'Please enter a valid year (e.g., 2010)';
     }
     
     if (!formData.annualRevenue.trim()) {
@@ -78,6 +91,23 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
       newErrors.numberOfEmployees = 'Number of employees is required';
     } else if (!/^\d+$/.test(formData.numberOfEmployees)) {
       newErrors.numberOfEmployees = 'Please enter a valid number';
+    }
+
+    // Address validation
+    if (!formData.address.street.trim()) {
+      newErrors['address.street'] = 'Street address is required';
+    }
+    
+    if (!formData.address.city.trim()) {
+      newErrors['address.city'] = 'City is required';
+    }
+    
+    if (!formData.address.province.trim()) {
+      newErrors['address.province'] = 'Province is required';
+    }
+    
+    if (!formData.address.postalCode.trim()) {
+      newErrors['address.postalCode'] = 'Postal code is required';
     }
     
     setErrors(newErrors);
@@ -168,23 +198,75 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
           <p className="text-sm text-red-500">{errors.industry}</p>
         )}
       </motion.div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div className="space-y-2" variants={itemVariants}>
-          <Label htmlFor="yearEstablished">Year Established</Label>
-          <Input
-            id="yearEstablished"
-            name="yearEstablished"
-            placeholder="2010"
-            value={formData.yearEstablished}
-            onChange={handleChange}
-            className={errors.yearEstablished ? 'border-red-300' : ''}
-          />
-          {errors.yearEstablished && (
-            <p className="text-sm text-red-500">{errors.yearEstablished}</p>
-          )}
-        </motion.div>
+
+      {/* Business Address Section */}
+      <motion.div className="space-y-4" variants={itemVariants}>
+        <h3 className="text-lg font-semibold">Business Address</h3>
         
+        <div className="space-y-2">
+          <Label htmlFor="street">Street Address</Label>
+          <Input
+            id="street"
+            name="street"
+            placeholder="123 Main Street"
+            value={formData.address.street}
+            onChange={handleAddressChange}
+            className={errors['address.street'] ? 'border-red-300' : ''}
+          />
+          {errors['address.street'] && (
+            <p className="text-sm text-red-500">{errors['address.street']}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="city">City</Label>
+            <Input
+              id="city"
+              name="city"
+              placeholder="Cape Town"
+              value={formData.address.city}
+              onChange={handleAddressChange}
+              className={errors['address.city'] ? 'border-red-300' : ''}
+            />
+            {errors['address.city'] && (
+              <p className="text-sm text-red-500">{errors['address.city']}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="province">Province</Label>
+            <Input
+              id="province"
+              name="province"
+              placeholder="Western Cape"
+              value={formData.address.province}
+              onChange={handleAddressChange}
+              className={errors['address.province'] ? 'border-red-300' : ''}
+            />
+            {errors['address.province'] && (
+              <p className="text-sm text-red-500">{errors['address.province']}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="postalCode">Postal Code</Label>
+          <Input
+            id="postalCode"
+            name="postalCode"
+            placeholder="8001"
+            value={formData.address.postalCode}
+            onChange={handleAddressChange}
+            className={errors['address.postalCode'] ? 'border-red-300' : ''}
+          />
+          {errors['address.postalCode'] && (
+            <p className="text-sm text-red-500">{errors['address.postalCode']}</p>
+          )}
+        </div>
+      </motion.div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <motion.div className="space-y-2" variants={itemVariants}>
           <Label htmlFor="annualRevenue">Annual Revenue (R)</Label>
           <Input

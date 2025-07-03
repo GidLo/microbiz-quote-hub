@@ -17,9 +17,14 @@ export interface BusinessDetail {
   businessName: string;
   registrationNumber: string;
   industry: string;
-  yearEstablished: string;
   annualRevenue: string;
   numberOfEmployees: string;
+  address: {
+    street: string;
+    city: string;
+    province: string;
+    postalCode: string;
+  };
 }
 
 export interface ContactDetail {
