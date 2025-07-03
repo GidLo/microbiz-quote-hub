@@ -80,19 +80,22 @@ const ContactForm = ({ initialData, onSubmit }: ContactFormProps) => {
             position: formData.position
           });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Database error:', error);
+          throw new Error('Failed to save contact information. Please try again.');
+        }
 
         onSubmit(formData);
         toast({
           title: "Success",
           description: "Your contact information has been saved.",
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error saving contact:', error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: "There was a problem saving your contact information. Please try again.",
+          description: error.message || "There was a problem saving your contact information. Please try again.",
         });
       } finally {
         setIsSubmitting(false);
