@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -350,7 +351,7 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
         <Select 
           value={formData.occupationId} 
           onValueChange={(value) => handleSelectChange('occupationId', value)}
-          disabled={isSubmitting || isFieldsDisabled || !formData.industryId}
+          disabled={isSubmitting || isFieldsDisabled}
         >
           <SelectTrigger id="occupation" className={errors.occupationId ? 'border-red-300' : ''}>
             <SelectValue placeholder={formData.industryId ? "Select your occupation" : "Select an industry first"} />
