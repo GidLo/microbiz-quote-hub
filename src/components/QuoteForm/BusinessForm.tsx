@@ -4,15 +4,7 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { BusinessDetail } from '@/types';
-import { BUSINESS_TYPES } from '@/utils/constants';
 
 interface BusinessFormProps {
   initialData?: BusinessDetail;
@@ -63,25 +55,8 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
     }
   };
   
-  const handleSelectChange = (name: keyof BusinessDetail, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error when field is edited
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-  
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
-    if (!formData.businessName.trim()) {
-      newErrors.businessName = 'Business name is required';
-    }
-    
-    if (!formData.industry) {
-      newErrors.industry = 'Industry is required';
-    }
     
     if (!formData.annualRevenue.trim()) {
       newErrors.annualRevenue = 'Annual revenue is required';
@@ -151,54 +126,6 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
       initial="hidden"
       animate="visible"
     >
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="businessName">Business Name</Label>
-        <Input
-          id="businessName"
-          name="businessName"
-          placeholder="Your Business Name"
-          value={formData.businessName}
-          onChange={handleChange}
-          className={errors.businessName ? 'border-red-300' : ''}
-        />
-        {errors.businessName && (
-          <p className="text-sm text-red-500">{errors.businessName}</p>
-        )}
-      </motion.div>
-      
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="registrationNumber">Registration Number (optional)</Label>
-        <Input
-          id="registrationNumber"
-          name="registrationNumber"
-          placeholder="Company Registration Number"
-          value={formData.registrationNumber}
-          onChange={handleChange}
-        />
-      </motion.div>
-      
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="industry">Industry</Label>
-        <Select 
-          onValueChange={(value) => handleSelectChange('industry', value)}
-          defaultValue={formData.industry}
-        >
-          <SelectTrigger className={errors.industry ? 'border-red-300' : ''}>
-            <SelectValue placeholder="Select your industry" />
-          </SelectTrigger>
-          <SelectContent>
-            {BUSINESS_TYPES.map(industry => (
-              <SelectItem key={industry} value={industry}>
-                {industry}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.industry && (
-          <p className="text-sm text-red-500">{errors.industry}</p>
-        )}
-      </motion.div>
-
       {/* Business Address Section */}
       <motion.div className="space-y-4" variants={itemVariants}>
         <h3 className="text-lg font-semibold">Business Address</h3>
