@@ -1,9 +1,14 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import { BusinessDetail } from '@/types';
 
 interface BusinessFormProps {
@@ -19,6 +24,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
     industry: '',
     annualRevenue: '',
     numberOfEmployees: '',
+    inceptionDate: undefined,
     address: {
       street: '',
       city: '',
@@ -55,8 +61,38 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
     }
   };
   
+  const handleDateChange = (date: Date | undefined) => {
+    setFormData(prev => ({ ...prev, inceptionDate: date }));
+    
+    // Clear error when date is selected
+    if (errors.inceptionDate) {
+      setErrors(prev => ({ ...prev, inceptionDate: '' }));
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    
+    // Inception date validation
+    if (!formData.inceptionDate) {
+      newErrors.inceptionDate = 'Policy start date is required';
+    } else {
+      const today = new Date();
+      const maxFutureDate = new Date();
+      maxFutureDate.setDate(today.getDate() + 30);
+      
+      // Reset time to start of day for comparison
+      today.setHours(0, 0, 0, 0);
+      maxFutureDate.setHours(23, 59, 59, 999);
+      const selectedDate = new Date(formData.inceptionDate);
+      selectedDate.setHours(0, 0, 0, 0);
+      
+      if (selectedDate < today) {
+        newErrors.inceptionDate = 'Policy start date cannot be in the past';
+      } else if (selectedDate > maxFutureDate) {
+        newErrors.inceptionDate = 'Policy start date cannot be more than 30 days in the future';
+      }
+    }
     
     if (!formData.annualRevenue.trim()) {
       newErrors.annualRevenue = 'Annual revenue is required';
@@ -191,6 +227,50 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
             <p className="text-sm text-red-500">{errors['address.postalCode']}</p>
           )}
         </div>
+      </motion.div>
+      
+      {/* Policy Start Date Section */}
+      <motion.div className="space-y-2" variants={itemVariants}>
+        <Label htmlFor="inceptionDate">Your policy start date</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="inceptionDate"
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !formData.inceptionDate && "text-muted-foreground",
+                errors.inceptionDate ? 'border-red-300' : ''
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {formData.inceptionDate ? format(formData.inceptionDate, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={formData.inceptionDate}
+              onSelect={handleDateChange}
+              disabled={(date) => {
+                const today = new Date();
+                const maxFutureDate = new Date();
+                maxFutureDate.setDate(today.getDate() + 30);
+                
+                // Reset time for comparison
+                today.setHours(0, 0, 0, 0);
+                maxFutureDate.setHours(23, 59, 59, 999);
+                
+                return date < today || date > maxFutureDate;
+              }}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
+        {errors.inceptionDate && (
+          <p className="text-sm text-red-500">{errors.inceptionDate}</p>
+        )}
       </motion.div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

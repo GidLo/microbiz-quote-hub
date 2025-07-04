@@ -18,6 +18,7 @@ export interface BusinessDetail {
   industry: string;
   annualRevenue: string;
   numberOfEmployees: string;
+  inceptionDate: Date | undefined;
   address: {
     street: string;
     city: string;
