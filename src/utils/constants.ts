@@ -53,6 +53,19 @@ export const INSURANCE_TYPES: InsuranceOption[] = [
       'Alcohol-related liability protection',
       'Temporary structures and equipment coverage'
     ]
+  },
+  {
+    id: 'medical-malpractice',
+    title: 'Medical Malpractice',
+    description: 'Professional liability coverage for healthcare providers and medical professionals.',
+    icon: 'stethoscope',
+    coverPoints: [
+      'Protection against professional negligence claims',
+      'Coverage for medical errors and omissions',
+      'Legal defense costs for malpractice lawsuits',
+      'Patient injury compensation coverage',
+      'Regulatory investigation support'
+    ]
   }
 ];
 
@@ -90,7 +103,7 @@ export const UNDERWRITING_QUESTIONS: UnderwritingQuestion[] = [
     questionText: 'Have you had any insurance claims in the last 5 years?',
     type: 'boolean',
     required: true,
-    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability']
+    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability', 'medical-malpractice']
   },
   {
     id: 'services-offered',
@@ -126,7 +139,7 @@ export const UNDERWRITING_QUESTIONS: UnderwritingQuestion[] = [
     questionText: 'Do you have a documented risk management process?',
     type: 'boolean',
     required: true,
-    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability']
+    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability', 'medical-malpractice']
   }
 ];
 

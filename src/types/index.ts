@@ -2,7 +2,8 @@ export type InsuranceType =
   | 'professional-indemnity'
   | 'contractors-all-risk'
   | 'public-liability'
-  | 'event-liability';
+  | 'event-liability'
+  | 'medical-malpractice';
 
 export interface InsuranceOption {
   id: InsuranceType;
