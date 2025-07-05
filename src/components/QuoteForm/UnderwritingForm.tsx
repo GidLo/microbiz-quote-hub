@@ -9,6 +9,7 @@ import ProfessionalIndemnityForm from './UnderwritingForms/ProfessionalIndemnity
 import ContractorsAllRiskForm from './UnderwritingForms/ContractorsAllRiskForm';
 import PublicLiabilityForm from './UnderwritingForms/PublicLiabilityForm';
 import EventLiabilityForm from './UnderwritingForms/EventLiabilityForm';
+import MedicalMalpracticeForm from './UnderwritingForms/MedicalMalpracticeForm';
 
 // Import shared additional questions component
 import AdditionalQuestions from './UnderwritingForms/AdditionalQuestions';
@@ -58,6 +59,12 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
         'event-duration', 
         'alcohol-served', 
         'security-measures'
+      ],
+      'medical-malpractice': [
+        'SuminsuredrequiMEDICALMALPRACTICE_10',
+        'HPCSAAHPCSAregMEDICALMALPRACTICE',
+        'HowmanypatientsMEDICALMALPRACTICE',
+        'HowmanyproceduresMEDICALMALPRACTICE'
       ]
     };
     
@@ -146,6 +153,15 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
       case 'event-liability':
         return (
           <EventLiabilityForm 
+            formData={formData}
+            setFormData={handleFormDataChange}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
+      case 'medical-malpractice':
+        return (
+          <MedicalMalpracticeForm 
             formData={formData}
             setFormData={handleFormDataChange}
             errors={errors}
