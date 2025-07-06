@@ -68,12 +68,13 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
         'HowmanyproceduresMEDICALMALPRACTICE'
       ],
       'cyber-liability': [
-        'annual-revenue',
-        'stores-data',
-        'processes-payments',
-        'cybersecurity-measures',
-        'number-of-employees',
-        'previous-incidents'
+        'SuminsuredforcyCYBER',
+        'IsbasedinSouthACYBER',
+        'CollectsstoresCYBER',
+        'IsnotawareofanyCYBER',
+        'OurITEnvironmenCYBER',
+        'YoutheundersigCYBER',
+        'InadditionyoucCYBER'
       ]
     };
     
