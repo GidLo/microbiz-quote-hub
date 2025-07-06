@@ -66,6 +66,19 @@ export const INSURANCE_TYPES: InsuranceOption[] = [
       'Patient injury compensation coverage',
       'Regulatory investigation support'
     ]
+  },
+  {
+    id: 'cyber-liability',
+    title: 'Cyber Liability',
+    description: 'Protection against cyber attacks, data breaches, and digital security incidents.',
+    icon: 'shield',
+    coverPoints: [
+      'Coverage for data breach response and notification costs',
+      'Protection against cyber extortion and ransomware',
+      'Business interruption due to cyber incidents',
+      'Third-party liability for data privacy violations',
+      'Cyber crime investigation and forensic costs'
+    ]
   }
 ];
 
@@ -103,7 +116,7 @@ export const UNDERWRITING_QUESTIONS: UnderwritingQuestion[] = [
     questionText: 'Have you had any insurance claims in the last 5 years?',
     type: 'boolean',
     required: true,
-    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability', 'medical-malpractice']
+    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability', 'medical-malpractice', 'cyber-liability']
   },
   {
     id: 'services-offered',
@@ -139,7 +152,7 @@ export const UNDERWRITING_QUESTIONS: UnderwritingQuestion[] = [
     questionText: 'Do you have a documented risk management process?',
     type: 'boolean',
     required: true,
-    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability', 'medical-malpractice']
+    insuranceTypes: ['professional-indemnity', 'contractors-all-risk', 'public-liability', 'event-liability', 'medical-malpractice', 'cyber-liability']
   }
 ];
 

@@ -10,6 +10,7 @@ import ContractorsAllRiskForm from './UnderwritingForms/ContractorsAllRiskForm';
 import PublicLiabilityForm from './UnderwritingForms/PublicLiabilityForm';
 import EventLiabilityForm from './UnderwritingForms/EventLiabilityForm';
 import MedicalMalpracticeForm from './UnderwritingForms/MedicalMalpracticeForm';
+import CyberLiabilityForm from './UnderwritingForms/CyberLiabilityForm';
 
 // Import shared additional questions component
 import AdditionalQuestions from './UnderwritingForms/AdditionalQuestions';
@@ -65,6 +66,14 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
         'HPCSAAHPCSAregMEDICALMALPRACTICE',
         'HowmanypatientsMEDICALMALPRACTICE',
         'HowmanyproceduresMEDICALMALPRACTICE'
+      ],
+      'cyber-liability': [
+        'annual-revenue',
+        'stores-data',
+        'processes-payments',
+        'cybersecurity-measures',
+        'number-of-employees',
+        'previous-incidents'
       ]
     };
     
@@ -162,6 +171,15 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
       case 'medical-malpractice':
         return (
           <MedicalMalpracticeForm 
+            formData={formData}
+            setFormData={handleFormDataChange}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
+      case 'cyber-liability':
+        return (
+          <CyberLiabilityForm 
             formData={formData}
             setFormData={handleFormDataChange}
             errors={errors}
