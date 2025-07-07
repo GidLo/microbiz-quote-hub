@@ -104,6 +104,11 @@ export const QUOTE_STEPS: QuoteStep[] = [
     description: 'Review your customized insurance quote'
   },
   {
+    id: 'legal',
+    title: 'Legal Information',
+    description: 'Legal details for your policy'
+  },
+  {
     id: 'checkout',
     title: 'Checkout',
     description: 'Complete your purchase'

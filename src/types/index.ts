@@ -84,3 +84,15 @@ export interface QuoteResponse {
   requestId: string;
   validUntil: string;
 }
+
+export interface LegalInformationData {
+  registeredWithCIPC: boolean;
+  companyRegistrationNumber: string;
+  legalEntityName: string;
+  isDifferentTradingName: boolean;
+  registeredForVAT: boolean;
+  policyPurchaserFirstName: string;
+  policyPurchaserLastName: string;
+  position: string;
+  agreeToTerms: boolean;
+}

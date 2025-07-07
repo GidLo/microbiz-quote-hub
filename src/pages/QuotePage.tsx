@@ -7,6 +7,7 @@ import ContactForm from '@/components/QuoteForm/ContactForm';
 import BusinessForm from '@/components/QuoteForm/BusinessForm';
 import UnderwritingForm from '@/components/QuoteForm/UnderwritingForm';
 import QuoteResult from '@/components/QuoteForm/QuoteResult';
+import LegalInformation from '@/components/QuoteForm/LegalInformation';
 import CheckoutForm from '@/components/QuoteForm/CheckoutForm';
 import CompletionScreen from '@/components/QuoteForm/CompletionScreen';
 import { 
@@ -17,7 +18,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { InsuranceType, ContactDetail, BusinessDetail, InsurerQuote } from '@/types';
+import { InsuranceType, ContactDetail, BusinessDetail, InsurerQuote, LegalInformationData } from '@/types';
 import { QUOTE_STEPS, INSURANCE_TYPES } from '@/utils/constants';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -33,6 +34,7 @@ const QuotePage = () => {
   const [businessDetails, setBusinessDetails] = useState<BusinessDetail | null>(null);
   const [underwritingAnswers, setUnderwritingAnswers] = useState<Record<string, any> | null>(null);
   const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
+  const [legalInformation, setLegalInformation] = useState<LegalInformationData | null>(null);
   const [contactId, setContactId] = useState<string | null>(null);
   
   useEffect(() => {
@@ -153,6 +155,12 @@ const QuotePage = () => {
     setSelectedQuote(quote);
     setCurrentStep(4);
   };
+
+  const handleLegalInformationSubmit = (data: LegalInformationData) => {
+    console.log('Legal information data:', data);
+    setLegalInformation(data);
+    setCurrentStep(5);
+  };
   
   const handleInsuranceTypeChange = (value: string) => {
     setSelectedInsuranceType(value as InsuranceType);
@@ -225,14 +233,22 @@ const QuotePage = () => {
         
       case 4:
         return (
-          <CheckoutForm 
-            insuranceType={selectedInsuranceType as InsuranceType}
-            onComplete={() => setCurrentStep(5)}
+          <LegalInformation 
+            onSubmit={handleLegalInformationSubmit}
             onBack={() => setCurrentStep(3)}
           />
         );
         
       case 5:
+        return (
+          <CheckoutForm 
+            insuranceType={selectedInsuranceType as InsuranceType}
+            onComplete={() => setCurrentStep(6)}
+            onBack={() => setCurrentStep(4)}
+          />
+        );
+        
+      case 6:
         return <CompletionScreen />;
         
       default:
@@ -249,7 +265,7 @@ const QuotePage = () => {
             Complete the form below to receive your personalized insurance quote.
           </p>
           
-          {currentStep < 5 && (
+          {currentStep < 6 && (
             <QuoteProgress steps={QUOTE_STEPS} currentStep={currentStep} />
           )}
           
