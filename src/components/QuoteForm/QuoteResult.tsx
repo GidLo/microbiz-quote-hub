@@ -5,9 +5,7 @@ import { Shield, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { InsuranceType, InsurerQuote } from '@/types';
 import { INSURANCE_TYPES } from '@/utils/constants';
-import { RatingService } from '@/services/ratingService';
 import InsurerQuoteCard from './InsurerQuoteCard';
-import { useQuery } from '@tanstack/react-query';
 
 interface QuoteResultProps {
   insuranceType: InsuranceType;
@@ -32,19 +30,68 @@ const QuoteResult = ({
   
   const insurance = INSURANCE_TYPES.find(i => i.id === insuranceType);
   
-  // Fetch quotes from backend
-  const { data: quotesResponse, isLoading, error } = useQuery({
-    queryKey: ['quotes', insuranceType, contactDetails, businessDetails, underwritingAnswers],
-    queryFn: async () => {
-      return await RatingService.calculateRates({
+  // Dummy quotes data for testing
+  const quotesResponse = {
+    insuranceType,
+    quotes: [
+      {
+        insurerId: '1',
+        insurerName: 'SafeGuard Insurance',
+        insurerLogo: '/placeholder.svg',
+        monthlyPremium: 'R1,250',
+        annualPremium: 'R13,500',
+        coverageAmount: 'R1,000,000',
+        deductible: 'R5,000',
+        savingsWithAnnual: 'R1,500',
+        rating: 4.8,
+        features: ['24/7 Claims Support', 'Legal Assistance', 'Quick Processing'],
+        isRecommended: true,
+        productId: 'product-1',
         insuranceType,
-        contactDetails,
         businessDetails,
         underwritingAnswers
-      });
-    },
-    enabled: !!(contactDetails && businessDetails && underwritingAnswers)
-  });
+      },
+      {
+        insurerId: '2',
+        insurerName: 'Premier Protection',
+        insurerLogo: '/placeholder.svg',
+        monthlyPremium: 'R1,100',
+        annualPremium: 'R12,100',
+        coverageAmount: 'R750,000',
+        deductible: 'R7,500',
+        savingsWithAnnual: 'R1,200',
+        rating: 4.5,
+        features: ['Online Claims', 'Risk Assessment', 'Business Continuity'],
+        isRecommended: false,
+        productId: 'product-2',
+        insuranceType,
+        businessDetails,
+        underwritingAnswers
+      },
+      {
+        insurerId: '3',
+        insurerName: 'Elite Coverage',
+        insurerLogo: '/placeholder.svg',
+        monthlyPremium: 'R1,450',
+        annualPremium: 'R15,950',
+        coverageAmount: 'R2,000,000',
+        deductible: 'R3,000',
+        savingsWithAnnual: 'R2,450',
+        rating: 4.9,
+        features: ['Premium Support', 'Custom Solutions', 'Dedicated Account Manager'],
+        isRecommended: false,
+        productId: 'product-3',
+        insuranceType,
+        businessDetails,
+        underwritingAnswers
+      }
+    ],
+    requestId: 'dummy-request-123',
+    validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  };
+  
+  const isLoading = false;
+  const error = null;
   
   const containerVariants = {
     hidden: { opacity: 0 },
