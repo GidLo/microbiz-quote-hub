@@ -19,10 +19,13 @@ import {
 import { Label } from '@/components/ui/label';
 import { InsuranceType, ContactDetail, BusinessDetail, InsurerQuote } from '@/types';
 import { QUOTE_STEPS, INSURANCE_TYPES } from '@/utils/constants';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const QuotePage = () => {
   const [searchParams] = useSearchParams();
   const typeParam = searchParams.get('type') as InsuranceType | null;
+  const { toast } = useToast();
   
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedInsuranceType, setSelectedInsuranceType] = useState<InsuranceType | ''>('');
@@ -30,6 +33,7 @@ const QuotePage = () => {
   const [businessDetails, setBusinessDetails] = useState<BusinessDetail | null>(null);
   const [underwritingAnswers, setUnderwritingAnswers] = useState<Record<string, any> | null>(null);
   const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
+  const [contactId, setContactId] = useState<string | null>(null);
   
   useEffect(() => {
     if (typeParam && INSURANCE_TYPES.some(i => i.id === typeParam)) {
@@ -43,14 +47,99 @@ const QuotePage = () => {
     window.scrollTo(0, 0);
   }, [currentStep]);
   
-  const handleContactSubmit = (data: ContactDetail) => {
-    setContactDetails(data);
-    setCurrentStep(1);
+  const handleContactSubmit = async (data: ContactDetail) => {
+    try {
+      // Insert contact details and get the ID
+      const { data: contactData, error } = await supabase
+        .from('contacts')
+        .insert({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          industry_id: data.industryId || null,
+          occupation_id: data.occupationId || null
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error saving contact:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save contact information. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setContactDetails(data);
+      setContactId(contactData.id);
+      setCurrentStep(1);
+    } catch (error) {
+      console.error('Error saving contact:', error);
+      toast({
+        title: "Error", 
+        description: "Failed to save contact information. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
-  const handleBusinessSubmit = (data: BusinessDetail) => {
-    setBusinessDetails(data);
-    setCurrentStep(2);
+  const handleBusinessSubmit = async (data: BusinessDetail) => {
+    try {
+      if (!contactId) {
+        toast({
+          title: "Error",
+          description: "Contact information is missing. Please go back and complete the contact form.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Insert business details
+      const { error } = await supabase
+        .from('business_details')
+        .insert({
+          contact_id: contactId,
+          insurance_type: selectedInsuranceType as string,
+          business_name: data.businessName || null,
+          registration_number: data.registrationNumber || null,
+          industry: data.industry || null,
+          annual_revenue: data.annualRevenue || null,
+          number_of_employees: data.numberOfEmployees || null,
+          inception_date: data.inceptionDate?.toISOString().split('T')[0] || null,
+          street_address: data.address.street || null,
+          city: data.address.city || null,
+          province: data.address.province || null,
+          postal_code: data.address.postalCode || null
+        });
+
+      if (error) {
+        console.error('Error saving business details:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save business information. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setBusinessDetails(data);
+      setCurrentStep(2);
+      
+      toast({
+        title: "Success",
+        description: "Business information saved successfully."
+      });
+    } catch (error) {
+      console.error('Error saving business details:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save business information. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleUnderwritingSubmit = (data: Record<string, any>) => {
