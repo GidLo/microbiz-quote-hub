@@ -12,8 +12,6 @@ import EventLiabilityForm from './UnderwritingForms/EventLiabilityForm';
 import MedicalMalpracticeForm from './UnderwritingForms/MedicalMalpracticeForm';
 import CyberLiabilityForm from './UnderwritingForms/CyberLiabilityForm';
 
-// Import shared additional questions component
-import AdditionalQuestions from './UnderwritingForms/AdditionalQuestions';
 
 interface UnderwritingFormProps {
   selectedInsuranceType: InsuranceType;
@@ -84,15 +82,6 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
       ]
     };
     
-    // Shared additional fields that are required for all insurance types
-    const sharedRequiredFields = [
-      'business-outside-sa',
-      'pollution-prosecution',
-      'insurer-cancelled',
-      'no-liability-circumstances',
-      'employees-outside-sa'
-    ];
-    
     // Validate insurance type specific fields
     if (selectedInsuranceType in requiredFields) {
       requiredFields[selectedInsuranceType].forEach(field => {
@@ -101,13 +90,6 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
         }
       });
     }
-    
-    // Validate shared fields
-    sharedRequiredFields.forEach(field => {
-      if (formData[field] === undefined) {
-        newErrors[field] = 'This field is required';
-      }
-    });
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -211,14 +193,6 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
         <h3 className="text-lg font-medium mb-4">Insurance Specific Information</h3>
         {renderInsuranceTypeForm()}
       </div>
-      
-      {/* Additional Questions Section */}
-      <AdditionalQuestions 
-        formData={formData}
-        setFormData={handleFormDataChange}
-        errors={errors}
-        setErrors={setErrors}
-      />
       
       <motion.div className="flex justify-between pt-4">
         <Button type="button" variant="outline" onClick={onBack}>
