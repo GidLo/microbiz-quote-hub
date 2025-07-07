@@ -54,12 +54,18 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
         'hazardous-materials'
       ],
       'event-liability': [
-        'event-attendees', 
-        'event-type', 
-        'event-venue', 
-        'event-duration', 
-        'alcohol-served', 
-        'security-measures'
+        'EventInceptionDate', 
+        'EventDuration', 
+        'EventLocationSelection', 
+        'LimitOfIndemnity', 
+        'EventName', 
+        'ProvideadescripEVENTLIABILITY',
+        'DoyouconfirmcapEVENTLIABILITY',
+        'DoyouacknowledgEVENTLIABILITY',
+        'DoyouconfirmfirEVENTLIABILITY',
+        'DoyouconfirmactEVENTLIABILITY',
+        'DoyouconfirmpolEVENTLIABILITY',
+        'DoyouconfirmpolnotexceedEVENTLIABILITY'
       ],
       'medical-malpractice': [
         'SuminsuredrequiMEDICALMALPRACTICE_10',
