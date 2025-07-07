@@ -9,6 +9,68 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      business_details: {
+        Row: {
+          annual_revenue: string | null
+          business_name: string | null
+          city: string | null
+          contact_id: string
+          created_at: string
+          id: string
+          inception_date: string | null
+          industry: string | null
+          insurance_type: string
+          number_of_employees: string | null
+          postal_code: string | null
+          province: string | null
+          registration_number: string | null
+          street_address: string | null
+          updated_at: string
+        }
+        Insert: {
+          annual_revenue?: string | null
+          business_name?: string | null
+          city?: string | null
+          contact_id: string
+          created_at?: string
+          id?: string
+          inception_date?: string | null
+          industry?: string | null
+          insurance_type: string
+          number_of_employees?: string | null
+          postal_code?: string | null
+          province?: string | null
+          registration_number?: string | null
+          street_address?: string | null
+          updated_at?: string
+        }
+        Update: {
+          annual_revenue?: string | null
+          business_name?: string | null
+          city?: string | null
+          contact_id?: string
+          created_at?: string
+          id?: string
+          inception_date?: string | null
+          industry?: string | null
+          insurance_type?: string
+          number_of_employees?: string | null
+          postal_code?: string | null
+          province?: string | null
+          registration_number?: string | null
+          street_address?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_details_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           created_at: string
