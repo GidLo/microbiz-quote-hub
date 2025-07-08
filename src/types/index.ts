@@ -92,7 +92,9 @@ export interface LegalInformationData {
   passportOrIdNumber?: string;
   legalEntityName: string;
   isDifferentTradingName: boolean;
+  businessTradingName?: string;
   registeredForVAT: boolean;
+  vatNumber?: string;
   policyPurchaserFirstName: string;
   policyPurchaserLastName: string;
   position: string;

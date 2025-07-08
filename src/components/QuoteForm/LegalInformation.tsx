@@ -21,7 +21,9 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
     passportOrIdNumber: '',
     legalEntityName: '',
     isDifferentTradingName: false,
+    businessTradingName: '',
     registeredForVAT: false,
+    vatNumber: '',
     policyPurchaserFirstName: '',
     policyPurchaserLastName: '',
     position: '',
@@ -60,6 +62,14 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
     
     if (!formData.legalEntityName.trim()) {
       newErrors.legalEntityName = 'Legal entity name is required';
+    }
+    
+    if (formData.registeredWithCIPC && formData.isDifferentTradingName && !formData.businessTradingName?.trim()) {
+      newErrors.businessTradingName = 'Business trading name is required';
+    }
+    
+    if (formData.registeredWithCIPC && formData.registeredForVAT && !formData.vatNumber?.trim()) {
+      newErrors.vatNumber = 'VAT number is required';
     }
     
     if (!formData.policyPurchaserFirstName.trim()) {
@@ -220,6 +230,25 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
               />
             </div>
 
+            {formData.isDifferentTradingName && (
+              <div className="space-y-2">
+                <Label htmlFor="business-trading-name">
+                  Your business trading name
+                  <span className="text-red-500 ml-1">*</span>
+                </Label>
+                <Input
+                  id="business-trading-name"
+                  placeholder="Jones Consulting Solutions"
+                  value={formData.businessTradingName || ''}
+                  onChange={(e) => handleChange('businessTradingName', e.target.value)}
+                  className={errors.businessTradingName ? 'border-red-300' : ''}
+                />
+                {errors.businessTradingName && (
+                  <p className="text-sm text-red-500">{errors.businessTradingName}</p>
+                )}
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
               <Label htmlFor="vat-registered" className="text-base">
                 Are you registered for VAT?
@@ -230,6 +259,25 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
                 onCheckedChange={(checked) => handleChange('registeredForVAT', checked)}
               />
             </div>
+
+            {formData.registeredForVAT && (
+              <div className="space-y-2">
+                <Label htmlFor="vat-number">
+                  Your VAT number
+                  <span className="text-red-500 ml-1">*</span>
+                </Label>
+                <Input
+                  id="vat-number"
+                  placeholder="123467891"
+                  value={formData.vatNumber || ''}
+                  onChange={(e) => handleChange('vatNumber', e.target.value)}
+                  className={errors.vatNumber ? 'border-red-300' : ''}
+                />
+                {errors.vatNumber && (
+                  <p className="text-sm text-red-500">{errors.vatNumber}</p>
+                )}
+              </div>
+            )}
           </>
         )}
       </motion.div>
