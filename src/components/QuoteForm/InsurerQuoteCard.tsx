@@ -91,13 +91,25 @@ const InsurerQuoteCard = ({ quote, onSelect, isSelected }: InsurerQuoteCardProps
           </ul>
         </div>
 
-        <Button 
-          onClick={() => onSelect(quote)}
-          className="w-full"
-          variant={isSelected ? "default" : "outline"}
-        >
-          {isSelected ? 'Selected' : 'Select This Quote'}
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => onSelect(quote)}
+            className="flex-1"
+            variant="default"
+          >
+            Add to Cart
+          </Button>
+          <Button 
+            onClick={() => {
+              // TODO: Implement email quote functionality
+              console.log('Email quote for:', quote.insurerName);
+            }}
+            className="flex-1"
+            variant="outline"
+          >
+            Email Quote
+          </Button>
+        </div>
       </div>
     </motion.div>
   );

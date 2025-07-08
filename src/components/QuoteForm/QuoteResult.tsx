@@ -220,6 +220,19 @@ const QuoteResult = ({
         ))}
       </motion.div>
       
+      <motion.div className="text-center mb-6" variants={itemVariants}>
+        <Button 
+          variant="outline" 
+          className="mx-auto"
+          onClick={() => {
+            // TODO: Implement compare functionality
+            console.log('Compare quotes exclusions and conditions');
+          }}
+        >
+          Compare quotes exclusions and conditions
+        </Button>
+      </motion.div>
+
       <motion.div className="flex justify-between items-center" variants={itemVariants}>
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
