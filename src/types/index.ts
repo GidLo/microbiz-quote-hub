@@ -89,6 +89,7 @@ export interface QuoteResponse {
 export interface LegalInformationData {
   registeredWithCIPC: boolean;
   companyRegistrationNumber: string;
+  passportOrIdNumber?: string;
   legalEntityName: string;
   isDifferentTradingName: boolean;
   registeredForVAT: boolean;

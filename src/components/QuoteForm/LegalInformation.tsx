@@ -18,6 +18,7 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
   const [formData, setFormData] = useState<LegalInformationData>({
     registeredWithCIPC: false,
     companyRegistrationNumber: '',
+    passportOrIdNumber: '',
     legalEntityName: '',
     isDifferentTradingName: false,
     registeredForVAT: false,
@@ -51,6 +52,10 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
     
     if (formData.registeredWithCIPC && !formData.companyRegistrationNumber.trim()) {
       newErrors.companyRegistrationNumber = 'Company registration number is required';
+    }
+    
+    if (!formData.registeredWithCIPC && !formData.passportOrIdNumber?.trim()) {
+      newErrors.passportOrIdNumber = 'Passport or ID number is required';
     }
     
     if (!formData.legalEntityName.trim()) {
@@ -166,6 +171,25 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
           </div>
         )}
 
+        {!formData.registeredWithCIPC && (
+          <div className="space-y-2">
+            <Label htmlFor="passport-id-number">
+              Your ID or passport number
+              <span className="text-red-500 ml-1">*</span>
+            </Label>
+            <Input
+              id="passport-id-number"
+              placeholder="6505031234088"
+              value={formData.passportOrIdNumber || ''}
+              onChange={(e) => handleChange('passportOrIdNumber', e.target.value)}
+              className={errors.passportOrIdNumber ? 'border-red-300' : ''}
+            />
+            {errors.passportOrIdNumber && (
+              <p className="text-sm text-red-500">{errors.passportOrIdNumber}</p>
+            )}
+          </div>
+        )}
+
         <div className="space-y-2">
           <Label htmlFor="legal-entity-name">
             Your legal entity name
@@ -183,27 +207,31 @@ const LegalInformation = ({ onSubmit, onBack }: LegalInformationProps) => {
           )}
         </div>
 
-        <div className="flex items-center justify-between">
-          <Label htmlFor="different-trading-name" className="text-base">
-            Is your legal name different to your trading name?
-          </Label>
-          <Switch
-            id="different-trading-name"
-            checked={formData.isDifferentTradingName}
-            onCheckedChange={(checked) => handleChange('isDifferentTradingName', checked)}
-          />
-        </div>
+        {formData.registeredWithCIPC && (
+          <>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="different-trading-name" className="text-base">
+                Is your legal name different to your trading name?
+              </Label>
+              <Switch
+                id="different-trading-name"
+                checked={formData.isDifferentTradingName}
+                onCheckedChange={(checked) => handleChange('isDifferentTradingName', checked)}
+              />
+            </div>
 
-        <div className="flex items-center justify-between">
-          <Label htmlFor="vat-registered" className="text-base">
-            Are you registered for VAT?
-          </Label>
-          <Switch
-            id="vat-registered"
-            checked={formData.registeredForVAT}
-            onCheckedChange={(checked) => handleChange('registeredForVAT', checked)}
-          />
-        </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="vat-registered" className="text-base">
+                Are you registered for VAT?
+              </Label>
+              <Switch
+                id="vat-registered"
+                checked={formData.registeredForVAT}
+                onCheckedChange={(checked) => handleChange('registeredForVAT', checked)}
+              />
+            </div>
+          </>
+        )}
       </motion.div>
 
       {/* Terms of Business Section */}
