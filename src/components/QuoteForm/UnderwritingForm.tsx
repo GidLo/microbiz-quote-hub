@@ -31,11 +31,15 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
     const newErrors: Record<string, string> = {};
     const requiredFields: Record<string, string[]> = {
       'professional-indemnity': [
-        'services-offered', 
-        'professional-qualifications', 
-        'client-contracts', 
-        'client-industry', 
-        'largest-contract-value'
+        'DoyouhaveretroactivecoverPROFESSIONALINDEMNITY',
+        'SuminsuredforcyPROFESSIONALINDEMNITY',
+        'Islessthan50ofPROFESSIONALINDEMNITY',
+        'DoYouConfirmThatYouPROFESSIONALINDEMNITY',
+        'DoYouHave5YearsExpPROFESSIONALINDEMNITY',
+        'DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY',
+        'DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY',
+        'HaveanyCLAIMSevPROFESSIONALINDEMNITY',
+        'AreanyoftheprinPROFESSIONALINDEMNITY'
       ],
       'contractors-all-risk': [
         'project-value', 
@@ -89,6 +93,14 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
           newErrors[field] = 'This field is required';
         }
       });
+    }
+    
+    // Special validation for professional indemnity retroactive date
+    if (selectedInsuranceType === 'professional-indemnity' && 
+        formData['DoyouhaveretroactivecoverPROFESSIONALINDEMNITY'] === true) {
+      if (!formData['InceptiondateretroactivecoverPROFESSIONALINDEMNITY']) {
+        newErrors['InceptiondateretroactivecoverPROFESSIONALINDEMNITY'] = 'This field is required';
+      }
     }
     
     setErrors(newErrors);
