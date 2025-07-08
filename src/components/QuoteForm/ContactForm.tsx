@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ContactDetail, InsuranceType } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,7 +34,8 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
     email: '',
     phone: '',
     industryId: '',
-    occupationId: ''
+    occupationId: '',
+    agreeToTerms: false
   });
   
   const [errors, setErrors] = useState<Partial<Record<keyof ContactDetail, string>>>({});
@@ -167,7 +169,7 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
     }
   };
   
-  const handleSelectChange = (name: keyof ContactDetail, value: string) => {
+  const handleSelectChange = (name: keyof ContactDetail, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear error when field is edited
@@ -203,6 +205,10 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
     
     if (!formData.occupationId) {
       newErrors.occupationId = 'Occupation is required';
+    }
+    
+    if (!formData.agreeToTerms) {
+      newErrors.agreeToTerms = 'You must agree to the terms and conditions';
     }
     
     setErrors(newErrors);
@@ -396,11 +402,48 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
         )}
       </motion.div>
       
-      <motion.div variants={itemVariants} className="pt-4">
+      <motion.div variants={itemVariants} className="pt-4 space-y-4">
+        <div className="flex items-start space-x-3 p-4 bg-muted/50 rounded-lg">
+          <Checkbox
+            id="terms"
+            checked={formData.agreeToTerms || false}
+            onCheckedChange={(checked) => handleSelectChange('agreeToTerms', checked as boolean)}
+            className="mt-1"
+          />
+          <div className="flex-1">
+            <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
+              I understand that Bi-me only offers product information, and does not offer advice; and I agree to the{' '}
+              <a href="#" className="text-primary underline hover:no-underline">
+                privacy policy
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text-primary underline hover:no-underline">
+                terms of use
+              </a>.
+            </Label>
+            <p className="text-xs text-muted-foreground mt-2">
+              Bi-me is a technology company and digital broker. We try to provide as much information as possible for the products that are available on our platform. None of the information we provide is meant to be taken as advice.
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              We collect (and respect) your personal information in line with our{' '}
+              <a href="#" className="text-primary underline hover:no-underline">
+                Privacy Policy
+              </a>. By clicking the checkbox, you agree to Bi-me's{' '}
+              <a href="#" className="text-primary underline hover:no-underline">
+                Terms of Use
+              </a>{' '}
+              and for Bi-me to collect and store your personal information and to contact you about its services. Bi-me may pass your contact information to partners for business insurance matters.{' '}
+              <a href="#" className="text-primary underline hover:no-underline">
+                Learn more
+              </a>
+            </p>
+          </div>
+        </div>
+        
         <Button 
           type="submit" 
-          className="w-full md:w-auto"
-          disabled={isSubmitting}
+          className="w-full"
+          disabled={isSubmitting || !formData.agreeToTerms}
         >
           {isSubmitting ? 'Saving...' : 'Continue'}
         </Button>

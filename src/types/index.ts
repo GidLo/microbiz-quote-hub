@@ -36,6 +36,7 @@ export interface ContactDetail {
   phone: string;
   industryId: string;
   occupationId: string;
+  agreeToTerms?: boolean;
 }
 
 export interface QuoteStep {
