@@ -162,10 +162,17 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
       initial="hidden"
       animate="visible"
     >
+      {/* Header Section */}
+      <motion.div className="space-y-3 mb-6" variants={itemVariants}>
+        <h2 className="text-xl font-semibold text-primary">Let's get to know you or your business</h2>
+        <p className="text-sm text-muted-foreground">
+          Whether in your own capacity or for your business, your needs are unique, and that's 
+          why we need to ask some nitty gritty questions to help you get your quotes.
+        </p>
+      </motion.div>
+      
       {/* Business Address Section */}
       <motion.div className="space-y-4" variants={itemVariants}>
-        <h3 className="text-lg font-semibold">Business Address</h3>
-        
         <div className="space-y-2">
           <Label htmlFor="street">Street Address</Label>
           <Input
