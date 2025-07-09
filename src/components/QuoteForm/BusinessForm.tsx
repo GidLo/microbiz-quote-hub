@@ -35,9 +35,23 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
   
   const [errors, setErrors] = useState<Partial<Record<keyof BusinessDetail | string, string>>>({});
   
+  // Format number with commas
+  const formatNumber = (value: string) => {
+    const number = value.replace(/\D/g, '');
+    return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (name === 'annualRevenue') {
+      // Remove any non-digit characters and format with commas
+      const numericValue = value.replace(/\D/g, '');
+      const formattedValue = formatNumber(numericValue);
+      setFormData(prev => ({ ...prev, [name]: formattedValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
     
     // Clear error when field is edited
     if (errors[name]) {
@@ -282,15 +296,18 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <motion.div className="space-y-2" variants={itemVariants}>
-          <Label htmlFor="annualRevenue">Annual Revenue (R)</Label>
-          <Input
-            id="annualRevenue"
-            name="annualRevenue"
-            placeholder="Annual Revenue"
-            value={formData.annualRevenue}
-            onChange={handleChange}
-            className={errors.annualRevenue ? 'border-red-300' : ''}
-          />
+          <Label htmlFor="annualRevenue">Annual Revenue</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
+            <Input
+              id="annualRevenue"
+              name="annualRevenue"
+              placeholder="300,000"
+              value={formData.annualRevenue}
+              onChange={handleChange}
+              className={`pl-7 ${errors.annualRevenue ? 'border-red-300' : ''}`}
+            />
+          </div>
           {errors.annualRevenue && (
             <p className="text-sm text-red-500">{errors.annualRevenue}</p>
           )}
