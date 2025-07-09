@@ -33,6 +33,7 @@
 
     --border: 214 20% 90%;
     --input: 214 20% 90%;
+    --input-text: 195 100% 44%;
     --ring: 210 95% 60%;
 
     --radius: 0.75rem;
@@ -74,6 +75,7 @@
 
     --border: 215 25% 25%;
     --input: 215 25% 25%;
+    --input-text: 195 100% 44%;
     --ring: 210 95% 55%;
 
     --sidebar-background: 240 5% 10%;
