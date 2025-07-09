@@ -1,42 +1,31 @@
-
 import { motion } from 'framer-motion';
 import { Check, Star, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { InsurerQuote } from '@/types';
-
 interface InsurerQuoteCardProps {
   quote: InsurerQuote;
   onSelect: (quote: InsurerQuote) => void;
   isSelected?: boolean;
 }
-
-const InsurerQuoteCard = ({ quote, onSelect, isSelected }: InsurerQuoteCardProps) => {
+const InsurerQuoteCard = ({
+  quote,
+  onSelect,
+  isSelected
+}: InsurerQuoteCardProps) => {
   const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }).map((_, index) => (
-      <Star
-        key={index}
-        className={`h-4 w-4 ${
-          index < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-        }`}
-      />
-    ));
+    return Array.from({
+      length: 5
+    }).map((_, index) => <Star key={index} className={`h-4 w-4 ${index < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />);
   };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`relative bg-card rounded-xl border shadow-sm overflow-hidden transition-all hover:shadow-md ${
-        isSelected ? 'border-primary ring-2 ring-primary/20' : 'border-border'
-      }`}
-    >
-      {quote.isRecommended && (
-        <div className="absolute top-0 right-0 bg-primary text-white px-3 py-1 text-xs font-medium rounded-bl-lg flex items-center gap-1">
-          <Award className="h-3 w-3" />
-          Recommended
-        </div>
-      )}
+  return <motion.div initial={{
+    opacity: 0,
+    y: 20
+  }} animate={{
+    opacity: 1,
+    y: 0
+  }} className={`relative bg-card rounded-xl border shadow-sm overflow-hidden transition-all hover:shadow-md ${isSelected ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}>
+      {quote.isRecommended}
       
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
@@ -78,41 +67,24 @@ const InsurerQuoteCard = ({ quote, onSelect, isSelected }: InsurerQuoteCardProps
         </div>
 
         <div className="space-y-3 mb-6">
-          <h4 className="font-medium text-sm">Key Features:</h4>
+          
           <ul className="space-y-2">
-            {quote.features.slice(0, 3).map((feature, index) => (
-              <li key={index} className="flex gap-2 text-sm">
-                <div className="text-primary mt-0.5">
-                  <Check className="h-4 w-4" />
-                </div>
-                <span>{feature}</span>
-              </li>
-            ))}
+            {quote.features.slice(0, 3).map((feature, index) => {})}
           </ul>
         </div>
 
         <div className="flex gap-2">
-          <Button 
-            onClick={() => onSelect(quote)}
-            className="flex-1"
-            variant="default"
-          >
+          <Button onClick={() => onSelect(quote)} className="flex-1" variant="default">
             Add to Cart
           </Button>
-          <Button 
-            onClick={() => {
-              // TODO: Implement email quote functionality
-              console.log('Email quote for:', quote.insurerName);
-            }}
-            className="flex-1"
-            variant="outline"
-          >
+          <Button onClick={() => {
+          // TODO: Implement email quote functionality
+          console.log('Email quote for:', quote.insurerName);
+        }} className="flex-1" variant="outline">
             Email Quote
           </Button>
         </div>
       </div>
-    </motion.div>
-  );
+    </motion.div>;
 };
-
 export default InsurerQuoteCard;
