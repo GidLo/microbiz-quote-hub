@@ -219,7 +219,7 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
               <div className="bg-secondary/50 p-4 rounded-lg">
                 <h4 className="font-medium mb-2">Bank Details</h4>
                 <div className="space-y-2 text-sm">
-                  <p>Account Name: Micro Shield Insurance</p>
+                  <p>Account Name: Bi-me</p>
                   <p>Bank: First National Bank</p>
                   <p>Account Number: 123456789</p>
                   <p>Branch Code: 250655</p>

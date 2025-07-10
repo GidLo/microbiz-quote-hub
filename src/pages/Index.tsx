@@ -69,7 +69,7 @@ const Index = () => {
       <section className="py-16">
         <div className="container max-w-6xl mx-auto px-6 md:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Micro Shield Insurance?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Choose Bi-me?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Specialized insurance solutions designed for the unique needs of South African micro businesses.
             </p>

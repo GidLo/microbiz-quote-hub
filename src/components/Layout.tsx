@@ -24,7 +24,7 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="container max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-medium text-lg mb-4">Micro Shield Insurance</h3>
+              <h3 className="font-medium text-lg mb-4">Bi-me</h3>
               <p className="text-muted-foreground text-sm">
                 Specialized insurance solutions for micro businesses in South Africa.
               </p>
@@ -57,7 +57,7 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
           </div>
           <div className="border-t border-border/40 mt-8 pt-8 text-sm text-muted-foreground flex flex-col md:flex-row md:justify-between items-center">
-            <p>© 2023 Micro Shield Insurance. All rights reserved.</p>
+            <p>© 2023 Bi-me. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="hover:text-primary transition-colors">Facebook</a>
               <a href="#" className="hover:text-primary transition-colors">Twitter</a>

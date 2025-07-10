@@ -40,7 +40,7 @@ const CompletionScreen = () => {
         
         <h2 className="text-2xl font-bold mb-3">Your Policy is Active!</h2>
         <p className="text-muted-foreground mb-8">
-          Thank you for choosing Micro Shield Insurance. Your policy documents have been sent to your email address.
+          Thank you for choosing Bi-me. Your policy documents have been sent to your email address.
         </p>
       </motion.div>
       
