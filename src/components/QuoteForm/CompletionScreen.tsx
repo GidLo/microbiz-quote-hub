@@ -109,12 +109,27 @@ const CompletionScreen = () => {
         </ol>
       </motion.div>
       
-      <motion.div variants={itemVariants} className="flex justify-center mt-8">
-        <Link to="/">
-          <Button>
-            Return to Home
+      <motion.div variants={itemVariants} className="flex flex-col items-center mt-8 space-y-4">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="text-4xl font-bold">
+              <span className="text-blue-500">G</span>
+              <span className="text-red-500">o</span>
+              <span className="text-yellow-500">o</span>
+              <span className="text-blue-500">g</span>
+              <span className="text-green-500">l</span>
+              <span className="text-red-500">e</span>
+            </div>
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className="text-yellow-400 text-xl">★</span>
+              ))}
+            </div>
+          </div>
+          <Button className="bg-cyan-500 hover:bg-cyan-600 text-white px-6">
+            Leave a Review
           </Button>
-        </Link>
+        </div>
       </motion.div>
     </motion.div>
   );
