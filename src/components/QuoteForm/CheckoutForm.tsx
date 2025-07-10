@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { InsuranceType } from '@/types';
 import { INSURANCE_TYPES } from '@/utils/constants';
 import { CreditCard, Calendar, Lock, Shield } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CheckoutFormProps {
   insuranceType: InsuranceType;
@@ -18,7 +19,7 @@ interface CheckoutFormProps {
 
 const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) => {
   const insurance = INSURANCE_TYPES.find(i => i.id === insuranceType);
-  const [paymentMethod, setPaymentMethod] = useState<'credit' | 'debit' | 'eft'>('credit');
+  const [paymentMethod, setPaymentMethod] = useState<'debit' | 'eft'>('debit');
   const [billCycle, setBillCycle] = useState<'monthly' | 'annual'>('monthly');
   
   // Mock quote details
@@ -105,21 +106,13 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
           
           <RadioGroup 
             defaultValue={paymentMethod} 
-            onValueChange={(value) => setPaymentMethod(value as 'credit' | 'debit' | 'eft')}
+            onValueChange={(value) => setPaymentMethod(value as 'debit' | 'eft')}
             className="space-y-4 mb-6"
           >
             <div className="flex items-center space-x-2 border rounded-lg p-4">
-              <RadioGroupItem value="credit" id="credit" />
-              <Label htmlFor="credit" className="flex-1 cursor-pointer">
-                <div className="font-medium">Credit Card</div>
-              </Label>
-              <CreditCard className="h-5 w-5 text-muted-foreground" />
-            </div>
-            
-            <div className="flex items-center space-x-2 border rounded-lg p-4">
               <RadioGroupItem value="debit" id="debit" />
               <Label htmlFor="debit" className="flex-1 cursor-pointer">
-                <div className="font-medium">Debit Card</div>
+                <div className="font-medium">Monthly debit order</div>
               </Label>
               <CreditCard className="h-5 w-5 text-muted-foreground" />
             </div>
@@ -133,59 +126,77 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
             </div>
           </RadioGroup>
           
-          {(paymentMethod === 'credit' || paymentMethod === 'debit') && (
+          {paymentMethod === 'debit' && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="cardholderName">Cardholder Name</Label>
-                <Input id="cardholderName" placeholder="As it appears on your card" />
+                <Label htmlFor="accountHolderName">Account Holder Name</Label>
+                <Input id="accountHolderName" placeholder="Account Holder Name" />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="cardNumber">Card Number</Label>
-                <div className="relative">
-                  <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <Lock className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </div>
+                <Label htmlFor="bankName">Bank Name</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Please Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="absa">ABSA Bank</SelectItem>
+                    <SelectItem value="fnb">First National Bank</SelectItem>
+                    <SelectItem value="standard">Standard Bank</SelectItem>
+                    <SelectItem value="nedbank">Nedbank</SelectItem>
+                    <SelectItem value="capitec">Capitec Bank</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="accountType">Bank Account Type</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Please Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="current">Current Account</SelectItem>
+                    <SelectItem value="savings">Savings Account</SelectItem>
+                    <SelectItem value="cheque">Cheque Account</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="expiryDate">Expiry Date</Label>
-                  <div className="relative">
-                    <Input id="expiryDate" placeholder="MM/YY" />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="cvv">CVV</Label>
-                  <div className="relative">
-                    <Input id="cvv" placeholder="123" />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <Lock className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="accountNumber">Bank Account Number</Label>
+                <Input id="accountNumber" placeholder="652565265201" />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="branchCode">Bank Branch Code</Label>
+                <Input id="branchCode" placeholder="Enter your Bank Branch Code" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="debitDay">On what day do you want your debit order to run</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Please Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1st of the month</SelectItem>
+                    <SelectItem value="15">15th of the month</SelectItem>
+                    <SelectItem value="25">25th of the month</SelectItem>
+                    <SelectItem value="30">30th of the month</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="flex items-top space-x-2 pt-2">
-                <Checkbox id="terms" />
+                <Checkbox id="debitMandate" />
                 <div className="grid gap-1.5 leading-none">
                   <label
-                    htmlFor="terms"
+                    htmlFor="debitMandate"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    I agree to the terms and conditions
+                    I have read and accept the Debit Order Mandate
                   </label>
-                  <p className="text-xs text-muted-foreground">
-                    By checking this box, you agree to our{" "}
-                    <a href="#" className="text-primary underline">Terms of Service</a> and{" "}
-                    <a href="#" className="text-primary underline">Privacy Policy</a>.
-                  </p>
                 </div>
               </div>
             </form>
