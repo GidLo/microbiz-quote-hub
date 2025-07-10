@@ -270,10 +270,14 @@ const QuotePage = () => {
     <Layout>
       <div className="bg-secondary/50 py-12 md:py-16">
         <div className="container max-w-4xl mx-auto px-6 md:px-8">
-          <h1 className="text-3xl font-bold mb-3 text-center">Get Your Insurance Quote</h1>
-          <p className="text-muted-foreground text-center mb-8">
-            Complete the form below to receive your personalized insurance quote.
-          </p>
+          {currentStep !== 7 && (
+            <>
+              <h1 className="text-3xl font-bold mb-3 text-center">Get Your Insurance Quote</h1>
+              <p className="text-muted-foreground text-center mb-8">
+                Complete the form below to receive your personalized insurance quote.
+              </p>
+            </>
+          )}
           
           {currentStep < 6 && currentStep !== 7 && (
             <QuoteProgress steps={QUOTE_STEPS} currentStep={currentStep} />
