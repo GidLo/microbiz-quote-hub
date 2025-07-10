@@ -359,51 +359,55 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
         )}
       </motion.div>
       
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="industry">Industry</Label>
-        <Select 
-          value={formData.industryId} 
-          onValueChange={(value) => handleSelectChange('industryId', value)}
-          disabled={isSubmitting || isFieldsDisabled}
-        >
-          <SelectTrigger id="industry" className={errors.industryId ? 'border-red-300' : ''}>
-            <SelectValue placeholder="Select your industry" />
-          </SelectTrigger>
-          <SelectContent>
-            {industries.map(industry => (
-              <SelectItem key={industry.id} value={industry.id}>
-                {industry.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.industryId && (
-          <p className="text-sm text-red-500">{errors.industryId}</p>
-        )}
-      </motion.div>
-      
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="occupation">Occupation</Label>
-        <Select 
-          value={formData.occupationId} 
-          onValueChange={(value) => handleSelectChange('occupationId', value)}
-          disabled={isSubmitting || isFieldsDisabled}
-        >
-          <SelectTrigger id="occupation" className={errors.occupationId ? 'border-red-300' : ''}>
-            <SelectValue placeholder={formData.industryId ? "Select your occupation" : "Select an industry first"} />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredOccupations.map(occupation => (
-              <SelectItem key={occupation.id} value={occupation.id}>
-                {occupation.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.occupationId && (
-          <p className="text-sm text-red-500">{errors.occupationId}</p>
-        )}
-      </motion.div>
+      {selectedInsuranceType !== 'other' && (
+        <>
+          <motion.div className="space-y-2" variants={itemVariants}>
+            <Label htmlFor="industry">Industry</Label>
+            <Select 
+              value={formData.industryId} 
+              onValueChange={(value) => handleSelectChange('industryId', value)}
+              disabled={isSubmitting || isFieldsDisabled}
+            >
+              <SelectTrigger id="industry" className={errors.industryId ? 'border-red-300' : ''}>
+                <SelectValue placeholder="Select your industry" />
+              </SelectTrigger>
+              <SelectContent>
+                {industries.map(industry => (
+                  <SelectItem key={industry.id} value={industry.id}>
+                    {industry.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.industryId && (
+              <p className="text-sm text-red-500">{errors.industryId}</p>
+            )}
+          </motion.div>
+          
+          <motion.div className="space-y-2" variants={itemVariants}>
+            <Label htmlFor="occupation">Occupation</Label>
+            <Select 
+              value={formData.occupationId} 
+              onValueChange={(value) => handleSelectChange('occupationId', value)}
+              disabled={isSubmitting || isFieldsDisabled}
+            >
+              <SelectTrigger id="occupation" className={errors.occupationId ? 'border-red-300' : ''}>
+                <SelectValue placeholder={formData.industryId ? "Select your occupation" : "Select an industry first"} />
+              </SelectTrigger>
+              <SelectContent>
+                {filteredOccupations.map(occupation => (
+                  <SelectItem key={occupation.id} value={occupation.id}>
+                    {occupation.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.occupationId && (
+              <p className="text-sm text-red-500">{errors.occupationId}</p>
+            )}
+          </motion.div>
+        </>
+      )}
       
       <motion.div variants={itemVariants} className="pt-4 space-y-4">
         <div className="flex items-start space-x-3 p-4 bg-muted/50 rounded-lg">
