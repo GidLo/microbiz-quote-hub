@@ -429,6 +429,35 @@ export type Database = {
         }
         Relationships: []
       }
+      underwriting_answers: {
+        Row: {
+          contact_id: string
+          data: Json
+          datecreated: string
+          id: string
+        }
+        Insert: {
+          contact_id: string
+          data: Json
+          datecreated?: string
+          id?: string
+        }
+        Update: {
+          contact_id?: string
+          data?: Json
+          datecreated?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "underwriting_answers_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

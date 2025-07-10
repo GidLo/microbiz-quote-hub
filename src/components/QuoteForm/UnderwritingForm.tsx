@@ -116,31 +116,30 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }
     
     if (validateForm()) {
       try {
-        // TODO: Uncomment once database types are regenerated after migration
         // Save underwriting answers to database
-        // if (contactId) {
-        //   const { error } = await supabase
-        //     .from('underwriting_answers')
-        //     .insert({
-        //       contact_id: contactId,
-        //       data: formData
-        //     });
+        if (contactId) {
+          const { error } = await supabase
+            .from('underwriting_answers')
+            .insert({
+              contact_id: contactId,
+              data: formData
+            });
 
-        //   if (error) {
-        //     console.error('Error saving underwriting answers:', error);
-        //     toast({
-        //       title: "Error",
-        //       description: "Failed to save underwriting answers. Please try again.",
-        //       variant: "destructive"
-        //     });
-        //     return;
-        //   }
+          if (error) {
+            console.error('Error saving underwriting answers:', error);
+            toast({
+              title: "Error",
+              description: "Failed to save underwriting answers. Please try again.",
+              variant: "destructive"
+            });
+            return;
+          }
 
-        //   toast({
-        //     title: "Success",
-        //     description: "Underwriting answers saved successfully."
-        //   });
-        // }
+          toast({
+            title: "Success",
+            description: "Underwriting answers saved successfully."
+          });
+        }
 
         onSubmit(formData);
       } catch (error) {
