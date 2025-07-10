@@ -126,7 +126,10 @@ const CompletionScreen = () => {
               ))}
             </div>
           </div>
-          <Button className="bg-cyan-500 hover:bg-cyan-600 text-white px-6">
+          <Button 
+            className="bg-cyan-500 hover:bg-cyan-600 text-white px-6"
+            onClick={() => window.open('https://g.page/r/CbwB1WKRL3BHEAI/review', '_blank')}
+          >
             Leave a Review
           </Button>
         </div>
