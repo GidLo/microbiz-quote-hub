@@ -58,9 +58,8 @@ const CompletionScreen = () => {
               <p className="text-sm text-muted-foreground">Your policy details and coverage information</p>
             </div>
             <div className="ml-auto">
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
-                <Download className="h-4 w-4" />
-                <span>Download</span>
+              <Button size="sm" className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                View your documents
               </Button>
             </div>
           </div>
