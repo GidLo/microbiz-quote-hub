@@ -10,6 +10,7 @@ import QuoteResult from '@/components/QuoteForm/QuoteResult';
 import LegalInformation from '@/components/QuoteForm/LegalInformation';
 import CheckoutForm from '@/components/QuoteForm/CheckoutForm';
 import CompletionScreen from '@/components/QuoteForm/CompletionScreen';
+import AssistedQuotePage from '@/components/QuoteForm/AssistedQuotePage';
 import { 
   Select,
   SelectContent,
@@ -77,7 +78,13 @@ const QuotePage = () => {
 
       setContactDetails(data);
       setContactId(contactData.id);
-      setCurrentStep(1);
+      
+      // If insurance type is "other", go to assisted quote page
+      if (selectedInsuranceType === 'other') {
+        setCurrentStep(7);
+      } else {
+        setCurrentStep(1);
+      }
     } catch (error) {
       console.error('Error saving contact:', error);
       toast({
@@ -251,6 +258,9 @@ const QuotePage = () => {
       case 6:
         return <CompletionScreen />;
         
+      case 7:
+        return <AssistedQuotePage />;
+        
       default:
         return null;
     }
@@ -265,7 +275,7 @@ const QuotePage = () => {
             Complete the form below to receive your personalized insurance quote.
           </p>
           
-          {currentStep < 6 && (
+          {currentStep < 6 && currentStep !== 7 && (
             <QuoteProgress steps={QUOTE_STEPS} currentStep={currentStep} />
           )}
           
