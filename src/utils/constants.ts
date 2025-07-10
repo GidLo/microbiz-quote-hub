@@ -79,6 +79,19 @@ export const INSURANCE_TYPES: InsuranceOption[] = [
       'Third-party liability for data privacy violations',
       'Cyber crime investigation and forensic costs'
     ]
+  },
+  {
+    id: 'other',
+    title: 'Other',
+    description: 'Custom insurance solutions for unique business requirements not covered by standard policies.',
+    icon: 'layers',
+    coverPoints: [
+      'Tailored coverage for specific industry needs',
+      'Custom policy terms and conditions',
+      'Specialized risk assessment and pricing',
+      'Flexible coverage limits and deductibles',
+      'Expert consultation for unique business risks'
+    ]
   }
 ];
 

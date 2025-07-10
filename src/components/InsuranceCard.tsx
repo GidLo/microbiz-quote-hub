@@ -7,6 +7,8 @@ import {
   Shield, 
   Calendar, 
   HardHat,
+  Layers,
+  Stethoscope,
   ArrowRight
 } from 'lucide-react';
 import { InsuranceOption } from '@/types';
@@ -42,7 +44,9 @@ const InsuranceCard = (props: CombinedProps) => {
     'briefcase': <Briefcase className="h-6 w-6" />,
     'shield': <Shield className="h-6 w-6" />,
     'calendar': <Calendar className="h-6 w-6" />,
-    'hard-hat': <HardHat className="h-6 w-6" />
+    'hard-hat': <HardHat className="h-6 w-6" />,
+    'stethoscope': <Stethoscope className="h-6 w-6" />,
+    'layers': <Layers className="h-6 w-6" />
   };
 
   return (
