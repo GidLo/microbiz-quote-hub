@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { InsuranceType } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 // Import specialized forms
 import ProfessionalIndemnityForm from './UnderwritingForms/ProfessionalIndemnityForm';
@@ -17,11 +19,13 @@ interface UnderwritingFormProps {
   selectedInsuranceType: InsuranceType;
   onSubmit: (data: Record<string, any>) => void;
   onBack: () => void;
+  contactId: string | null;
 }
 
-const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: UnderwritingFormProps) => {
+const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }: UnderwritingFormProps) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { toast } = useToast();
   
   const handleFormDataChange = (newData: Record<string, any>) => {
     setFormData(prev => ({ ...prev, ...newData }));
@@ -107,11 +111,46 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack }: Underwrit
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit(formData);
+      try {
+        // TODO: Uncomment once database types are regenerated after migration
+        // Save underwriting answers to database
+        // if (contactId) {
+        //   const { error } = await supabase
+        //     .from('underwriting_answers')
+        //     .insert({
+        //       contact_id: contactId,
+        //       data: formData
+        //     });
+
+        //   if (error) {
+        //     console.error('Error saving underwriting answers:', error);
+        //     toast({
+        //       title: "Error",
+        //       description: "Failed to save underwriting answers. Please try again.",
+        //       variant: "destructive"
+        //     });
+        //     return;
+        //   }
+
+        //   toast({
+        //     title: "Success",
+        //     description: "Underwriting answers saved successfully."
+        //   });
+        // }
+
+        onSubmit(formData);
+      } catch (error) {
+        console.error('Error saving underwriting answers:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save underwriting answers. Please try again.",
+          variant: "destructive"
+        });
+      }
     } else {
       // Scroll to the first error
       const firstErrorElement = document.querySelector('.text-red-500');

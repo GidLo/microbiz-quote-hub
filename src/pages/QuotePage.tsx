@@ -222,6 +222,7 @@ const QuotePage = () => {
             selectedInsuranceType={selectedInsuranceType as InsuranceType}
             onSubmit={handleUnderwritingSubmit}
             onBack={() => setCurrentStep(1)}
+            contactId={contactId}
           />
         );
         
