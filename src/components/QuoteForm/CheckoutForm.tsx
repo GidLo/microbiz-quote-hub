@@ -8,8 +8,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { InsuranceType } from '@/types';
 import { INSURANCE_TYPES } from '@/utils/constants';
-import { CreditCard, Calendar, Lock, Shield } from 'lucide-react';
+import { CreditCard, Calendar, Lock, Shield, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface CheckoutFormProps {
   insuranceType: InsuranceType;
@@ -21,6 +22,7 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
   const insurance = INSURANCE_TYPES.find(i => i.id === insuranceType);
   const [paymentMethod, setPaymentMethod] = useState<'debit' | 'eft'>('debit');
   const [billCycle, setBillCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [showMandateDialog, setShowMandateDialog] = useState(false);
   
   // Mock quote details
   const quoteDetails = {
@@ -202,6 +204,7 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
                       type="button"
                       size="sm"
                       className="h-6 px-3 text-xs bg-cyan-500 hover:bg-cyan-600 text-white"
+                      onClick={() => setShowMandateDialog(true)}
                     >
                       Read
                     </Button>
@@ -271,6 +274,85 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
           </div>
         </div>
       </motion.div>
+      
+      <Dialog open={showMandateDialog} onOpenChange={setShowMandateDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <DialogTitle className="text-xl font-semibold text-blue-600">
+              Debit Order Mandate
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMandateDialog(false)}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
+          
+          <div className="space-y-6 text-sm">
+            <div>
+              <h3 className="font-semibold mb-2">A. Authority</h3>
+              <p className="leading-relaxed">
+                This signed Authority and Mandate relates to our contract dated today ("the Agreement") I/We hereby 
+                authorise you to issue and deliver payment instructions to your Banker for collection against my/our 
+                above-mentioned account at my/our above-mentioned Bank (or any other above-mentioned Bank for any 
+                other Bank account which I/we may hereinafter nominate to you in writing as my/our account) on condition that the sum of such 
+                payment instructions will never exceed my/our obligations as agreed to in the Agreement as selected in 
+                this document and initial Authority and Mandate. This Authority and Mandate is terminated by 
+                me/us by giving you notice in writing of not less than 20 (twenty) ordinary working days, and sent by email.
+              </p>
+              <p className="leading-relaxed mt-2">
+                The periodic collection instructions be issued and delivered as follows: monthly, on the 
+                payment date falls on a Sunday, or recognised South African public holiday, the payment 
+                day will automatically be the very next ordinary business day.
+              </p>
+              <p className="leading-relaxed mt-2">
+                I/We understand that the withdrawals hereby authorised will be processed through a computerised 
+                system provided by the South African Banks. I also understand the details of each withdrawal will be 
+                printed on my Bank statement. Such must contain a number, which must be included in the said 
+                payment instruction and if provided to me should enable me to identify the Agreement.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">B. Mandate</h3>
+              <p className="leading-relaxed">
+                I/We acknowledge that all payment instructions issued by you shall be treated by my/our above-
+                mentioned Bank as if the instructions have been issued by me/us personally.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">C. Cancellation</h3>
+              <p className="leading-relaxed">
+                I/We agree that although this Authority and Mandate may be cancelled by me/us, such cancellation will 
+                not cancel the Agreement I/We may not be entitled to any refund of amounts which you have withdrawn 
+                while this authority was in force, if such amounts were legally owing to you.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">D. Assignment</h3>
+              <p className="leading-relaxed">
+                I/We acknowledge that this Authority may be ceded or assigned to a third party if the Agreement is also 
+                ceded or assigned to that third party, but in the absence of such assignment of the Agreement this 
+                Authority and Mandate cannot be assigned to any third party.
+              </p>
+            </div>
+
+            <div className="flex justify-center pt-4">
+              <Button 
+                onClick={() => setShowMandateDialog(false)}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white px-8"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
