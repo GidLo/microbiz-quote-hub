@@ -46,7 +46,7 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
   const { toast } = useToast();
   
   // Check if fields should be disabled based on insurance type
-  const isFieldsDisabled = selectedInsuranceType === 'contractors-all-risk' || selectedInsuranceType === 'event-liability';
+  const isFieldsDisabled = selectedInsuranceType === 'contractors-all-risk' || selectedInsuranceType === 'event-liability' || selectedInsuranceType === 'other';
   
   // Fetch industries based on selected insurance type
   useEffect(() => {
@@ -199,12 +199,15 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
       newErrors.phone = 'Phone number is required';
     }
     
-    if (!formData.industryId) {
-      newErrors.industryId = 'Industry is required';
-    }
-    
-    if (!formData.occupationId) {
-      newErrors.occupationId = 'Occupation is required';
+    // Only require industry and occupation if not "other" insurance type
+    if (selectedInsuranceType !== 'other') {
+      if (!formData.industryId) {
+        newErrors.industryId = 'Industry is required';
+      }
+      
+      if (!formData.occupationId) {
+        newErrors.occupationId = 'Occupation is required';
+      }
     }
     
     if (!formData.agreeToTerms) {
@@ -228,8 +231,8 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
             last_name: formData.lastName,
             email: formData.email,
             phone: formData.phone,
-            industry_id: formData.industryId,
-            occupation_id: formData.occupationId
+            industry_id: selectedInsuranceType === 'other' ? null : formData.industryId,
+            occupation_id: selectedInsuranceType === 'other' ? null : formData.occupationId
           });
 
         if (error) {
