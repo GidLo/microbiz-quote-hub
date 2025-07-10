@@ -191,12 +191,21 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
               <div className="flex items-top space-x-2 pt-2">
                 <Checkbox id="debitMandate" />
                 <div className="grid gap-1.5 leading-none">
-                  <label
-                    htmlFor="debitMandate"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    I have read and accept the Debit Order Mandate
-                  </label>
+                  <div className="flex items-center gap-2">
+                    <label
+                      htmlFor="debitMandate"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      I have read and accept the Debit Order Mandate
+                    </label>
+                    <Button 
+                      type="button"
+                      size="sm"
+                      className="h-6 px-3 text-xs bg-cyan-500 hover:bg-cyan-600 text-white"
+                    >
+                      Read
+                    </Button>
+                  </div>
                 </div>
               </div>
             </form>
