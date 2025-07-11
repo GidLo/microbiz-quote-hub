@@ -87,14 +87,20 @@ const ContractorsAllRiskForm = ({
           Estimated contract value
           <span className="text-red-500 ml-1">*</span>
         </Label>
-        <Input 
-          id="ContractValue"
-          type="number"
-          placeholder="Enter contract value in Rands"
-          value={formData['ContractValue'] || ''}
-          onChange={(e) => handleChange('ContractValue', e.target.value)}
-          className={errors['ContractValue'] ? 'border-red-300' : ''}
-        />
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
+          <Input 
+            id="ContractValue"
+            type="text"
+            placeholder="222,222"
+            value={formData['ContractValue'] ? Number(formData['ContractValue']).toLocaleString() : ''}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d]/g, '');
+              handleChange('ContractValue', value);
+            }}
+            className={`pl-8 ${errors['ContractValue'] ? 'border-red-300' : ''}`}
+          />
+        </div>
         {errors['ContractValue'] && (
           <p className="text-sm text-red-500">{errors['ContractValue']}</p>
         )}
