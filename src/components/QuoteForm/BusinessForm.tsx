@@ -115,10 +115,14 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
       newErrors.annualRevenue = 'Annual revenue is required';
     }
     
-    if (!formData.numberOfEmployees.trim()) {
-      newErrors.numberOfEmployees = 'Number of employees is required';
-    } else if (!/^\d+$/.test(formData.numberOfEmployees)) {
-      newErrors.numberOfEmployees = 'Please enter a valid number';
+    // Only validate number of employees if not event-liability or contractors-all-risk
+    const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
+    if (shouldShowNumberOfEmployees) {
+      if (!formData.numberOfEmployees.trim()) {
+        newErrors.numberOfEmployees = 'Number of employees is required';
+      } else if (!/^\d+$/.test(formData.numberOfEmployees)) {
+        newErrors.numberOfEmployees = 'Please enter a valid number';
+      }
     }
 
     // Address validation
@@ -171,8 +175,9 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
     }
   };
   
-  // Determine if annual revenue should be shown
+  // Determine if annual revenue and number of employees should be shown
   const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
+  const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
   
   return (
     <motion.form 
@@ -300,42 +305,46 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
         )}
       </motion.div>
       
-      <div className={shouldShowAnnualRevenue ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "grid grid-cols-1 gap-6"}>
-        {shouldShowAnnualRevenue && (
-          <motion.div className="space-y-2" variants={itemVariants}>
-            <Label htmlFor="annualRevenue">Annual Revenue</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
-              <Input
-                id="annualRevenue"
-                name="annualRevenue"
-                placeholder="300,000"
-                value={formData.annualRevenue}
-                onChange={handleChange}
-                className={`pl-7 ${errors.annualRevenue ? 'border-red-300' : ''}`}
-              />
-            </div>
-            {errors.annualRevenue && (
-              <p className="text-sm text-red-500">{errors.annualRevenue}</p>
-            )}
-          </motion.div>
-        )}
-        
-        <motion.div className="space-y-2" variants={itemVariants}>
-          <Label htmlFor="numberOfEmployees">Number of Employees</Label>
-          <Input
-            id="numberOfEmployees"
-            name="numberOfEmployees"
-            placeholder="Number of employees"
-            value={formData.numberOfEmployees}
-            onChange={handleChange}
-            className={errors.numberOfEmployees ? 'border-red-300' : ''}
-          />
-          {errors.numberOfEmployees && (
-            <p className="text-sm text-red-500">{errors.numberOfEmployees}</p>
+      {(shouldShowAnnualRevenue || shouldShowNumberOfEmployees) && (
+        <div className={(shouldShowAnnualRevenue && shouldShowNumberOfEmployees) ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "grid grid-cols-1 gap-6"}>
+          {shouldShowAnnualRevenue && (
+            <motion.div className="space-y-2" variants={itemVariants}>
+              <Label htmlFor="annualRevenue">Annual Revenue</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
+                <Input
+                  id="annualRevenue"
+                  name="annualRevenue"
+                  placeholder="300,000"
+                  value={formData.annualRevenue}
+                  onChange={handleChange}
+                  className={`pl-7 ${errors.annualRevenue ? 'border-red-300' : ''}`}
+                />
+              </div>
+              {errors.annualRevenue && (
+                <p className="text-sm text-red-500">{errors.annualRevenue}</p>
+              )}
+            </motion.div>
           )}
-        </motion.div>
-      </div>
+          
+          {shouldShowNumberOfEmployees && (
+            <motion.div className="space-y-2" variants={itemVariants}>
+              <Label htmlFor="numberOfEmployees">Number of Employees</Label>
+              <Input
+                id="numberOfEmployees"
+                name="numberOfEmployees"
+                placeholder="Number of employees"
+                value={formData.numberOfEmployees}
+                onChange={handleChange}
+                className={errors.numberOfEmployees ? 'border-red-300' : ''}
+              />
+              {errors.numberOfEmployees && (
+                <p className="text-sm text-red-500">{errors.numberOfEmployees}</p>
+              )}
+            </motion.div>
+          )}
+        </div>
+      )}
       
       <motion.div variants={itemVariants} className="flex justify-between pt-4">
         <Button type="button" variant="outline" onClick={onBack}>
