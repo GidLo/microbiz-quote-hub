@@ -65,11 +65,19 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         'AreanyoftheprinPROFESSIONALINDEMNITY'
       ],
       'contractors-all-risk': [
-        'project-value', 
-        'construction-type', 
-        'equipment-value', 
-        'site-security', 
-        'subcontractors'
+        'SiteLocationSelection',
+        'ContractValue',
+        'ProjectInceptionDate',
+        'ProjectDuration',
+        'AreyoutheprinciCAR',
+        'SelecttheoptionCAR',
+        'DoyouconfirmthaCAR',
+        'DoyouconfirmthaCAR1',
+        'WhatissoiltypeCAR',
+        'IsconstructionnearbyordoesitrelateCAR',
+        'AreanyprocessingusedCAR',
+        'DoyourequirecovCARPI-PL66',
+        'DoyouwishtoaddSCAR'
       ],
       'public-liability': [
         'public-visitors', 
@@ -123,6 +131,14 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         formData['DoyouhaveretroactivecoverPROFESSIONALINDEMNITY'] === true) {
       if (!formData['InceptiondateretroactivecoverPROFESSIONALINDEMNITY']) {
         newErrors['InceptiondateretroactivecoverPROFESSIONALINDEMNITY'] = 'This field is required';
+      }
+    }
+    
+    // Special validation for contractors all risk additional cover
+    if (selectedInsuranceType === 'contractors-all-risk' && 
+        formData['DoyourequirecovCARPI-PL66'] === true) {
+      if (!formData['SuminsuredreplaPI-PL67CAR']) {
+        newErrors['SuminsuredreplaPI-PL67CAR'] = 'This field is required';
       }
     }
     

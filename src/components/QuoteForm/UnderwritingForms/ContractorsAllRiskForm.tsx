@@ -65,203 +65,323 @@ const ContractorsAllRiskForm = ({
       className="space-y-6"
     >
       <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="project-value">
-          What is the typical value of your construction projects?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <Select
-          onValueChange={(value) => handleChange('project-value', value)}
-          defaultValue={formData['project-value'] || ''}
-        >
-          <SelectTrigger className={errors['project-value'] ? 'border-red-300' : ''}>
-            <SelectValue placeholder="Select project value range" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Under R100,000">Under R100,000</SelectItem>
-            <SelectItem value="R100,000 - R500,000">R100,000 - R500,000</SelectItem>
-            <SelectItem value="R500,000 - R1,000,000">R500,000 - R1,000,000</SelectItem>
-            <SelectItem value="R1,000,000 - R5,000,000">R1,000,000 - R5,000,000</SelectItem>
-            <SelectItem value="Over R5,000,000">Over R5,000,000</SelectItem>
-          </SelectContent>
-        </Select>
-        {errors['project-value'] && (
-          <p className="text-sm text-red-500">{errors['project-value']}</p>
-        )}
-      </motion.div>
-
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="construction-type">
-          What type of construction do you primarily undertake?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <Select
-          onValueChange={(value) => handleChange('construction-type', value)}
-          defaultValue={formData['construction-type'] || ''}
-        >
-          <SelectTrigger className={errors['construction-type'] ? 'border-red-300' : ''}>
-            <SelectValue placeholder="Select construction type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="residential">Residential</SelectItem>
-            <SelectItem value="commercial">Commercial</SelectItem>
-            <SelectItem value="industrial">Industrial</SelectItem>
-            <SelectItem value="civil">Civil Engineering</SelectItem>
-            <SelectItem value="roads">Roads & Highways</SelectItem>
-            <SelectItem value="bridges">Bridges</SelectItem>
-            <SelectItem value="electrical">Electrical Work</SelectItem>
-            <SelectItem value="plumbing">Plumbing</SelectItem>
-            <SelectItem value="renovations">Renovations</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
-          </SelectContent>
-        </Select>
-        {errors['construction-type'] && (
-          <p className="text-sm text-red-500">{errors['construction-type']}</p>
-        )}
-      </motion.div>
-
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="equipment-value">
-          What is the total value of your construction equipment?
+        <Label htmlFor="SiteLocationSelection">
+          The site location
           <span className="text-red-500 ml-1">*</span>
         </Label>
         <Input 
-          id="equipment-value"
-          type="number"
-          placeholder="Value in Rands"
-          value={formData['equipment-value'] || ''}
-          onChange={(e) => handleChange('equipment-value', e.target.value)}
-          className={errors['equipment-value'] ? 'border-red-300' : ''}
+          id="SiteLocationSelection"
+          type="text"
+          placeholder="Enter site location"
+          value={formData['SiteLocationSelection'] || ''}
+          onChange={(e) => handleChange('SiteLocationSelection', e.target.value)}
+          className={errors['SiteLocationSelection'] ? 'border-red-300' : ''}
         />
-        {errors['equipment-value'] && (
-          <p className="text-sm text-red-500">{errors['equipment-value']}</p>
+        {errors['SiteLocationSelection'] && (
+          <p className="text-sm text-red-500">{errors['SiteLocationSelection']}</p>
         )}
       </motion.div>
 
       <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="public-liability-addon">
-          Do you require Public Liability coverage?
+        <Label htmlFor="ContractValue">
+          Estimated contract value
           <span className="text-red-500 ml-1">*</span>
         </Label>
-        <RadioGroup
-          onValueChange={(value) => handleChange('public-liability-addon', value === 'yes')}
-          defaultValue={formData['public-liability-addon'] === true ? 'yes' : 
-                       formData['public-liability-addon'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['public-liability-addon'] ? 'border-red-300' : ''}`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="public-liability-addon-yes" />
-            <Label htmlFor="public-liability-addon-yes">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="public-liability-addon-no" />
-            <Label htmlFor="public-liability-addon-no">No</Label>
-          </div>
-        </RadioGroup>
-        {errors['public-liability-addon'] && (
-          <p className="text-sm text-red-500">{errors['public-liability-addon']}</p>
+        <Input 
+          id="ContractValue"
+          type="number"
+          placeholder="Enter contract value in Rands"
+          value={formData['ContractValue'] || ''}
+          onChange={(e) => handleChange('ContractValue', e.target.value)}
+          className={errors['ContractValue'] ? 'border-red-300' : ''}
+        />
+        {errors['ContractValue'] && (
+          <p className="text-sm text-red-500">{errors['ContractValue']}</p>
         )}
       </motion.div>
 
-      {formData['public-liability-addon'] === true && (
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="ProjectInceptionDate">
+          Your project start date
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <Input 
+          id="ProjectInceptionDate"
+          type="date"
+          value={formData['ProjectInceptionDate'] || ''}
+          onChange={(e) => handleChange('ProjectInceptionDate', e.target.value)}
+          className={errors['ProjectInceptionDate'] ? 'border-red-300' : ''}
+        />
+        {errors['ProjectInceptionDate'] && (
+          <p className="text-sm text-red-500">{errors['ProjectInceptionDate']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="ProjectDuration">
+          What is the duration of the project (in months)
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <Input 
+          id="ProjectDuration"
+          type="number"
+          placeholder="Enter duration in months"
+          value={formData['ProjectDuration'] || ''}
+          onChange={(e) => handleChange('ProjectDuration', e.target.value)}
+          className={errors['ProjectDuration'] ? 'border-red-300' : ''}
+        />
+        {errors['ProjectDuration'] && (
+          <p className="text-sm text-red-500">{errors['ProjectDuration']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="AreyoutheprinciCAR">
+          Are you the principal or contractor?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('AreyoutheprinciCAR', value)}
+          defaultValue={formData['AreyoutheprinciCAR'] || ''}
+          className={`flex space-x-4 ${errors['AreyoutheprinciCAR'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Principal" id="principal" />
+            <Label htmlFor="principal">Principal</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Contractor" id="contractor" />
+            <Label htmlFor="contractor">Contractor</Label>
+          </div>
+        </RadioGroup>
+        {errors['AreyoutheprinciCAR'] && (
+          <p className="text-sm text-red-500">{errors['AreyoutheprinciCAR']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="SelecttheoptionCAR">
+          Select the option that best describes the nature of the contract
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <Select
+          onValueChange={(value) => handleChange('SelecttheoptionCAR', value)}
+          defaultValue={formData['SelecttheoptionCAR'] || ''}
+        >
+          <SelectTrigger className={errors['SelecttheoptionCAR'] ? 'border-red-300' : ''}>
+            <SelectValue placeholder="Select contract nature" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Standard residential construction">Standard residential construction</SelectItem>
+            <SelectItem value="Standard commercial construction">Standard commercial construction</SelectItem>
+            <SelectItem value="Plumbing">Plumbing</SelectItem>
+            <SelectItem value="Mechanical and electrical work">Mechanical and electrical work</SelectItem>
+          </SelectContent>
+        </Select>
+        {errors['SelecttheoptionCAR'] && (
+          <p className="text-sm text-red-500">{errors['SelecttheoptionCAR']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="DoyouconfirmthaCAR">
+          Do you confirm that the construction can be classified as residential construction or small retail & commercial construction?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('DoyouconfirmthaCAR', value === 'Yes')}
+          defaultValue={formData['DoyouconfirmthaCAR'] === true ? 'Yes' : 
+                       formData['DoyouconfirmthaCAR'] === false ? 'No' : undefined}
+          className={`flex space-x-4 ${errors['DoyouconfirmthaCAR'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Yes" id="confirm-classification-yes" />
+            <Label htmlFor="confirm-classification-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="No" id="confirm-classification-no" />
+            <Label htmlFor="confirm-classification-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['DoyouconfirmthaCAR'] && (
+          <p className="text-sm text-red-500">{errors['DoyouconfirmthaCAR']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="DoyouconfirmthaCAR1">
+          Do you confirm that the contract will not include any civil works?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('DoyouconfirmthaCAR1', value === 'Yes')}
+          defaultValue={formData['DoyouconfirmthaCAR1'] === true ? 'Yes' : 
+                       formData['DoyouconfirmthaCAR1'] === false ? 'No' : undefined}
+          className={`flex space-x-4 ${errors['DoyouconfirmthaCAR1'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Yes" id="confirm-civil-works-yes" />
+            <Label htmlFor="confirm-civil-works-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="No" id="confirm-civil-works-no" />
+            <Label htmlFor="confirm-civil-works-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['DoyouconfirmthaCAR1'] && (
+          <p className="text-sm text-red-500">{errors['DoyouconfirmthaCAR1']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="WhatissoiltypeCAR">
+          What is the soil type of contract area:
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <Select
+          onValueChange={(value) => handleChange('WhatissoiltypeCAR', value)}
+          defaultValue={formData['WhatissoiltypeCAR'] || ''}
+        >
+          <SelectTrigger className={errors['WhatissoiltypeCAR'] ? 'border-red-300' : ''}>
+            <SelectValue placeholder="Select soil type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Clay">Clay</SelectItem>
+            <SelectItem value="Dolomite">Dolomite</SelectItem>
+            <SelectItem value="Rocky">Rocky</SelectItem>
+            <SelectItem value="Sandy">Sandy</SelectItem>
+            <SelectItem value="Other">Other (specify)</SelectItem>
+          </SelectContent>
+        </Select>
+        {errors['WhatissoiltypeCAR'] && (
+          <p className="text-sm text-red-500">{errors['WhatissoiltypeCAR']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="IsconstructionnearbyordoesitrelateCAR">
+          Is the construction nearby or does it relate to construction at any of the following? Airport, Rivers, Dams, Mountains?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('IsconstructionnearbyordoesitrelateCAR', value === 'Yes')}
+          defaultValue={formData['IsconstructionnearbyordoesitrelateCAR'] === true ? 'Yes' : 
+                       formData['IsconstructionnearbyordoesitrelateCAR'] === false ? 'No' : undefined}
+          className={`flex space-x-4 ${errors['IsconstructionnearbyordoesitrelateCAR'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Yes" id="construction-nearby-yes" />
+            <Label htmlFor="construction-nearby-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="No" id="construction-nearby-no" />
+            <Label htmlFor="construction-nearby-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['IsconstructionnearbyordoesitrelateCAR'] && (
+          <p className="text-sm text-red-500">{errors['IsconstructionnearbyordoesitrelateCAR']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="AreanyprocessingusedCAR">
+          Are any of the following processes used? Blasting, Excavations
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('AreanyprocessingusedCAR', value === 'Yes')}
+          defaultValue={formData['AreanyprocessingusedCAR'] === true ? 'Yes' : 
+                       formData['AreanyprocessingusedCAR'] === false ? 'No' : undefined}
+          className={`flex space-x-4 ${errors['AreanyprocessingusedCAR'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Yes" id="processing-used-yes" />
+            <Label htmlFor="processing-used-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="No" id="processing-used-no" />
+            <Label htmlFor="processing-used-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['AreanyprocessingusedCAR'] && (
+          <p className="text-sm text-red-500">{errors['AreanyprocessingusedCAR']}</p>
+        )}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label htmlFor="DoyourequirecovCARPI-PL66">
+          Public liability cover of R2,500,000 is automatically included at no additional cost. One of our underwriters offers an increased amount at an additional premium. Do you wish to increase the amount of Public Liability Cover?
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleChange('DoyourequirecovCARPI-PL66', value === 'Yes')}
+          defaultValue={formData['DoyourequirecovCARPI-PL66'] === true ? 'Yes' : 
+                       formData['DoyourequirecovCARPI-PL66'] === false ? 'No' : undefined}
+          className={`flex space-x-4 ${errors['DoyourequirecovCARPI-PL66'] ? 'border-red-300' : ''}`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Yes" id="increase-cover-yes" />
+            <Label htmlFor="increase-cover-yes">Yes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="No" id="increase-cover-no" />
+            <Label htmlFor="increase-cover-no">No</Label>
+          </div>
+        </RadioGroup>
+        {errors['DoyourequirecovCARPI-PL66'] && (
+          <p className="text-sm text-red-500">{errors['DoyourequirecovCARPI-PL66']}</p>
+        )}
+      </motion.div>
+
+      {formData['DoyourequirecovCARPI-PL66'] === true && (
         <motion.div variants={itemVariants} className="space-y-2">
-          <Label htmlFor="public-liability-amount">
-            Public Liability Coverage Amount
+          <Label htmlFor="SuminsuredreplaPI-PL67CAR">
+            Additional cover required
             <span className="text-red-500 ml-1">*</span>
           </Label>
           <Select
-            onValueChange={(value) => handleChange('public-liability-amount', value)}
-            defaultValue={formData['public-liability-amount'] || ''}
+            onValueChange={(value) => handleChange('SuminsuredreplaPI-PL67CAR', value)}
+            defaultValue={formData['SuminsuredreplaPI-PL67CAR'] || ''}
           >
-            <SelectTrigger className={errors['public-liability-amount'] ? 'border-red-300' : ''}>
-              <SelectValue placeholder="Select coverage amount" />
+            <SelectTrigger className={errors['SuminsuredreplaPI-PL67CAR'] ? 'border-red-300' : ''}>
+              <SelectValue placeholder="Select additional cover amount" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1000000">R1,000,000</SelectItem>
-              <SelectItem value="2000000">R2,000,000</SelectItem>
-              <SelectItem value="5000000">R5,000,000</SelectItem>
-              <SelectItem value="10000000">R10,000,000</SelectItem>
-              <SelectItem value="20000000">R20,000,000</SelectItem>
-              <SelectItem value="50000000">R50,000,000</SelectItem>
+              <SelectItem value="R500 000">R500 000</SelectItem>
+              <SelectItem value="R1 000 000">R1 000 000</SelectItem>
+              <SelectItem value="R1 500 000">R1 500 000</SelectItem>
+              <SelectItem value="R2 000 000">R2 000 000</SelectItem>
+              <SelectItem value="R2 500 000">R2 500 000</SelectItem>
             </SelectContent>
           </Select>
-          {errors['public-liability-amount'] && (
-            <p className="text-sm text-red-500">{errors['public-liability-amount']}</p>
+          {errors['SuminsuredreplaPI-PL67CAR'] && (
+            <p className="text-sm text-red-500">{errors['SuminsuredreplaPI-PL67CAR']}</p>
           )}
         </motion.div>
       )}
 
       <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="sasria-cover">
-          Do you require SASRIA coverage?
+        <Label htmlFor="DoyouwishtoaddSCAR">
+          Do you wish to add SASRIA cover?
           <span className="text-red-500 ml-1">*</span>
         </Label>
         <RadioGroup
-          onValueChange={(value) => handleChange('sasria-cover', value === 'yes')}
-          defaultValue={formData['sasria-cover'] === true ? 'yes' : 
-                       formData['sasria-cover'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['sasria-cover'] ? 'border-red-300' : ''}`}
+          onValueChange={(value) => handleChange('DoyouwishtoaddSCAR', value === 'Yes')}
+          defaultValue={formData['DoyouwishtoaddSCAR'] === true ? 'Yes' : 
+                       formData['DoyouwishtoaddSCAR'] === false ? 'No' : undefined}
+          className={`flex space-x-4 ${errors['DoyouwishtoaddSCAR'] ? 'border-red-300' : ''}`}
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="sasria-cover-yes" />
+            <RadioGroupItem value="Yes" id="sasria-cover-yes" />
             <Label htmlFor="sasria-cover-yes">Yes</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="sasria-cover-no" />
+            <RadioGroupItem value="No" id="sasria-cover-no" />
             <Label htmlFor="sasria-cover-no">No</Label>
           </div>
         </RadioGroup>
-        {errors['sasria-cover'] && (
-          <p className="text-sm text-red-500">{errors['sasria-cover']}</p>
-        )}
-      </motion.div>
-
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="site-security">
-          Do you implement site security measures (e.g., fencing, security guards, CCTV)?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleChange('site-security', value === 'yes')}
-          defaultValue={formData['site-security'] === true ? 'yes' : 
-                       formData['site-security'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['site-security'] ? 'border-red-300' : ''}`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="site-security-yes" />
-            <Label htmlFor="site-security-yes">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="site-security-no" />
-            <Label htmlFor="site-security-no">No</Label>
-          </div>
-        </RadioGroup>
-        {errors['site-security'] && (
-          <p className="text-sm text-red-500">{errors['site-security']}</p>
-        )}
-      </motion.div>
-
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="subcontractors">
-          Do you use subcontractors?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleChange('subcontractors', value === 'yes')}
-          defaultValue={formData['subcontractors'] === true ? 'yes' : 
-                       formData['subcontractors'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['subcontractors'] ? 'border-red-300' : ''}`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="subcontractors-yes" />
-            <Label htmlFor="subcontractors-yes">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="subcontractors-no" />
-            <Label htmlFor="subcontractors-no">No</Label>
-          </div>
-        </RadioGroup>
-        {errors['subcontractors'] && (
-          <p className="text-sm text-red-500">{errors['subcontractors']}</p>
+        {errors['DoyouwishtoaddSCAR'] && (
+          <p className="text-sm text-red-500">{errors['DoyouwishtoaddSCAR']}</p>
         )}
       </motion.div>
     </motion.div>
