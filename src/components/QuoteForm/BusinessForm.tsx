@@ -15,9 +15,10 @@ interface BusinessFormProps {
   initialData?: BusinessDetail;
   onSubmit: (data: BusinessDetail) => void;
   onBack: () => void;
+  insuranceType?: string;
 }
 
-const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
+const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: BusinessFormProps) => {
   const [formData, setFormData] = useState<BusinessDetail>(initialData || {
     businessName: '',
     registrationNumber: '',
@@ -108,7 +109,9 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
       }
     }
     
-    if (!formData.annualRevenue.trim()) {
+    // Only validate annual revenue if not event-liability or contractors-all-risk
+    const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
+    if (shouldShowAnnualRevenue && !formData.annualRevenue.trim()) {
       newErrors.annualRevenue = 'Annual revenue is required';
     }
     
@@ -167,6 +170,9 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
       }
     }
   };
+  
+  // Determine if annual revenue should be shown
+  const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
   
   return (
     <motion.form 
@@ -294,24 +300,26 @@ const BusinessForm = ({ initialData, onSubmit, onBack }: BusinessFormProps) => {
         )}
       </motion.div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <motion.div className="space-y-2" variants={itemVariants}>
-          <Label htmlFor="annualRevenue">Annual Revenue</Label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
-            <Input
-              id="annualRevenue"
-              name="annualRevenue"
-              placeholder="300,000"
-              value={formData.annualRevenue}
-              onChange={handleChange}
-              className={`pl-7 ${errors.annualRevenue ? 'border-red-300' : ''}`}
-            />
-          </div>
-          {errors.annualRevenue && (
-            <p className="text-sm text-red-500">{errors.annualRevenue}</p>
-          )}
-        </motion.div>
+      <div className={shouldShowAnnualRevenue ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "grid grid-cols-1 gap-6"}>
+        {shouldShowAnnualRevenue && (
+          <motion.div className="space-y-2" variants={itemVariants}>
+            <Label htmlFor="annualRevenue">Annual Revenue</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
+              <Input
+                id="annualRevenue"
+                name="annualRevenue"
+                placeholder="300,000"
+                value={formData.annualRevenue}
+                onChange={handleChange}
+                className={`pl-7 ${errors.annualRevenue ? 'border-red-300' : ''}`}
+              />
+            </div>
+            {errors.annualRevenue && (
+              <p className="text-sm text-red-500">{errors.annualRevenue}</p>
+            )}
+          </motion.div>
+        )}
         
         <motion.div className="space-y-2" variants={itemVariants}>
           <Label htmlFor="numberOfEmployees">Number of Employees</Label>

@@ -213,6 +213,7 @@ const QuotePage = () => {
             initialData={businessDetails || undefined} 
             onSubmit={handleBusinessSubmit}
             onBack={() => setCurrentStep(0)}
+            insuranceType={selectedInsuranceType as string}
           />
         );
         
