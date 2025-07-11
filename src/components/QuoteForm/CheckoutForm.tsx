@@ -24,6 +24,18 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
   const [billCycle, setBillCycle] = useState<'monthly' | 'annual'>('monthly');
   const [showMandateDialog, setShowMandateDialog] = useState(false);
   
+  // Form validation state
+  const [formData, setFormData] = useState({
+    accountHolderName: '',
+    bankName: '',
+    accountType: '',
+    accountNumber: '',
+    branchCode: '',
+    debitDay: '',
+    mandateAccepted: false
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
   // Mock quote details
   const quoteDetails = {
     monthlyPremium: 'R 450',
@@ -36,9 +48,51 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
     })
   };
   
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (paymentMethod === 'debit') {
+      if (!formData.accountHolderName.trim()) {
+        newErrors.accountHolderName = 'Account holder name is required';
+      }
+      if (!formData.bankName) {
+        newErrors.bankName = 'Bank name is required';
+      }
+      if (!formData.accountType) {
+        newErrors.accountType = 'Account type is required';
+      }
+      if (!formData.accountNumber.trim()) {
+        newErrors.accountNumber = 'Account number is required';
+      }
+      if (!formData.branchCode.trim()) {
+        newErrors.branchCode = 'Branch code is required';
+      }
+      if (!formData.debitDay) {
+        newErrors.debitDay = 'Debit day is required';
+      }
+      if (!formData.mandateAccepted) {
+        newErrors.mandateAccepted = 'You must accept the debit order mandate';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onComplete();
+    
+    if (validateForm()) {
+      onComplete();
+    }
+  };
+
+  const updateFormData = (field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing/selecting
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
   
   const containerVariants = {
@@ -132,13 +186,25 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="accountHolderName">Account Holder Name</Label>
-                <Input id="accountHolderName" placeholder="Account Holder Name" />
+                <Input 
+                  id="accountHolderName" 
+                  placeholder="Account Holder Name"
+                  value={formData.accountHolderName}
+                  onChange={(e) => updateFormData('accountHolderName', e.target.value)}
+                  className={errors.accountHolderName ? 'border-destructive' : ''}
+                />
+                {errors.accountHolderName && (
+                  <p className="text-sm text-destructive">{errors.accountHolderName}</p>
+                )}
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="bankName">Bank Name</Label>
-                <Select>
-                  <SelectTrigger>
+                <Select 
+                  value={formData.bankName} 
+                  onValueChange={(value) => updateFormData('bankName', value)}
+                >
+                  <SelectTrigger className={errors.bankName ? 'border-destructive' : ''}>
                     <SelectValue placeholder="Please Select..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -149,12 +215,18 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
                     <SelectItem value="capitec">Capitec Bank</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.bankName && (
+                  <p className="text-sm text-destructive">{errors.bankName}</p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="accountType">Bank Account Type</Label>
-                <Select>
-                  <SelectTrigger>
+                <Select 
+                  value={formData.accountType} 
+                  onValueChange={(value) => updateFormData('accountType', value)}
+                >
+                  <SelectTrigger className={errors.accountType ? 'border-destructive' : ''}>
                     <SelectValue placeholder="Please Select..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -163,22 +235,46 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
                     <SelectItem value="cheque">Cheque Account</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.accountType && (
+                  <p className="text-sm text-destructive">{errors.accountType}</p>
+                )}
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="accountNumber">Bank Account Number</Label>
-                <Input id="accountNumber" placeholder="652565265201" />
+                <Input 
+                  id="accountNumber" 
+                  placeholder="652565265201"
+                  value={formData.accountNumber}
+                  onChange={(e) => updateFormData('accountNumber', e.target.value)}
+                  className={errors.accountNumber ? 'border-destructive' : ''}
+                />
+                {errors.accountNumber && (
+                  <p className="text-sm text-destructive">{errors.accountNumber}</p>
+                )}
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="branchCode">Bank Branch Code</Label>
-                <Input id="branchCode" placeholder="Enter your Bank Branch Code" />
+                <Input 
+                  id="branchCode" 
+                  placeholder="Enter your Bank Branch Code"
+                  value={formData.branchCode}
+                  onChange={(e) => updateFormData('branchCode', e.target.value)}
+                  className={errors.branchCode ? 'border-destructive' : ''}
+                />
+                {errors.branchCode && (
+                  <p className="text-sm text-destructive">{errors.branchCode}</p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="debitDay">On what day do you want your debit order to run</Label>
-                <Select>
-                  <SelectTrigger>
+                <Select 
+                  value={formData.debitDay} 
+                  onValueChange={(value) => updateFormData('debitDay', value)}
+                >
+                  <SelectTrigger className={errors.debitDay ? 'border-destructive' : ''}>
                     <SelectValue placeholder="Please Select..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -188,10 +284,17 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
                     <SelectItem value="30">30th of the month</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.debitDay && (
+                  <p className="text-sm text-destructive">{errors.debitDay}</p>
+                )}
               </div>
               
               <div className="flex items-top space-x-2 pt-2">
-                <Checkbox id="debitMandate" />
+                <Checkbox 
+                  id="debitMandate"
+                  checked={formData.mandateAccepted}
+                  onCheckedChange={(checked) => updateFormData('mandateAccepted', !!checked)}
+                />
                 <div className="grid gap-1.5 leading-none">
                   <div className="flex items-center gap-2">
                     <label
@@ -209,6 +312,9 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
                       Read
                     </Button>
                   </div>
+                  {errors.mandateAccepted && (
+                    <p className="text-sm text-destructive">{errors.mandateAccepted}</p>
+                  )}
                 </div>
               </div>
             </form>
