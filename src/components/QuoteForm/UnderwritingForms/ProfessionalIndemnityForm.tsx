@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -13,20 +13,46 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { UnderwritingQuestion } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProfessionalIndemnityFormProps {
   formData: Record<string, any>;
   setFormData: (data: Record<string, any>) => void;
   errors: Record<string, string>;
   setErrors: (errors: Record<string, string>) => void;
+  contactDetails?: any;
 }
 
 const ProfessionalIndemnityForm = ({ 
   formData, 
   setFormData, 
   errors, 
-  setErrors 
+  setErrors,
+  contactDetails 
 }: ProfessionalIndemnityFormProps) => {
+  const [industryName, setIndustryName] = useState<string>('');
+  
+  // Fetch industry name based on contact details
+  useEffect(() => {
+    const fetchIndustryName = async () => {
+      if (contactDetails?.industryId) {
+        const { data, error } = await supabase
+          .from('industries')
+          .select('name')
+          .eq('id', contactDetails.industryId)
+          .single();
+          
+        if (data && !error) {
+          setIndustryName(data.name);
+        }
+      }
+    };
+    
+    fetchIndustryName();
+  }, [contactDetails?.industryId]);
+  
+  // Check if user is in Built & Design industry to show conditional questions
+  const shouldShowBuiltDesignQuestions = industryName === 'Built & Design';
   
   const handleChange = (questionId: string, value: any) => {
     setFormData({ ...formData, [questionId]: value });
@@ -216,55 +242,59 @@ const ProfessionalIndemnityForm = ({
         )}
       </motion.div>
 
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY">
-          Do you use SLAs/ Terms of Engagement/ or any other contract when engaging with your clients?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleChange('DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY', value === 'yes')}
-          defaultValue={formData['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] === true ? 'yes' : 
-                       formData['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] ? 'border-red-300' : ''}`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="slas-yes" />
-            <Label htmlFor="slas-yes">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="slas-no" />
-            <Label htmlFor="slas-no">No</Label>
-          </div>
-        </RadioGroup>
-        {errors['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] && (
-          <p className="text-sm text-red-500">{errors['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY']}</p>
-        )}
-      </motion.div>
+      {shouldShowBuiltDesignQuestions && (
+        <>
+          <motion.div variants={itemVariants} className="space-y-2">
+            <Label htmlFor="DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY">
+              Do you use SLAs/ Terms of Engagement/ or any other contract when engaging with your clients?
+              <span className="text-red-500 ml-1">*</span>
+            </Label>
+            <RadioGroup
+              onValueChange={(value) => handleChange('DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY', value === 'yes')}
+              defaultValue={formData['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] === true ? 'yes' : 
+                           formData['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] === false ? 'no' : undefined}
+              className={`flex space-x-4 ${errors['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] ? 'border-red-300' : ''}`}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="slas-yes" />
+                <Label htmlFor="slas-yes">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="slas-no" />
+                <Label htmlFor="slas-no">No</Label>
+              </div>
+            </RadioGroup>
+            {errors['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY'] && (
+              <p className="text-sm text-red-500">{errors['DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY']}</p>
+            )}
+          </motion.div>
 
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY">
-          Do you limit your liability when engaging with your clients?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleChange('DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY', value === 'yes')}
-          defaultValue={formData['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] === true ? 'yes' : 
-                       formData['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] ? 'border-red-300' : ''}`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="limit-liability-yes" />
-            <Label htmlFor="limit-liability-yes">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="limit-liability-no" />
-            <Label htmlFor="limit-liability-no">No</Label>
-          </div>
-        </RadioGroup>
-        {errors['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] && (
-          <p className="text-sm text-red-500">{errors['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY']}</p>
-        )}
-      </motion.div>
+          <motion.div variants={itemVariants} className="space-y-2">
+            <Label htmlFor="DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY">
+              Do you limit your liability when engaging with your clients?
+              <span className="text-red-500 ml-1">*</span>
+            </Label>
+            <RadioGroup
+              onValueChange={(value) => handleChange('DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY', value === 'yes')}
+              defaultValue={formData['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] === true ? 'yes' : 
+                           formData['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] === false ? 'no' : undefined}
+              className={`flex space-x-4 ${errors['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] ? 'border-red-300' : ''}`}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="limit-liability-yes" />
+                <Label htmlFor="limit-liability-yes">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="limit-liability-no" />
+                <Label htmlFor="limit-liability-no">No</Label>
+              </div>
+            </RadioGroup>
+            {errors['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'] && (
+              <p className="text-sm text-red-500">{errors['DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY']}</p>
+            )}
+          </motion.div>
+        </>
+      )}
 
       <motion.div variants={itemVariants} className="space-y-2">
         <Label htmlFor="HaveanyCLAIMSevPROFESSIONALINDEMNITY">

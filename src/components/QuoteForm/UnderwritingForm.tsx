@@ -20,9 +20,10 @@ interface UnderwritingFormProps {
   onSubmit: (data: Record<string, any>) => void;
   onBack: () => void;
   contactId: string | null;
+  contactDetails?: any;
 }
 
-const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }: UnderwritingFormProps) => {
+const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, contactDetails }: UnderwritingFormProps) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
@@ -31,8 +32,24 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }
     setFormData(prev => ({ ...prev, ...newData }));
   };
   
-  const validateForm = () => {
+  const validateForm = async () => {
     const newErrors: Record<string, string> = {};
+    
+    // Get industry name for professional indemnity validation
+    let industryName = '';
+    if (selectedInsuranceType === 'professional-indemnity' && contactDetails?.industryId) {
+      const { data } = await supabase
+        .from('industries')
+        .select('name')
+        .eq('id', contactDetails.industryId)
+        .single();
+      if (data) {
+        industryName = data.name;
+      }
+    }
+    
+    const isBuiltDesign = industryName === 'Built & Design';
+    
     const requiredFields: Record<string, string[]> = {
       'professional-indemnity': [
         'DoyouhaveretroactivecoverPROFESSIONALINDEMNITY',
@@ -40,8 +57,10 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }
         'Islessthan50ofPROFESSIONALINDEMNITY',
         'DoYouConfirmThatYouPROFESSIONALINDEMNITY',
         'DoYouHave5YearsExpPROFESSIONALINDEMNITY',
-        'DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY',
-        'DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY',
+        ...(isBuiltDesign ? [
+          'DoYouUseSLAs/TermsOfEngagePROFESSIONALINDEMNITY',
+          'DoYouUseLimitYourLiabilityPROFESSIONALINDEMNITY'
+        ] : []),
         'HaveanyCLAIMSevPROFESSIONALINDEMNITY',
         'AreanyoftheprinPROFESSIONALINDEMNITY'
       ],
@@ -114,7 +133,7 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (validateForm()) {
+    if (await validateForm()) {
       try {
         // Save underwriting answers to database
         if (contactId) {
@@ -178,6 +197,7 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId }
             setFormData={handleFormDataChange}
             errors={errors}
             setErrors={setErrors}
+            contactDetails={contactDetails}
           />
         );
       case 'contractors-all-risk':

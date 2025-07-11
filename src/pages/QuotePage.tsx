@@ -223,6 +223,7 @@ const QuotePage = () => {
             onSubmit={handleUnderwritingSubmit}
             onBack={() => setCurrentStep(1)}
             contactId={contactId}
+            contactDetails={contactDetails}
           />
         );
         
