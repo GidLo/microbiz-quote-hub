@@ -139,10 +139,15 @@ const EventLiabilityForm = ({
             <SelectValue placeholder="Select coverage amount" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="500000">R500,000</SelectItem>
             <SelectItem value="1000000">R1,000,000</SelectItem>
             <SelectItem value="2000000">R2,000,000</SelectItem>
+            <SelectItem value="3000000">R3,000,000</SelectItem>
+            <SelectItem value="4000000">R4,000,000</SelectItem>
             <SelectItem value="5000000">R5,000,000</SelectItem>
+            <SelectItem value="6000000">R6,000,000</SelectItem>
+            <SelectItem value="7000000">R7,000,000</SelectItem>
+            <SelectItem value="8000000">R8,000,000</SelectItem>
+            <SelectItem value="9000000">R9,000,000</SelectItem>
             <SelectItem value="10000000">R10,000,000</SelectItem>
           </SelectContent>
         </Select>
