@@ -88,35 +88,40 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
-    // Inception date validation
-    if (!formData.inceptionDate) {
-      newErrors.inceptionDate = 'Policy start date is required';
-    } else {
-      const today = new Date();
-      const maxFutureDate = new Date();
-      maxFutureDate.setDate(today.getDate() + 30);
-      
-      // Reset time to start of day for comparison
-      today.setHours(0, 0, 0, 0);
-      maxFutureDate.setHours(23, 59, 59, 999);
-      const selectedDate = new Date(formData.inceptionDate);
-      selectedDate.setHours(0, 0, 0, 0);
-      
-      if (selectedDate < today) {
-        newErrors.inceptionDate = 'Policy start date cannot be in the past';
-      } else if (selectedDate > maxFutureDate) {
-        newErrors.inceptionDate = 'Policy start date cannot be more than 30 days in the future';
+    // Determine what should be shown for validation
+    const shouldShowInceptionDate = insuranceType !== 'event-liability';
+    const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
+    const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
+    
+    // Inception date validation (only if should be shown)
+    if (shouldShowInceptionDate) {
+      if (!formData.inceptionDate) {
+        newErrors.inceptionDate = 'Policy start date is required';
+      } else {
+        const today = new Date();
+        const maxFutureDate = new Date();
+        maxFutureDate.setDate(today.getDate() + 30);
+        
+        // Reset time to start of day for comparison
+        today.setHours(0, 0, 0, 0);
+        maxFutureDate.setHours(23, 59, 59, 999);
+        const selectedDate = new Date(formData.inceptionDate);
+        selectedDate.setHours(0, 0, 0, 0);
+        
+        if (selectedDate < today) {
+          newErrors.inceptionDate = 'Policy start date cannot be in the past';
+        } else if (selectedDate > maxFutureDate) {
+          newErrors.inceptionDate = 'Policy start date cannot be more than 30 days in the future';
+        }
       }
     }
     
     // Only validate annual revenue if not event-liability or contractors-all-risk
-    const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
     if (shouldShowAnnualRevenue && !formData.annualRevenue.trim()) {
       newErrors.annualRevenue = 'Annual revenue is required';
     }
     
     // Only validate number of employees if not event-liability or contractors-all-risk
-    const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
     if (shouldShowNumberOfEmployees) {
       if (!formData.numberOfEmployees.trim()) {
         newErrors.numberOfEmployees = 'Number of employees is required';
@@ -178,6 +183,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
   // Determine if annual revenue and number of employees should be shown
   const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
   const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
+  const shouldShowInceptionDate = insuranceType !== 'event-liability';
   
   return (
     <motion.form 
@@ -262,48 +268,50 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
       </motion.div>
       
       {/* Policy Start Date Section */}
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="inceptionDate">Your policy start date</Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              id="inceptionDate"
-              variant="outline"
-              className={cn(
-                "w-full justify-start text-left font-normal",
-                !formData.inceptionDate && "text-muted-foreground",
-                errors.inceptionDate ? 'border-red-300' : ''
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {formData.inceptionDate ? format(formData.inceptionDate, "PPP") : <span>Pick a date</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={formData.inceptionDate}
-              onSelect={handleDateChange}
-              disabled={(date) => {
-                const today = new Date();
-                const maxFutureDate = new Date();
-                maxFutureDate.setDate(today.getDate() + 30);
-                
-                // Reset time for comparison
-                today.setHours(0, 0, 0, 0);
-                maxFutureDate.setHours(23, 59, 59, 999);
-                
-                return date < today || date > maxFutureDate;
-              }}
-              initialFocus
-              className={cn("p-3 pointer-events-auto")}
-            />
-          </PopoverContent>
-        </Popover>
-        {errors.inceptionDate && (
-          <p className="text-sm text-red-500">{errors.inceptionDate}</p>
-        )}
-      </motion.div>
+      {shouldShowInceptionDate && (
+        <motion.div className="space-y-2" variants={itemVariants}>
+          <Label htmlFor="inceptionDate">Your policy start date</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="inceptionDate"
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !formData.inceptionDate && "text-muted-foreground",
+                  errors.inceptionDate ? 'border-red-300' : ''
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {formData.inceptionDate ? format(formData.inceptionDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={formData.inceptionDate}
+                onSelect={handleDateChange}
+                disabled={(date) => {
+                  const today = new Date();
+                  const maxFutureDate = new Date();
+                  maxFutureDate.setDate(today.getDate() + 30);
+                  
+                  // Reset time for comparison
+                  today.setHours(0, 0, 0, 0);
+                  maxFutureDate.setHours(23, 59, 59, 999);
+                  
+                  return date < today || date > maxFutureDate;
+                }}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+          {errors.inceptionDate && (
+            <p className="text-sm text-red-500">{errors.inceptionDate}</p>
+          )}
+        </motion.div>
+      )}
       
       {(shouldShowAnnualRevenue || shouldShowNumberOfEmployees) && (
         <div className={(shouldShowAnnualRevenue && shouldShowNumberOfEmployees) ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "grid grid-cols-1 gap-6"}>
