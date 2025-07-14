@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, ArrowLeft } from 'lucide-react';
+import { Shield, ArrowLeft, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { InsuranceType, InsurerQuote } from '@/types';
 import { INSURANCE_TYPES } from '@/utils/constants';
@@ -15,6 +15,10 @@ interface QuoteResultProps {
   underwritingAnswers: any;
   onProceed: (selectedQuote: InsurerQuote) => void;
   onBack: () => void;
+  underwritingRejection?: {
+    rejectedQuestion: string;
+    rejectedAnswer: string;
+  } | null;
 }
 
 const QuoteResult = ({ 
@@ -24,7 +28,8 @@ const QuoteResult = ({
   businessDetails,
   underwritingAnswers,
   onProceed, 
-  onBack 
+  onBack,
+  underwritingRejection
 }: QuoteResultProps) => {
   const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
   
@@ -183,6 +188,62 @@ const QuoteResult = ({
           </p>
           <Button onClick={() => window.location.reload()}>
             Try Again
+          </Button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  if (underwritingRejection) {
+    return (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
+        <motion.div className="max-w-4xl mx-auto" variants={itemVariants}>
+          <div className="bg-card border-2 border-primary/30 rounded-2xl p-8 relative">
+            {/* Quote bubble decoration */}
+            <div className="absolute -top-6 left-8">
+              <div className="flex gap-2">
+                <MessageCircle className="h-12 w-12 text-primary fill-primary/20" />
+                <MessageCircle className="h-8 w-8 text-primary fill-primary/20 mt-2" />
+              </div>
+            </div>
+            
+            <div className="pt-8 text-center space-y-6">
+              <h2 className="text-xl font-semibold text-foreground">
+                We are unable to give you a quote because:
+              </h2>
+              
+              <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+                <p className="text-orange-800 font-medium">
+                  The following question was answered {underwritingRejection.rejectedAnswer}: '{underwritingRejection.rejectedQuestion}'
+                </p>
+              </div>
+              
+              <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+                <p>
+                  Should you like to change your response to the question(s) above please use the 'Amend/Add Cover' button above. If not, we would however love to set up a consultation with you to better understand and see how we can assist.
+                </p>
+                
+                <p>
+                  If you would like to speak with one of our team members, please call on{' '}
+                  <a href="tel:0104467750" className="text-primary hover:underline font-medium">
+                    (010) 446 7750
+                  </a>
+                  . Alternatively, we will reach out to you with the details provided.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+        
+        <motion.div className="flex justify-center" variants={itemVariants}>
+          <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Questions
           </Button>
         </motion.div>
       </motion.div>
