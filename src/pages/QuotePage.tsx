@@ -23,6 +23,7 @@ import { InsuranceType, ContactDetail, BusinessDetail, InsurerQuote, LegalInform
 import { QUOTE_STEPS, INSURANCE_TYPES } from '@/utils/constants';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { checkUnderwritingRejection } from '@/utils/underwritingValidation';
 
 const QuotePage = () => {
   const [searchParams] = useSearchParams();
@@ -229,6 +230,12 @@ const QuotePage = () => {
         );
         
       case 3:
+        const underwritingRejection = checkUnderwritingRejection(
+          selectedInsuranceType as InsuranceType,
+          businessDetails,
+          underwritingAnswers
+        );
+        
         return (
           <QuoteResult 
             insuranceType={selectedInsuranceType as InsuranceType}
@@ -238,6 +245,7 @@ const QuotePage = () => {
             underwritingAnswers={underwritingAnswers}
             onProceed={handleQuoteSelect}
             onBack={() => setCurrentStep(2)}
+            underwritingRejection={underwritingRejection}
           />
         );
         

@@ -56,6 +56,11 @@ export interface UnderwritingQuestion {
   insuranceTypes: InsuranceType[];
 }
 
+export interface UnderwritingRejection {
+  rejectedQuestion: string;
+  rejectedAnswer: string;
+}
+
 export interface InsurerQuote {
   insurerId: string;
   insurerName: string;
