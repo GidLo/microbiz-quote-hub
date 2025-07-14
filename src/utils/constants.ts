@@ -81,6 +81,19 @@ export const INSURANCE_TYPES: InsuranceOption[] = [
     ]
   },
   {
+    id: 'divers-surething',
+    title: 'Divers - SureThing',
+    description: 'Specialized liability coverage for diving operations, instructors, and dive centers.',
+    icon: 'waves',
+    coverPoints: [
+      'Professional liability for diving instructors and dive masters',
+      'Coverage for student and client injuries during diving activities',
+      'Equipment failure and safety protocol coverage',
+      'Emergency medical evacuation coverage',
+      'DAN SA membership integration and support'
+    ]
+  },
+  {
     id: 'other',
     title: 'Other',
     description: 'Custom insurance solutions for unique business requirements not covered by standard policies.',
