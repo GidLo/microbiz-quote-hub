@@ -5,6 +5,7 @@ export type InsuranceType =
   | 'event-liability'
   | 'medical-malpractice'
   | 'cyber-liability'
+  | 'divers-surething'
   | 'other';
 
 export interface InsuranceOption {

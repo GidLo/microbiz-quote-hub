@@ -13,6 +13,7 @@ import PublicLiabilityForm from './UnderwritingForms/PublicLiabilityForm';
 import EventLiabilityForm from './UnderwritingForms/EventLiabilityForm';
 import MedicalMalpracticeForm from './UnderwritingForms/MedicalMalpracticeForm';
 import CyberLiabilityForm from './UnderwritingForms/CyberLiabilityForm';
+import DiversSureThingForm from './UnderwritingForms/DiversSureThingForm';
 
 
 interface UnderwritingFormProps {
@@ -114,6 +115,25 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         'OurITEnvironmenCYBER',
         'YoutheundersigCYBER',
         'InadditionyoucCYBER'
+      ],
+      'divers-surething': [
+        'IstheinsuranceforabusinessSURETHING',
+        'DoyouconfirmthaSURETHING_1',
+        'DoyouconfirmthaSURETHING_2',
+        'DoyouconfirmthaSURETHING_3',
+        'DoyouconfirmthaSURETHING_4',
+        'DoyouconfirmthaSURETHING_5',
+        'DoyouconfirmthaSURETHING_6',
+        'DoyouconfirmthaSURETHING_7',
+        'AreAllProspectiveSURETHING',
+        'DoYouEnsureThatSURETHING',
+        'IsTheDiveMasterSURETHING',
+        'DoyouconfirmthaSURETHING_9',
+        'DoAllProspectiveStudentsSURETHING',
+        'IsEmergencyMedicalSURETHING',
+        'DoYouHaveProceduresInSURETHING',
+        'DoyouconfirmthaSURETHING_8',
+        'PleaseEnterDANSAmemebershipSURETHING_9'
       ]
     };
     
@@ -255,6 +275,15 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
       case 'cyber-liability':
         return (
           <CyberLiabilityForm 
+            formData={formData}
+            setFormData={handleFormDataChange}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
+      case 'divers-surething':
+        return (
+          <DiversSureThingForm 
             formData={formData}
             setFormData={handleFormDataChange}
             errors={errors}
