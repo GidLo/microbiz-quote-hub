@@ -46,7 +46,7 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
   const { toast } = useToast();
   
   // Check if fields should be disabled based on insurance type
-  const isFieldsDisabled = selectedInsuranceType === 'contractors-all-risk' || selectedInsuranceType === 'event-liability' || selectedInsuranceType === 'other';
+  const isFieldsDisabled = selectedInsuranceType === 'contractors-all-risk' || selectedInsuranceType === 'event-liability' || selectedInsuranceType === 'divers-surething' || selectedInsuranceType === 'other';
   
   // Fetch industries based on selected insurance type
   useEffect(() => {
@@ -132,6 +132,25 @@ const ContactForm = ({ initialData, onSubmit, selectedInsuranceType }: ContactFo
           // Immediately update filtered occupations for this industry
           const filtered = occupations.filter(occ => occ.industry_id === eventIndustry.id);
           console.log('Filtered occupations for events:', filtered);
+          setFilteredOccupations(filtered);
+        }
+      } else if (selectedInsuranceType === 'divers-surething') {
+        const diversIndustry = industries.find(i => i.name === 'Divers');
+        const diversOccupation = occupations.find(o => o.name === 'Divers' && o.industry_id === diversIndustry?.id);
+        
+        console.log('Divers industry:', diversIndustry);
+        console.log('Divers occupation:', diversOccupation);
+        
+        if (diversIndustry && diversOccupation) {
+          setFormData(prev => ({
+            ...prev,
+            industryId: diversIndustry.id,
+            occupationId: diversOccupation.id
+          }));
+          
+          // Immediately update filtered occupations for this industry
+          const filtered = occupations.filter(occ => occ.industry_id === diversIndustry.id);
+          console.log('Filtered occupations for divers:', filtered);
           setFilteredOccupations(filtered);
         }
       }
