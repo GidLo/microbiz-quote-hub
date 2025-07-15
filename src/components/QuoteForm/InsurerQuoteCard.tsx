@@ -64,7 +64,12 @@ const InsurerQuoteCard = ({
         <div className="space-y-3 mb-6">
           
           <ul className="space-y-2">
-            {quote.features.slice(0, 3).map((feature, index) => {})}
+            {quote.features.slice(0, 3).map((feature, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-primary" />
+                <span className="text-sm">{feature}</span>
+              </li>
+            ))}
           </ul>
         </div>
 
