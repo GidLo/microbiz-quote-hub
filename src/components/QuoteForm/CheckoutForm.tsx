@@ -125,38 +125,40 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
       className="grid grid-cols-1 lg:grid-cols-3 gap-8"
     >
       <motion.div className="lg:col-span-2 space-y-8" variants={itemVariants}>
-        <div className="bg-card rounded-xl border border-border p-6">
-          <h3 className="text-lg font-medium mb-4">Billing Cycle</h3>
-          
-          <RadioGroup 
-            defaultValue={billCycle} 
-            onValueChange={(value) => setBillCycle(value as 'monthly' | 'annual')}
-            className="space-y-4"
-          >
-            <div className="flex items-center space-x-2 border rounded-lg p-4">
-              <RadioGroupItem value="monthly" id="monthly" />
-              <Label htmlFor="monthly" className="flex-1 cursor-pointer">
-                <div className="font-medium">Monthly</div>
-                <div className="text-sm text-muted-foreground">
-                  {quoteDetails.monthlyPremium} per month
-                </div>
-              </Label>
-            </div>
+        {!isEFTOnlyInsurance && (
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h3 className="text-lg font-medium mb-4">Billing Cycle</h3>
             
-            <div className="flex items-center space-x-2 border rounded-lg p-4 border-primary/50 bg-primary/5">
-              <RadioGroupItem value="annual" id="annual" />
-              <Label htmlFor="annual" className="flex-1 cursor-pointer">
-                <div className="font-medium">Annual (Save {quoteDetails.savingsWithAnnual})</div>
-                <div className="text-sm text-muted-foreground">
-                  {quoteDetails.annualPremium} per year
-                </div>
-              </Label>
-              <div className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
-                BEST VALUE
+            <RadioGroup 
+              defaultValue={billCycle} 
+              onValueChange={(value) => setBillCycle(value as 'monthly' | 'annual')}
+              className="space-y-4"
+            >
+              <div className="flex items-center space-x-2 border rounded-lg p-4">
+                <RadioGroupItem value="monthly" id="monthly" />
+                <Label htmlFor="monthly" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Monthly</div>
+                  <div className="text-sm text-muted-foreground">
+                    {quoteDetails.monthlyPremium} per month
+                  </div>
+                </Label>
               </div>
-            </div>
-          </RadioGroup>
-        </div>
+              
+              <div className="flex items-center space-x-2 border rounded-lg p-4 border-primary/50 bg-primary/5">
+                <RadioGroupItem value="annual" id="annual" />
+                <Label htmlFor="annual" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Annual (Save {quoteDetails.savingsWithAnnual})</div>
+                  <div className="text-sm text-muted-foreground">
+                    {quoteDetails.annualPremium} per year
+                  </div>
+                </Label>
+                <div className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
+                  BEST VALUE
+                </div>
+              </div>
+            </RadioGroup>
+          </div>
+        )}
         
         <div className="bg-card rounded-xl border border-border p-6">
           <h3 className="text-lg font-medium mb-4">Payment Method</h3>
@@ -355,7 +357,14 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Premium</span>
-              <span>{billCycle === 'monthly' ? quoteDetails.monthlyPremium + '/month' : quoteDetails.annualPremium + '/year'}</span>
+              <span>
+                {isEFTOnlyInsurance 
+                  ? `${quoteDetails.annualPremium} (once-off)`
+                  : billCycle === 'monthly' 
+                    ? `${quoteDetails.monthlyPremium}/month`
+                    : `${quoteDetails.annualPremium}/year`
+                }
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Coverage Start</span>
@@ -364,7 +373,14 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
             <div className="border-t border-border my-3"></div>
             <div className="flex justify-between font-semibold">
               <span>Total Due Today</span>
-              <span>{billCycle === 'monthly' ? quoteDetails.monthlyPremium : quoteDetails.annualPremium}</span>
+              <span>
+                {isEFTOnlyInsurance 
+                  ? quoteDetails.annualPremium
+                  : billCycle === 'monthly' 
+                    ? quoteDetails.monthlyPremium 
+                    : quoteDetails.annualPremium
+                }
+              </span>
             </div>
           </div>
           
