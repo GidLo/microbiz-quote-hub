@@ -89,7 +89,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
     const newErrors: Record<string, string> = {};
     
     // Determine what should be shown for validation
-    const shouldShowInceptionDate = insuranceType !== 'event-liability';
+    const shouldShowInceptionDate = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
     const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
     const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
     
@@ -183,7 +183,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
   // Determine if annual revenue and number of employees should be shown
   const shouldShowAnnualRevenue = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
   const shouldShowNumberOfEmployees = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
-  const shouldShowInceptionDate = insuranceType !== 'event-liability';
+  const shouldShowInceptionDate = insuranceType !== 'event-liability' && insuranceType !== 'contractors-all-risk';
   
   return (
     <motion.form 
