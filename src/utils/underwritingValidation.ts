@@ -65,5 +65,34 @@ export const checkUnderwritingRejection = (
     }
   }
 
+  if (insuranceType === 'contractors-all-risk') {
+    // Check project duration exceeds 12 months
+    if (underwritingAnswers?.['ProjectDuration']) {
+      const duration = parseInt(underwritingAnswers['ProjectDuration']);
+      if (duration > 12) {
+        return {
+          rejectedQuestion: "Project duration exceeds 12 months",
+          rejectedAnswer: "true"
+        };
+      }
+    }
+
+    // Check residential construction classification
+    if (underwritingAnswers?.['DoyouconfirmthaCAR'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that the construction can be classified as residential construction or small retail & commercial construction?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check civil works inclusion
+    if (underwritingAnswers?.['DoyouconfirmthaCAR1'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that the contract will not include any civil works?",
+        rejectedAnswer: "false"
+      };
+    }
+  }
+
   return null;
 };
