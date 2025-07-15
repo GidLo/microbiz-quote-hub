@@ -42,12 +42,20 @@ const InsurerQuoteCard = ({
 
         <div className="text-center mb-6">
           <div className="text-3xl font-bold text-primary mb-2">
-            {quote.monthlyPremium}
-            <span className="text-sm font-normal text-muted-foreground"> / month</span>
+            {(quote.insuranceType === 'event-liability' || quote.insuranceType === 'contractors-all-risk') 
+              ? quote.annualPremium 
+              : quote.monthlyPremium}
+            <span className="text-sm font-normal text-muted-foreground">
+              {(quote.insuranceType === 'event-liability' || quote.insuranceType === 'contractors-all-risk') 
+                ? ' Once-off' 
+                : ' / month'}
+            </span>
           </div>
-          <p className="text-sm text-muted-foreground">
-            or {quote.annualPremium} annually (save {quote.savingsWithAnnual})
-          </p>
+          {!(quote.insuranceType === 'event-liability' || quote.insuranceType === 'contractors-all-risk') && (
+            <p className="text-sm text-muted-foreground">
+              or {quote.annualPremium} annually (save {quote.savingsWithAnnual})
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">

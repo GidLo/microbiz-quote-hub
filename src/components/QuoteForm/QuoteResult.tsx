@@ -303,7 +303,11 @@ const QuoteResult = ({
         <div className="flex items-center gap-4">
           {selectedQuote && (
             <p className="text-sm text-muted-foreground">
-              Selected: {selectedQuote.insurerName} - {selectedQuote.monthlyPremium}/month
+              Selected: {selectedQuote.insurerName} - {
+                (selectedQuote.insuranceType === 'event-liability' || selectedQuote.insuranceType === 'contractors-all-risk')
+                  ? `${selectedQuote.annualPremium} once-off`
+                  : `${selectedQuote.monthlyPremium}/month`
+              }
             </p>
           )}
           <Button 
