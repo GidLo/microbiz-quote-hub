@@ -20,7 +20,8 @@ interface CheckoutFormProps {
 
 const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) => {
   const insurance = INSURANCE_TYPES.find(i => i.id === insuranceType);
-  const [paymentMethod, setPaymentMethod] = useState<'debit' | 'eft'>('debit');
+  const isEFTOnlyInsurance = insuranceType === 'event-liability' || insuranceType === 'contractors-all-risk';
+  const [paymentMethod, setPaymentMethod] = useState<'debit' | 'eft'>(isEFTOnlyInsurance ? 'eft' : 'debit');
   const [billCycle, setBillCycle] = useState<'monthly' | 'annual'>('monthly');
   const [showMandateDialog, setShowMandateDialog] = useState(false);
   
@@ -165,13 +166,15 @@ const CheckoutForm = ({ insuranceType, onComplete, onBack }: CheckoutFormProps) 
             onValueChange={(value) => setPaymentMethod(value as 'debit' | 'eft')}
             className="space-y-4 mb-6"
           >
-            <div className="flex items-center space-x-2 border rounded-lg p-4">
-              <RadioGroupItem value="debit" id="debit" />
-              <Label htmlFor="debit" className="flex-1 cursor-pointer">
-                <div className="font-medium">Monthly debit order</div>
-              </Label>
-              <CreditCard className="h-5 w-5 text-muted-foreground" />
-            </div>
+            {!isEFTOnlyInsurance && (
+              <div className="flex items-center space-x-2 border rounded-lg p-4">
+                <RadioGroupItem value="debit" id="debit" />
+                <Label htmlFor="debit" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Monthly debit order</div>
+                </Label>
+                <CreditCard className="h-5 w-5 text-muted-foreground" />
+              </div>
+            )}
             
             <div className="flex items-center space-x-2 border rounded-lg p-4">
               <RadioGroupItem value="eft" id="eft" />
