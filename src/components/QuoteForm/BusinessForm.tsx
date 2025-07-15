@@ -205,7 +205,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
       {/* Business Address Section */}
       <motion.div className="space-y-4" variants={itemVariants}>
         <div className="space-y-2">
-          <Label htmlFor="street">Street Address</Label>
+          <Label htmlFor="street">Street Address (Your business address)</Label>
           <Input
             id="street"
             name="street"
