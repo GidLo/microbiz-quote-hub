@@ -35,12 +35,7 @@ const InsurerQuoteCard = ({
             </div>
             <div>
               <h3 className="font-semibold text-lg">{quote.insurerName}</h3>
-              <div className="flex items-center gap-1">
-                {renderStars(quote.rating)}
-                <span className="text-sm text-muted-foreground ml-1">
-                  ({quote.rating}/5)
-                </span>
-              </div>
+              
             </div>
           </div>
         </div>
@@ -69,12 +64,7 @@ const InsurerQuoteCard = ({
         <div className="space-y-3 mb-6">
           
           <ul className="space-y-2">
-            {quote.features.slice(0, 3).map((feature, index) => (
-              <li key={index} className="flex items-center gap-2 text-sm">
-                <Check className="h-4 w-4 text-primary" />
-                {feature}
-              </li>
-            ))}
+            {quote.features.slice(0, 3).map((feature, index) => {})}
           </ul>
         </div>
 
