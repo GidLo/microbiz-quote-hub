@@ -78,14 +78,14 @@ const InsurerQuoteCard = ({
           </ul>
         </div>
 
-        <div className="flex gap-3">
-          <Button onClick={() => onSelect(quote)} className="flex-1 text-sm" variant="default">
+        <div className="flex gap-2">
+          <Button onClick={() => onSelect(quote)} className="flex-1 text-xs py-2 px-3" variant="default">
             Add to Cart
           </Button>
           <Button onClick={() => {
           // TODO: Implement email quote functionality
           console.log('Email quote for:', quote.insurerName);
-        }} className="flex-1 text-sm" variant="outline">
+        }} className="flex-1 text-xs py-2 px-3" variant="outline">
             Email Quote
           </Button>
         </div>
