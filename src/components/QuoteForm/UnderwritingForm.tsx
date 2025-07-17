@@ -81,11 +81,14 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         'DoyouwishtoaddSCAR'
       ],
       'public-liability': [
-        'public-visitors', 
-        'premises-type', 
-        'safety-procedures', 
-        'offsite-activities', 
-        'hazardous-materials'
+        'SuminsuredforcySALIABILITY',
+        'AreanyofyourbraSALIABILITY',
+        'HaveyouduringtSALIABILITY',
+        'HasanyInsurerevSALIABILITY',
+        'HowmanyliabilitSALIABILITY',
+        'WastheclaimlessSALIABILITY',
+        'IstheInsuredaf',
+        'DoyouacknowledgSALIABILITY'
       ],
       'event-liability': [
         'EventInceptionDate', 
