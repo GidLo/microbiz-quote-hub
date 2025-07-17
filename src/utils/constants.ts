@@ -111,7 +111,7 @@ export const INSURANCE_TYPES: InsuranceOption[] = [
 export const QUOTE_STEPS: QuoteStep[] = [
   {
     id: 'contact',
-    title: 'Contact Details',
+    title: 'Contact Information',
     description: 'Tell us how we can reach you'
   },
   {
@@ -121,12 +121,12 @@ export const QUOTE_STEPS: QuoteStep[] = [
   },
   {
     id: 'underwriting',
-    title: 'Underwriting Questions',
+    title: 'Insurance Questions',
     description: 'Help us understand your specific needs'
   },
   {
     id: 'quote',
-    title: 'Your Quote',
+    title: 'Your Quotes',
     description: 'Review your customized insurance quote'
   },
   {
