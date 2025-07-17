@@ -22,12 +22,20 @@ interface UnderwritingFormProps {
   onBack: () => void;
   contactId: string | null;
   contactDetails?: any;
+  initialData?: Record<string, any>;
 }
 
-const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, contactDetails }: UnderwritingFormProps) => {
-  const [formData, setFormData] = useState<Record<string, any>>({});
+const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, contactDetails, initialData }: UnderwritingFormProps) => {
+  const [formData, setFormData] = useState<Record<string, any>>(initialData || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
+
+  // Update form data when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
   
   const handleFormDataChange = (newData: Record<string, any>) => {
     setFormData(prev => ({ ...prev, ...newData }));
@@ -183,12 +191,31 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
       try {
         // Save underwriting answers to database
         if (contactId) {
-          const { error } = await supabase
+          // Check if underwriting answers already exist for this contact
+          const { data: existingAnswers } = await supabase
             .from('underwriting_answers')
-            .insert({
-              contact_id: contactId,
-              data: formData
-            });
+            .select('id')
+            .eq('contact_id', contactId)
+            .maybeSingle();
+
+          let error;
+          if (existingAnswers) {
+            // Update existing record
+            const { error: updateError } = await supabase
+              .from('underwriting_answers')
+              .update({ data: formData })
+              .eq('id', existingAnswers.id);
+            error = updateError;
+          } else {
+            // Insert new record
+            const { error: insertError } = await supabase
+              .from('underwriting_answers')
+              .insert({
+                contact_id: contactId,
+                data: formData
+              });
+            error = insertError;
+          }
 
           if (error) {
             console.error('Error saving underwriting answers:', error);

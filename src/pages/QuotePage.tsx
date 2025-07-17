@@ -38,6 +38,7 @@ const QuotePage = () => {
   const [selectedQuote, setSelectedQuote] = useState<InsurerQuote | null>(null);
   const [legalInformation, setLegalInformation] = useState<LegalInformationData | null>(null);
   const [contactId, setContactId] = useState<string | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   
   useEffect(() => {
     if (typeParam && INSURANCE_TYPES.some(i => i.id === typeParam)) {
@@ -50,6 +51,57 @@ const QuotePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentStep]);
+
+  // Load existing data when navigating back
+  const loadExistingData = async (contactId: string) => {
+    setIsLoadingData(true);
+    try {
+      // Load business details
+      const { data: businessData } = await supabase
+        .from('business_details')
+        .select('*')
+        .eq('contact_id', contactId)
+        .eq('insurance_type', selectedInsuranceType)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (businessData) {
+        const businessDetail: BusinessDetail = {
+          businessName: businessData.business_name || '',
+          registrationNumber: businessData.registration_number || '',
+          industry: businessData.industry || '',
+          annualRevenue: businessData.annual_revenue || '',
+          numberOfEmployees: businessData.number_of_employees || '',
+          inceptionDate: businessData.inception_date ? new Date(businessData.inception_date) : undefined,
+          address: {
+            street: businessData.street_address || '',
+            city: businessData.city || '',
+            province: businessData.province || '',
+            postalCode: businessData.postal_code || ''
+          }
+        };
+        setBusinessDetails(businessDetail);
+      }
+
+      // Load underwriting answers
+      const { data: underwritingData } = await supabase
+        .from('underwriting_answers')
+        .select('*')
+        .eq('contact_id', contactId)
+        .order('datecreated', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (underwritingData?.data) {
+        setUnderwritingAnswers(underwritingData.data as Record<string, any>);
+      }
+    } catch (error) {
+      console.error('Error loading existing data:', error);
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
   
   const handleContactSubmit = async (data: ContactDetail) => {
     try {
@@ -107,23 +159,44 @@ const QuotePage = () => {
         return;
       }
 
-      // Insert business details
-      const { error } = await supabase
+      // Check if business details already exist for this contact and insurance type
+      const { data: existingBusiness } = await supabase
         .from('business_details')
-        .insert({
-          contact_id: contactId,
-          insurance_type: selectedInsuranceType as string,
-          business_name: data.businessName || null,
-          registration_number: data.registrationNumber || null,
-          industry: data.industry || null,
-          annual_revenue: data.annualRevenue || null,
-          number_of_employees: data.numberOfEmployees || null,
-          inception_date: data.inceptionDate?.toISOString().split('T')[0] || null,
-          street_address: data.address.street || null,
-          city: data.address.city || null,
-          province: data.address.province || null,
-          postal_code: data.address.postalCode || null
-        });
+        .select('id')
+        .eq('contact_id', contactId)
+        .eq('insurance_type', selectedInsuranceType as string)
+        .maybeSingle();
+
+      const businessData = {
+        contact_id: contactId,
+        insurance_type: selectedInsuranceType as string,
+        business_name: data.businessName || null,
+        registration_number: data.registrationNumber || null,
+        industry: data.industry || null,
+        annual_revenue: data.annualRevenue || null,
+        number_of_employees: data.numberOfEmployees || null,
+        inception_date: data.inceptionDate?.toISOString().split('T')[0] || null,
+        street_address: data.address.street || null,
+        city: data.address.city || null,
+        province: data.address.province || null,
+        postal_code: data.address.postalCode || null
+      };
+
+      let error;
+      if (existingBusiness) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from('business_details')
+          .update(businessData)
+          .eq('id', existingBusiness.id);
+        error = updateError;
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from('business_details')
+          .insert(businessData);
+        error = insertError;
+      }
 
       if (error) {
         console.error('Error saving business details:', error);
@@ -213,7 +286,12 @@ const QuotePage = () => {
           <BusinessForm 
             initialData={businessDetails || undefined} 
             onSubmit={handleBusinessSubmit}
-            onBack={() => setCurrentStep(0)}
+            onBack={async () => {
+              if (contactId) {
+                await loadExistingData(contactId);
+              }
+              setCurrentStep(0);
+            }}
             insuranceType={selectedInsuranceType as string}
           />
         );
@@ -223,9 +301,15 @@ const QuotePage = () => {
           <UnderwritingForm 
             selectedInsuranceType={selectedInsuranceType as InsuranceType}
             onSubmit={handleUnderwritingSubmit}
-            onBack={() => setCurrentStep(1)}
+            onBack={async () => {
+              if (contactId) {
+                await loadExistingData(contactId);
+              }
+              setCurrentStep(1);
+            }}
             contactId={contactId}
             contactDetails={contactDetails}
+            initialData={underwritingAnswers || undefined}
           />
         );
         
@@ -244,7 +328,12 @@ const QuotePage = () => {
             businessDetails={businessDetails}
             underwritingAnswers={underwritingAnswers}
             onProceed={handleQuoteSelect}
-            onBack={() => setCurrentStep(2)}
+            onBack={async () => {
+              if (contactId) {
+                await loadExistingData(contactId);
+              }
+              setCurrentStep(2);
+            }}
             underwritingRejection={underwritingRejection}
           />
         );

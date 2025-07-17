@@ -73,7 +73,7 @@ const PublicLiabilityForm = ({
         </Label>
         <Select
           onValueChange={(value) => handleChange('SuminsuredforcySALIABILITY', value)}
-          defaultValue={formData['SuminsuredforcySALIABILITY'] || ''}
+          value={formData['SuminsuredforcySALIABILITY'] || ''}
         >
           <SelectTrigger className={errors['SuminsuredforcySALIABILITY'] ? 'border-red-300' : ''}>
             <SelectValue placeholder="Select coverage amount" />
@@ -104,7 +104,7 @@ const PublicLiabilityForm = ({
         </Label>
         <RadioGroup
           onValueChange={(value) => handleChange('AreanyofyourbraSALIABILITY', value === 'yes')}
-          defaultValue={formData['AreanyofyourbraSALIABILITY'] === true ? 'yes' : 
+          value={formData['AreanyofyourbraSALIABILITY'] === true ? 'yes' : 
                        formData['AreanyofyourbraSALIABILITY'] === false ? 'no' : undefined}
           className={`flex space-x-4 ${errors['AreanyofyourbraSALIABILITY'] ? 'border-red-300' : ''}`}
         >
@@ -130,7 +130,7 @@ const PublicLiabilityForm = ({
         </Label>
         <RadioGroup
           onValueChange={(value) => handleChange('HaveyouduringtSALIABILITY', value === 'yes')}
-          defaultValue={formData['HaveyouduringtSALIABILITY'] === true ? 'yes' : 
+          value={formData['HaveyouduringtSALIABILITY'] === true ? 'yes' : 
                        formData['HaveyouduringtSALIABILITY'] === false ? 'no' : undefined}
           className={`flex space-x-4 ${errors['HaveyouduringtSALIABILITY'] ? 'border-red-300' : ''}`}
         >
@@ -156,7 +156,7 @@ const PublicLiabilityForm = ({
         </Label>
         <RadioGroup
           onValueChange={(value) => handleChange('HasanyInsurerevSALIABILITY', value === 'yes')}
-          defaultValue={formData['HasanyInsurerevSALIABILITY'] === true ? 'yes' : 
+          value={formData['HasanyInsurerevSALIABILITY'] === true ? 'yes' : 
                        formData['HasanyInsurerevSALIABILITY'] === false ? 'no' : undefined}
           className={`flex space-x-4 ${errors['HasanyInsurerevSALIABILITY'] ? 'border-red-300' : ''}`}
         >
@@ -182,7 +182,7 @@ const PublicLiabilityForm = ({
         </Label>
         <RadioGroup
           onValueChange={(value) => handleChange('HowmanyliabilitSALIABILITY', value)}
-          defaultValue={formData['HowmanyliabilitSALIABILITY'] || ''}
+          value={formData['HowmanyliabilitSALIABILITY'] || ''}
           className={`space-y-2 ${errors['HowmanyliabilitSALIABILITY'] ? 'border-red-300' : ''}`}
         >
           <div className="flex items-center space-x-2">
@@ -224,7 +224,7 @@ const PublicLiabilityForm = ({
           </Label>
           <RadioGroup
             onValueChange={(value) => handleChange('WastheclaimlessSALIABILITY', value === 'yes')}
-            defaultValue={formData['WastheclaimlessSALIABILITY'] === true ? 'yes' : 
+            value={formData['WastheclaimlessSALIABILITY'] === true ? 'yes' : 
                          formData['WastheclaimlessSALIABILITY'] === false ? 'no' : undefined}
             className={`flex space-x-4 ${errors['WastheclaimlessSALIABILITY'] ? 'border-red-300' : ''}`}
           >
@@ -251,7 +251,7 @@ const PublicLiabilityForm = ({
         </Label>
         <RadioGroup
           onValueChange={(value) => handleChange('IstheInsuredaf', value === 'confirm')}
-          defaultValue={formData['IstheInsuredaf'] === true ? 'confirm' : 
+          value={formData['IstheInsuredaf'] === true ? 'confirm' : 
                        formData['IstheInsuredaf'] === false ? 'decline' : undefined}
           className={`flex space-x-4 ${errors['IstheInsuredaf'] ? 'border-red-300' : ''}`}
         >
@@ -277,7 +277,7 @@ const PublicLiabilityForm = ({
         </Label>
         <RadioGroup
           onValueChange={(value) => handleChange('DoyouacknowledgSALIABILITY', value === 'accept')}
-          defaultValue={formData['DoyouacknowledgSALIABILITY'] === true ? 'accept' : 
+          value={formData['DoyouacknowledgSALIABILITY'] === true ? 'accept' : 
                        formData['DoyouacknowledgSALIABILITY'] === false ? 'decline' : undefined}
           className={`flex space-x-4 ${errors['DoyouacknowledgSALIABILITY'] ? 'border-red-300' : ''}`}
         >
