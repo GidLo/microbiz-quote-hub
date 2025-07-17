@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download, FileText, Shield } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Shield, FileEdit } from 'lucide-react';
 import { motion } from 'framer-motion';
 const PolicyDetails = () => {
   const {
@@ -150,6 +150,29 @@ const PolicyDetails = () => {
                     Download
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Policy Amendment Request */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Amend My Policy</CardTitle>
+              <CardDescription>
+                Request changes to your existing policies
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <FileEdit className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Policy Amendment Request</h3>
+                <p className="text-muted-foreground mb-6">
+                  Need to make changes to your policy? Our team will help you with any amendments.
+                </p>
+                <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                  <FileEdit className="h-4 w-4 mr-2" />
+                  Start Amendment Request
+                </Button>
               </div>
             </CardContent>
           </Card>
