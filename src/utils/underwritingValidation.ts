@@ -94,5 +94,78 @@ export const checkUnderwritingRejection = (
     }
   }
 
+  if (insuranceType === 'public-liability') {
+    // Check revenue exceeds R10,000,000
+    if (businessDetails?.annualRevenue) {
+      const revenue = businessDetails.annualRevenue;
+      const revenueNumber = parseFloat(revenue.replace(/[R,\s]/g, ''));
+      if (revenueNumber > 10000000) {
+        return {
+          rejectedQuestion: "Annual revenue exceeds R10,000,000",
+          rejectedAnswer: "true"
+        };
+      }
+    }
+
+    // Check branches outside South Africa
+    if (underwritingAnswers?.['AreanyofyourbraSALIABILITY'] === true) {
+      return {
+        rejectedQuestion: "Are any of your branches based outside the borders of South Africa or do you conduct business outside of South Africa?",
+        rejectedAnswer: "true"
+      };
+    }
+
+    // Check pollution prosecution
+    if (underwritingAnswers?.['HaveyouduringtSALIABILITY'] === true) {
+      return {
+        rejectedQuestion: "Have you, during the last 5 years, been prosecuted for contravention of any standard law relating to the release from the location of a substance into sewers, rivers, sea, and air or on the land, or had any claims or complaints made resulting from sudden and accidental pollution?",
+        rejectedAnswer: "true"
+      };
+    }
+
+    // Check insurance cancellation/refusal
+    if (underwritingAnswers?.['HasanyInsurerevSALIABILITY'] === true) {
+      return {
+        rejectedQuestion: "Has any Insurer ever cancelled or refused to renew any insurance, or imposed special restrictions or conditions?",
+        rejectedAnswer: "true"
+      };
+    }
+
+    // Check number of claims (2 or more)
+    if (underwritingAnswers?.['HowmanyliabilitSALIABILITY']) {
+      const claimsCount = parseInt(underwritingAnswers['HowmanyliabilitSALIABILITY']);
+      if (claimsCount >= 2) {
+        return {
+          rejectedQuestion: "Number of liability claims exceeds 1",
+          rejectedAnswer: "true"
+        };
+      }
+
+      // Check if 1 claim and claim amount > R500,000
+      if (claimsCount === 1 && underwritingAnswers?.['WastheclaimlessSALIABILITY'] === false) {
+        return {
+          rejectedQuestion: "Claim amount exceeds R500,000",
+          rejectedAnswer: "true"
+        };
+      }
+    }
+
+    // Check awareness of circumstances
+    if (underwritingAnswers?.['IstheInsuredaf'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that you are currently not aware of any circumstances that may give rise to a public liability claim?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check employee coverage acceptance
+    if (underwritingAnswers?.['DoyouacknowledgSALIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you accept that all employees outside SA will not be covered?",
+        rejectedAnswer: "false"
+      };
+    }
+  }
+
   return null;
 };
