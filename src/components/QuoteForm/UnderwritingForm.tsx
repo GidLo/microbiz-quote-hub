@@ -86,7 +86,6 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         'HaveyouduringtSALIABILITY',
         'HasanyInsurerevSALIABILITY',
         'HowmanyliabilitSALIABILITY',
-        'WastheclaimlessSALIABILITY',
         'IstheInsuredaf',
         'DoyouacknowledgSALIABILITY'
       ],
@@ -162,6 +161,14 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         formData['DoyourequirecovCARPI-PL66'] === true) {
       if (!formData['SuminsuredreplaPI-PL67CAR']) {
         newErrors['SuminsuredreplaPI-PL67CAR'] = 'This field is required';
+      }
+    }
+    
+    // Special validation for public liability claim amount when 1 claim is selected
+    if (selectedInsuranceType === 'public-liability' && 
+        formData['HowmanyliabilitSALIABILITY'] === '1') {
+      if (formData['WastheclaimlessSALIABILITY'] === undefined || formData['WastheclaimlessSALIABILITY'] === null || formData['WastheclaimlessSALIABILITY'] === '') {
+        newErrors['WastheclaimlessSALIABILITY'] = 'This field is required';
       }
     }
     

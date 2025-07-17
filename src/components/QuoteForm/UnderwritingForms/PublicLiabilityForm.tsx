@@ -215,31 +215,33 @@ const PublicLiabilityForm = ({
         )}
       </motion.div>
 
-      {/* Was the claim less than R500,000 */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label htmlFor="WastheclaimlessSALIABILITY">
-          Was the claim less than R500,000?
-          <span className="text-red-500 ml-1">*</span>
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleChange('WastheclaimlessSALIABILITY', value === 'yes')}
-          defaultValue={formData['WastheclaimlessSALIABILITY'] === true ? 'yes' : 
-                       formData['WastheclaimlessSALIABILITY'] === false ? 'no' : undefined}
-          className={`flex space-x-4 ${errors['WastheclaimlessSALIABILITY'] ? 'border-red-300' : ''}`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="WastheclaimlessSALIABILITY-yes" />
-            <Label htmlFor="WastheclaimlessSALIABILITY-yes">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="WastheclaimlessSALIABILITY-no" />
-            <Label htmlFor="WastheclaimlessSALIABILITY-no">No</Label>
-          </div>
-        </RadioGroup>
-        {errors['WastheclaimlessSALIABILITY'] && (
-          <p className="text-sm text-red-500">{errors['WastheclaimlessSALIABILITY']}</p>
-        )}
-      </motion.div>
+      {/* Was the claim less than R500,000 - Conditional on having 1 claim */}
+      {formData['HowmanyliabilitSALIABILITY'] === '1' && (
+        <motion.div variants={itemVariants} className="space-y-2 ml-6 border-l-2 border-primary/20 pl-4">
+          <Label htmlFor="WastheclaimlessSALIABILITY">
+            Was the claim less than R500,000?
+            <span className="text-red-500 ml-1">*</span>
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleChange('WastheclaimlessSALIABILITY', value === 'yes')}
+            defaultValue={formData['WastheclaimlessSALIABILITY'] === true ? 'yes' : 
+                         formData['WastheclaimlessSALIABILITY'] === false ? 'no' : undefined}
+            className={`flex space-x-4 ${errors['WastheclaimlessSALIABILITY'] ? 'border-red-300' : ''}`}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="WastheclaimlessSALIABILITY-yes" />
+              <Label htmlFor="WastheclaimlessSALIABILITY-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="WastheclaimlessSALIABILITY-no" />
+              <Label htmlFor="WastheclaimlessSALIABILITY-no">No</Label>
+            </div>
+          </RadioGroup>
+          {errors['WastheclaimlessSALIABILITY'] && (
+            <p className="text-sm text-red-500">{errors['WastheclaimlessSALIABILITY']}</p>
+          )}
+        </motion.div>
+      )}
 
       {/* Do you confirm that you are currently not aware of any circumstances */}
       <motion.div variants={itemVariants} className="space-y-2">
