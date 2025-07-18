@@ -69,6 +69,7 @@ const ContractorsAllRiskForm = ({
           The site location
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">This is the location where the project will be taking place.</p>
         <Input 
           id="SiteLocationSelection"
           type="text"
@@ -87,6 +88,7 @@ const ContractorsAllRiskForm = ({
           Estimated contract value
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">This is the Estimated value of the works and must include the value of all materials and labour charges together with any "free issue materials" and VAT (Free Issue Materials are those materials/items, purchased by the Client prior to the commencement of the Contract, which are to be incorporated or built into the Contract Works).</p>
         <div className="relative">
           <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R</span>
           <Input 
@@ -111,6 +113,7 @@ const ContractorsAllRiskForm = ({
           Your project start date
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">The period starting with the establishment of the site and ending at Practical Completion and handover to the Client.</p>
         <Input 
           id="ProjectInceptionDate"
           type="date"
@@ -128,6 +131,7 @@ const ContractorsAllRiskForm = ({
           What is the duration of the project (in months)
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">The period starting with the establishment of the site and ending at Practical Completion and handover to the Client. Max period of 12 months allowed on the platform.</p>
         <Input 
           id="ProjectDuration"
           type="number"
@@ -219,6 +223,7 @@ const ContractorsAllRiskForm = ({
           Do you confirm that the contract will not include any civil works?
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">Civils is engineering works such as roads, bridges, canals, dams, airports, sewerage systems, pipelines, structural components of buildings, and railways.</p>
         <RadioGroup
           onValueChange={(value) => handleChange('DoyouconfirmthaCAR1', value === 'Yes')}
           defaultValue={formData['DoyouconfirmthaCAR1'] === true ? 'Yes' : 
@@ -269,6 +274,7 @@ const ContractorsAllRiskForm = ({
           Is the construction nearby or does it relate to construction at any of the following? Airport, Rivers, Dams, Mountains?
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">When considering nearby locations, we consider construction to be nearby if it is within 100m.</p>
         <RadioGroup
           onValueChange={(value) => handleChange('IsconstructionnearbyordoesitrelateCAR', value === 'Yes')}
           defaultValue={formData['IsconstructionnearbyordoesitrelateCAR'] === true ? 'Yes' : 
@@ -371,6 +377,7 @@ const ContractorsAllRiskForm = ({
           Do you wish to add SASRIA cover?
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-sm text-muted-foreground">SASRIA insurance covers you against risks such as civil commotion, labour and public disorder, strikes, riots and terrorism.</p>
         <RadioGroup
           onValueChange={(value) => handleChange('DoyouwishtoaddSCAR', value === 'Yes')}
           defaultValue={formData['DoyouwishtoaddSCAR'] === true ? 'Yes' : 
