@@ -88,6 +88,9 @@ const EventLiabilityForm = ({
           What is the duration of the event (in days)
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <p className="text-xs text-muted-foreground">
+          This is the duration of the event, including the setup and breakdown.
+        </p>
         <Select
           onValueChange={(value) => handleChange('EventDuration', value)}
           defaultValue={formData['EventDuration'] || ''}
