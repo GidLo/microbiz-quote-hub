@@ -1,10 +1,16 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -71,13 +77,45 @@ const EventLiabilityForm = ({
           Your event start date
           <span className="text-red-500 ml-1">*</span>
         </Label>
-        <Input 
-          id="EventInceptionDate"
-          type="date"
-          value={formData['EventInceptionDate'] || ''}
-          onChange={(e) => handleChange('EventInceptionDate', e.target.value)}
-          className={errors['EventInceptionDate'] ? 'border-red-300' : ''}
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !formData['EventInceptionDate'] && "text-muted-foreground",
+                errors['EventInceptionDate'] ? 'border-red-300' : ''
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {formData['EventInceptionDate'] ? (
+                format(new Date(formData['EventInceptionDate']), 'PPP')
+              ) : (
+                <span>Pick a date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={formData['EventInceptionDate'] ? new Date(formData['EventInceptionDate']) : undefined}
+              onSelect={(date) => {
+                if (date) {
+                  handleChange('EventInceptionDate', format(date, 'yyyy-MM-dd'));
+                }
+              }}
+              disabled={(date) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const sixMonthsFromNow = new Date();
+                sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+                return date < today || date > sixMonthsFromNow;
+              }}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
         {errors['EventInceptionDate'] && (
           <p className="text-sm text-red-500">{errors['EventInceptionDate']}</p>
         )}
