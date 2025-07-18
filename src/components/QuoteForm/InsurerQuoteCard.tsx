@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Check, Star, Shield, Award } from 'lucide-react';
+import { Star, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { InsurerQuote } from '@/types';
@@ -73,8 +73,7 @@ const InsurerQuoteCard = ({
           
           <ul className="space-y-2">
             {quote.features.slice(0, 3).map((feature, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-primary" />
+              <li key={index}>
                 <span className="text-sm">{feature}</span>
               </li>
             ))}
