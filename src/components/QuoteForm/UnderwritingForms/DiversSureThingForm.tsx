@@ -385,21 +385,23 @@ const DiversSureThingForm = ({
         )}
       </motion.div>
 
-      {/* DAN SA membership number */}
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <Label htmlFor="PleaseEnterDANSAmemebershipSURETHING_9">
-          Please enter DAN SA membership number <span className="text-red-500">*</span>
-        </Label>
-        <Input
-          id="PleaseEnterDANSAmemebershipSURETHING_9"
-          value={formData.PleaseEnterDANSAmemebershipSURETHING_9 || ''}
-          onChange={(e) => handleInputChange('PleaseEnterDANSAmemebershipSURETHING_9', e.target.value)}
-          placeholder="Enter DAN SA membership number"
-        />
-        {errors.PleaseEnterDANSAmemebershipSURETHING_9 && (
-          <p className="text-red-500 text-sm">{errors.PleaseEnterDANSAmemebershipSURETHING_9}</p>
-        )}
-      </motion.div>
+      {/* DAN SA membership number - only show if user has active membership */}
+      {formData.DoyouconfirmthaSURETHING_8 === true && (
+        <motion.div className="space-y-2" variants={itemVariants}>
+          <Label htmlFor="PleaseEnterDANSAmemebershipSURETHING_9">
+            Please enter DAN SA membership number <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="PleaseEnterDANSAmemebershipSURETHING_9"
+            value={formData.PleaseEnterDANSAmemebershipSURETHING_9 || ''}
+            onChange={(e) => handleInputChange('PleaseEnterDANSAmemebershipSURETHING_9', e.target.value)}
+            placeholder="Enter DAN SA membership number"
+          />
+          {errors.PleaseEnterDANSAmemebershipSURETHING_9 && (
+            <p className="text-red-500 text-sm">{errors.PleaseEnterDANSAmemebershipSURETHING_9}</p>
+          )}
+        </motion.div>
+      )}
     </div>
   );
 };
