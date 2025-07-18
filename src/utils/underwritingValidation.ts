@@ -167,5 +167,64 @@ export const checkUnderwritingRejection = (
     }
   }
 
+  if (insuranceType === 'event-liability') {
+    // Check venue capacity compliance
+    if (underwritingAnswers?.['DoyouconfirmcapEVENTLIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that you will adhere to the venue capacity guidelines as set out by the venue or local authority?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check secondary suppliers liability coverage
+    if (underwritingAnswers?.['DoyouacknowledgEVENTLIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you acknowledge that all secondary suppliers must maintain their own public liability coverage?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check adventure activities (fireworks, bungee jumping, etc.)
+    if (underwritingAnswers?.['DoyouconfirmfirEVENTLIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that no adventure activities (such as fireworks, bungee jumping, etc.) will take place at your event?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check motor/marine/aviation activities
+    if (underwritingAnswers?.['DoyouconfirmactEVENTLIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that no motor, marine, or aviation activities will take place at your event?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check political activities
+    if (underwritingAnswers?.['DoyouconfirmpolEVENTLIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that your event is not related to any political activities?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check attendee limit (won't exceed 2000 attendees)
+    if (underwritingAnswers?.['DoyouconfirmpolnotexceedEVENTLIABILITY'] === false) {
+      return {
+        rejectedQuestion: "Do you confirm that your event will not exceed 2000 attendees?",
+        rejectedAnswer: "false"
+      };
+    }
+
+    // Check event duration (reject if 5-7 days or more than 7 days)
+    if (underwritingAnswers?.['EventDuration'] === '5-7-days' || 
+        underwritingAnswers?.['EventDuration'] === 'more-than-7-days') {
+      return {
+        rejectedQuestion: "Event duration exceeds 4 days",
+        rejectedAnswer: underwritingAnswers['EventDuration']
+      };
+    }
+  }
+
   return null;
 };
