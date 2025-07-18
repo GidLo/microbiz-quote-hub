@@ -226,5 +226,35 @@ export const checkUnderwritingRejection = (
     }
   }
 
+  if (insuranceType === 'divers-surething') {
+    // Check all boolean questions - reject if any are answered "No" (false)
+    const booleanFields = [
+      { field: 'DoyouconfirmthaSURETHING_1', question: 'Is your business solvent?' },
+      { field: 'DoyouconfirmthaSURETHING_2', question: 'Is your business based in South Africa, and are you seeking insurance coverage for South African operations only, that consists of a single entity (no subsidiaries)?' },
+      { field: 'DoyouconfirmthaSURETHING_3', question: 'Can you confirm that none of the directors or management have been involved in any past or ongoing regulatory inquiries, investigations, dismissals, or disqualifications?' },
+      { field: 'DoyouconfirmthaSURETHING_4', question: 'Does your business have policies and processes in place for treating employees fairly and consistently?' },
+      { field: 'DoyouconfirmthaSURETHING_5', question: 'Can you confirm that you are not planning any retrenchments within the next 12 months?' },
+      { field: 'DoyouconfirmthaSURETHING_6', question: 'Can you confirm that auditors have not raised any concerns or issues or made material findings concerning your financial statements?' },
+      { field: 'DoyouconfirmthaSURETHING_7', question: 'Can you confirm that there are no claims or circumstances in the last 5 years that have, or would have, led to the business having a legal liability claim from a third party?' },
+      { field: 'AreAllProspectiveSURETHING', question: 'Are all prospective students/clients informed about the dangers of diving, and have they acknowledged this in writing?' },
+      { field: 'DoYouEnsureThatSURETHING', question: 'Do you ensure that every student/client signs a liability release and disclaimer form before diving?' },
+      { field: 'IsTheDiveMasterSURETHING', question: 'Is the Dive Master leading the activity fully qualified and certified for the diving location?' },
+      { field: 'DoyouconfirmthaSURETHING_9', question: 'Can you confirm that the Dive Master is familiar with the specific dive site/sites where the activity will take place?' },
+      { field: 'DoAllProspectiveStudentsSURETHING', question: 'Do all prospective students/clients sign a medical statement prior to diving?' },
+      { field: 'IsEmergencyMedicalSURETHING', question: 'Is emergency medical treatment available at or near the dive location?' },
+      { field: 'DoYouHaveProceduresInSURETHING', question: 'Do you have procedures in place for medical evacuation in case of an emergency?' },
+      { field: 'DoyouconfirmthaSURETHING_8', question: 'Do you have an active membership with DAN SA?' }
+    ];
+
+    for (const { field, question } of booleanFields) {
+      if (underwritingAnswers?.[field] === false) {
+        return {
+          rejectedQuestion: question,
+          rejectedAnswer: "false"
+        };
+      }
+    }
+  }
+
   return null;
 };
