@@ -310,9 +310,14 @@ const EventLiabilityForm = ({
 
       <motion.div variants={itemVariants} className="space-y-2">
         <Label htmlFor="DoyouconfirmpolEVENTLIABILITY">
-          Do you confirm that the event does not relate to political activities such as rallies, union involvement, or government events?
+          Do you confirm that the event does not relate to political activities listed below:
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <div className="text-sm text-foreground ml-4 space-y-1">
+          <p>• Political rallies/ gatherings/ marches</p>
+          <p>• Any risks where trade unions are involved</p>
+          <p>• Government sponsored events on public holidays</p>
+        </div>
         <RadioGroup
           onValueChange={(value) => handleChange('DoyouconfirmpolEVENTLIABILITY', value === 'yes')}
           defaultValue={formData['DoyouconfirmpolEVENTLIABILITY'] === true ? 'yes' : 
