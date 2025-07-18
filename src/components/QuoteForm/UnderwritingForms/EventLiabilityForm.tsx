@@ -249,7 +249,7 @@ const EventLiabilityForm = ({
           Do you confirm that none of the following adventure activities will take place at the event?
           <span className="text-red-500 ml-1">*</span>
         </Label>
-        <div className="text-sm text-muted-foreground ml-4 space-y-1">
+        <div className="text-sm text-foreground ml-4 space-y-1">
           <p>• Fireworks, bonfires and/or pyrotechnical devices.</p>
           <p>• Shooting ranges for guns or archery;</p>
           <p>• Persons riding on animals;</p>
@@ -283,7 +283,7 @@ const EventLiabilityForm = ({
           Do you confirm that none of the following activities will take place at the event?
           <span className="text-red-500 ml-1">*</span>
         </Label>
-        <div className="text-sm text-muted-foreground ml-4 space-y-1">
+        <div className="text-sm text-foreground ml-4 space-y-1">
           <p>• Motor activities for example spinning/ drifting/ drag racing/ quad bike rides/ motor car or motorbike rallies</p>
           <p>• Marine/ water activities</p>
           <p>• Aviation activities / other than ground events at air shows, excluding any aviation activity</p>
