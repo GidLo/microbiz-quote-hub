@@ -246,9 +246,18 @@ const EventLiabilityForm = ({
 
       <motion.div variants={itemVariants} className="space-y-2">
         <Label htmlFor="DoyouconfirmfirEVENTLIABILITY">
-          Do you confirm that none of the following adventure activities will take place at the event? Fireworks, bonfires, shooting ranges, ballooning, fairground rides, paintball, rock climbing, etc.
+          Do you confirm that none of the following adventure activities will take place at the event?
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <div className="text-sm text-muted-foreground ml-4 space-y-1">
+          <p>• Fireworks, bonfires and/or pyrotechnical devices.</p>
+          <p>• Shooting ranges for guns or archery;</p>
+          <p>• Persons riding on animals;</p>
+          <p>• Ballooning or flying of any description;</p>
+          <p>• Fairground rides or mechanical or electrical rides of any kind;</p>
+          <p>• Paintball</p>
+          <p>• Rock climbing/ abseiling/ zip-lining/ bungee jumping</p>
+        </div>
         <RadioGroup
           onValueChange={(value) => handleChange('DoyouconfirmfirEVENTLIABILITY', value === 'yes')}
           defaultValue={formData['DoyouconfirmfirEVENTLIABILITY'] === true ? 'yes' : 
