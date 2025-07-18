@@ -70,14 +70,7 @@ const InsurerQuoteCard = ({
         </div>
 
         <div className="space-y-3 mb-6">
-          
-          <ul className="space-y-2">
-            {quote.features.slice(0, 3).map((feature, index) => (
-              <li key={index}>
-                <span className="text-sm">{feature}</span>
-              </li>
-            ))}
-          </ul>
+          <p className="text-sm text-muted-foreground">R50 Platform fee is NOT included on the quote price</p>
         </div>
 
         <div className="flex gap-2">
