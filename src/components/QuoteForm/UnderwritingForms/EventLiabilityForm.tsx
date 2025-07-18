@@ -280,9 +280,14 @@ const EventLiabilityForm = ({
 
       <motion.div variants={itemVariants} className="space-y-2">
         <Label htmlFor="DoyouconfirmactEVENTLIABILITY">
-          Do you confirm that none of the following activities will take place at the event? Motor, marine, or aviation activities.
+          Do you confirm that none of the following activities will take place at the event?
           <span className="text-red-500 ml-1">*</span>
         </Label>
+        <div className="text-sm text-muted-foreground ml-4 space-y-1">
+          <p>• Motor activities for example spinning/ drifting/ drag racing/ quad bike rides/ motor car or motorbike rallies</p>
+          <p>• Marine/ water activities</p>
+          <p>• Aviation activities / other than ground events at air shows, excluding any aviation activity</p>
+        </div>
         <RadioGroup
           onValueChange={(value) => handleChange('DoyouconfirmactEVENTLIABILITY', value === 'yes')}
           defaultValue={formData['DoyouconfirmactEVENTLIABILITY'] === true ? 'yes' : 
