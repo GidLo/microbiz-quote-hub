@@ -180,6 +180,21 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
       }
     }
     
+    // Special validation for event liability inception date
+    if (selectedInsuranceType === 'event-liability' && formData['EventInceptionDate']) {
+      const eventDate = new Date(formData['EventInceptionDate']);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      const sixMonthsFromNow = new Date();
+      sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+      
+      if (eventDate < today) {
+        newErrors['EventInceptionDate'] = 'Event date cannot be in the past';
+      } else if (eventDate > sixMonthsFromNow) {
+        newErrors['EventInceptionDate'] = 'Event date cannot be more than 6 months in the future';
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
