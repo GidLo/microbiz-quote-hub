@@ -227,6 +227,18 @@ export const checkUnderwritingRejection = (
   }
 
   if (insuranceType === 'divers-surething') {
+    // Check revenue exceeds R20,000,000
+    if (businessDetails?.annualRevenue) {
+      const revenue = businessDetails.annualRevenue;
+      const revenueNumber = parseFloat(revenue.replace(/[R,\s]/g, ''));
+      if (revenueNumber > 20000000) {
+        return {
+          rejectedQuestion: "Annual revenue exceeds R20,000,000",
+          rejectedAnswer: "true"
+        };
+      }
+    }
+
     // Check all boolean questions - reject if any are answered "No" (false)
     const booleanFields = [
       { field: 'DoyouconfirmthaSURETHING_1', question: 'Is your business solvent?' },
