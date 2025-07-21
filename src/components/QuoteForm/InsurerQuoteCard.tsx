@@ -28,16 +28,11 @@ const InsurerQuoteCard = ({
       {quote.isRecommended}
       
       <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
-              <Shield className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">{quote.insurerName}</h3>
-              
-            </div>
+        <div className="flex flex-col items-center mb-4">
+          <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-3">
+            <Shield className="h-6 w-6 text-primary" />
           </div>
+          <h3 className="font-semibold text-base">{quote.insurerName}</h3>
         </div>
 
         <div className="text-center mb-6">
