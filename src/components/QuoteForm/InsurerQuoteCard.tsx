@@ -48,7 +48,7 @@ const InsurerQuoteCard = ({
           </div>
           {!(quote.insuranceType === 'event-liability' || quote.insuranceType === 'contractors-all-risk') && (
             <p className="text-sm text-muted-foreground">
-              or {quote.annualPremium} annually (save {quote.savingsWithAnnual})
+              or R 5,000 annually (save R 300)
             </p>
           )}
         </div>

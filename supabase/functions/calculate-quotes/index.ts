@@ -109,8 +109,7 @@ serve(async (req) => {
       }
 
       const monthlyPremium = Math.round(adjustedPremium);
-      const annualPremium = Math.round(monthlyPremium * 12 * 0.9); // 10% discount for annual
-      const savings = (monthlyPremium * 12) - annualPremium;
+      const annualPremium = Math.round(monthlyPremium * 12); // No discount for annual
 
       const quote = {
         insurerId: product.insurer_id,
@@ -120,7 +119,7 @@ serve(async (req) => {
         annualPremium: `R ${annualPremium.toLocaleString()}`,
         coverageAmount: `R ${product.default_coverage.toLocaleString()}`,
         deductible: `R ${product.default_deductible.toLocaleString()}`,
-        savingsWithAnnual: `R ${savings.toLocaleString()}`,
+        savingsWithAnnual: `R 300`,
         rating: product.insurers.rating,
         features: product.features,
         isRecommended: product.is_recommended,
