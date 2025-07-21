@@ -35,6 +35,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
   });
   
   const [errors, setErrors] = useState<Partial<Record<keyof BusinessDetail | string, string>>>({});
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   
   // Format number with commas
   const formatNumber = (value: string) => {
@@ -82,6 +83,11 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
     // Clear error when date is selected
     if (errors.inceptionDate) {
       setErrors(prev => ({ ...prev, inceptionDate: '' }));
+    }
+    
+    // Close the calendar when a date is selected
+    if (date) {
+      setIsCalendarOpen(false);
     }
   };
 
@@ -271,7 +277,7 @@ const BusinessForm = ({ initialData, onSubmit, onBack, insuranceType }: Business
       {shouldShowInceptionDate && (
         <motion.div className="space-y-2" variants={itemVariants}>
           <Label htmlFor="inceptionDate">Your policy start date</Label>
-          <Popover>
+          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
                 id="inceptionDate"
