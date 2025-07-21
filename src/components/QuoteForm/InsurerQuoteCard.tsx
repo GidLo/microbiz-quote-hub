@@ -36,7 +36,7 @@ const InsurerQuoteCard = ({
         </div>
 
         <div className="text-center mb-6">
-          <div className="text-3xl font-bold text-primary mb-2">
+          <div className="text-2xl font-bold text-primary mb-2">
             {(quote.insuranceType === 'event-liability' || quote.insuranceType === 'contractors-all-risk') 
               ? quote.annualPremium 
               : quote.monthlyPremium}
