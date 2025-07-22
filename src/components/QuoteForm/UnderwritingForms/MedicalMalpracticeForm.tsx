@@ -1,4 +1,3 @@
-
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
@@ -573,35 +572,33 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Telehealth Services - Show for clinical practitioners */}
-      {isClinicalPractitioner && (
-        <motion.div variants={itemVariants} className="space-y-2">
-          <Label className={cn(errors['DoyouperformteleMEDICALMALPRACTICE'] && "text-red-500")}>
-            Do you perform any telehealth services?
-          </Label>
-          <RadioGroup
-            onValueChange={(value) => handleFieldChange('DoyouperformteleMEDICALMALPRACTICE', value === 'yes')}
-            defaultValue={formData['DoyouperformteleMEDICALMALPRACTICE'] === true ? 'yes' : 
-                         formData['DoyouperformteleMEDICALMALPRACTICE'] === false ? 'no' : undefined}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="yes" id="DoyouperformteleMEDICALMALPRACTICE-yes" />
-              <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-yes">YES</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="no" id="DoyouperformteleMEDICALMALPRACTICE-no" />
-              <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-no">NO</Label>
-            </div>
-          </RadioGroup>
-          {errors['DoyouperformteleMEDICALMALPRACTICE'] && (
-            <p className="text-sm text-red-500">{errors['DoyouperformteleMEDICALMALPRACTICE']}</p>
-          )}
-        </motion.div>
-      )}
+      {/* Telehealth Services - Show for all occupations */}
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label className={cn(errors['DoyouperformteleMEDICALMALPRACTICE'] && "text-red-500")}>
+          Do you perform any telehealth services?
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleFieldChange('DoyouperformteleMEDICALMALPRACTICE', value === 'yes')}
+          defaultValue={formData['DoyouperformteleMEDICALMALPRACTICE'] === true ? 'yes' : 
+                       formData['DoyouperformteleMEDICALMALPRACTICE'] === false ? 'no' : undefined}
+          className="flex space-x-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="yes" id="DoyouperformteleMEDICALMALPRACTICE-yes" />
+            <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-yes">YES</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="no" id="DoyouperformteleMEDICALMALPRACTICE-no" />
+            <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-no">NO</Label>
+          </div>
+        </RadioGroup>
+        {errors['DoyouperformteleMEDICALMALPRACTICE'] && (
+          <p className="text-sm text-red-500">{errors['DoyouperformteleMEDICALMALPRACTICE']}</p>
+        )}
+      </motion.div>
 
-      {/* Telehealth Percentage - Show for clinical practitioners who do telehealth */}
-      {isClinicalPractitioner && formData['DoyouperformteleMEDICALMALPRACTICE'] && (
+      {/* Telehealth Percentage - Show for all occupations who do telehealth */}
+      {formData['DoyouperformteleMEDICALMALPRACTICE'] && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['PercentageofyourMEDICALMALPRACTICE'] && "text-red-500")}>
             What percentage of your work involves telehealth services? *
@@ -652,32 +649,30 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Additional Coverage - Show for specialists */}
-      {isSpecialist && (
-        <motion.div variants={itemVariants} className="space-y-2">
-          <Label className={cn(errors['AdditionalcoveragesMEDICALMALPRACTICE'] && "text-red-500")}>
-            One of our insurers offers an additional coverage at an increased premium. This includes fidelity guarantee. Do you wish to add this coverage?
-          </Label>
-          <RadioGroup
-            onValueChange={(value) => handleFieldChange('AdditionalcoveragesMEDICALMALPRACTICE', value === 'yes')}
-            defaultValue={formData['AdditionalcoveragesMEDICALMALPRACTICE'] === true ? 'yes' : 
-                         formData['AdditionalcoveragesMEDICALMALPRACTICE'] === false ? 'no' : undefined}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="yes" id="AdditionalcoveragesMEDICALMALPRACTICE-yes" />
-              <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-yes">YES</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="no" id="AdditionalcoveragesMEDICALMALPRACTICE-no" />
-              <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-no">NO</Label>
-            </div>
-          </RadioGroup>
-          {errors['AdditionalcoveragesMEDICALMALPRACTICE'] && (
-            <p className="text-sm text-red-500">{errors['AdditionalcoveragesMEDICALMALPRACTICE']}</p>
-          )}
-        </motion.div>
-      )}
+      {/* Additional Coverage - Show for all occupations */}
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label className={cn(errors['AdditionalcoveragesMEDICALMALPRACTICE'] && "text-red-500")}>
+          One of our insurers offers an additional coverage at an increased premium. This includes fidelity guarantee. Do you wish to add this coverage?
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleFieldChange('AdditionalcoveragesMEDICALMALPRACTICE', value === 'yes')}
+          defaultValue={formData['AdditionalcoveragesMEDICALMALPRACTICE'] === true ? 'yes' : 
+                       formData['AdditionalcoveragesMEDICALMALPRACTICE'] === false ? 'no' : undefined}
+          className="flex space-x-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="yes" id="AdditionalcoveragesMEDICALMALPRACTICE-yes" />
+            <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-yes">YES</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="no" id="AdditionalcoveragesMEDICALMALPRACTICE-no" />
+            <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-no">NO</Label>
+          </div>
+        </RadioGroup>
+        {errors['AdditionalcoveragesMEDICALMALPRACTICE'] && (
+          <p className="text-sm text-red-500">{errors['AdditionalcoveragesMEDICALMALPRACTICE']}</p>
+        )}
+      </motion.div>
 
       {/* Medico-Legal Work - Show for specialists and GPs */}
       {(isSpecialist || isGP) && (
@@ -731,32 +726,30 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Public Liability Addition - Show for clinical practitioners */}
-      {isClinicalPractitioner && (
-        <motion.div variants={itemVariants} className="space-y-2">
-          <Label className={cn(errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && "text-red-500")}>
-            Do you wish to add Public Liability cover to your policy for the same amount as the main limit?
-          </Label>
-          <RadioGroup
-            onValueChange={(value) => handleFieldChange('DoyouwishtoaddPMEDICALMALPRACTICE_11', value === 'yes')}
-            defaultValue={formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === true ? 'yes' : 
-                         formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === false ? 'no' : undefined}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="yes" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes" />
-              <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes">YES</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="no" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-no" />
-              <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-no">NO</Label>
-            </div>
-          </RadioGroup>
-          {errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && (
-            <p className="text-sm text-red-500">{errors['DoyouwishtoaddPMEDICALMALPRACTICE_11']}</p>
-          )}
-        </motion.div>
-      )}
+      {/* Public Liability Addition - Show for all occupations */}
+      <motion.div variants={itemVariants} className="space-y-2">
+        <Label className={cn(errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && "text-red-500")}>
+          Do you wish to add Public Liability cover to your policy for the same amount as the main limit?
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => handleFieldChange('DoyouwishtoaddPMEDICALMALPRACTICE_11', value === 'yes')}
+          defaultValue={formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === true ? 'yes' : 
+                       formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === false ? 'no' : undefined}
+          className="flex space-x-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="yes" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes" />
+            <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes">YES</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="no" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-no" />
+            <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-no">NO</Label>
+          </div>
+        </RadioGroup>
+        {errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && (
+          <p className="text-sm text-red-500">{errors['DoyouwishtoaddPMEDICALMALPRACTICE_11']}</p>
+        )}
+      </motion.div>
     </div>
   );
 };
