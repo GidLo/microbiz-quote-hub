@@ -226,6 +226,28 @@ export const checkUnderwritingRejection = (
     }
   }
 
+  if (insuranceType === 'medical-malpractice') {
+    // Check all boolean questions - reject if any are answered "No" (false)
+    const booleanFields = [
+      { field: 'DoyouconfirmthaMEDICALMALPRACTICE_1', question: 'Are you registered with the relevant regulatory body and hold all necessary qualifications for your profession?' },
+      { field: 'DoyouconfirmthaMEDICALMALPRACTICE_2', question: 'Are you domiciled in South Africa and solely operate within the country?' },
+      { field: 'DoyouconfirmthaMEDICALMALPRACTICE_3', question: 'Do you acknowledge/confirm that under this policy, you will not have cover for any work you undertake in or on behalf of any state/government owned/run clinic/facility?' },
+      { field: 'DoyouconfirmthaMEDICALMALPRACTICE_4', question: 'Do you confirm that: You have not been investigated, or are currently under investigation by the HPCSA / relevant professional regulatory body / medical scheme? You are not aware of any circumstances within the past 5 years that would have, may give or has given rise to a claim under the coverage provided by this insurance policy? You have not had any criminal claims/allegations of any nature made against you?' },
+      { field: 'DoyouconfirmthaMEDICALMALPRACTICE_5', question: 'Do you require patients/third parties to complete consent forms in line with the HPCSA/relevant professional regulatory body guidelines?' },
+      { field: 'DoyouconfirmyouMEDICALMALPRACTICE_6', question: 'Do you maintain accurate patient records as per the guidelines of the HPCSA/relevant professional regulatory body?' },
+      { field: 'DoyouacknowledgepolicyMEDICALMALPRACTICE_1', question: 'Do you confirm that this policy is solely for covering you as a medical professional and acknowledge that it will not cover other medical professionals?' }
+    ];
+
+    for (const { field, question } of booleanFields) {
+      if (underwritingAnswers?.[field] === false) {
+        return {
+          rejectedQuestion: question,
+          rejectedAnswer: "false"
+        };
+      }
+    }
+  }
+
   if (insuranceType === 'divers-surething') {
     // Check revenue exceeds R20,000,000
     if (businessDetails?.annualRevenue) {
