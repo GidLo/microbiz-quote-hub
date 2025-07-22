@@ -87,6 +87,38 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
     'Occupational_nurse_or_nurse_wound_care_only'
   ].some(code => occupationName.includes(code));
 
+  // Specific occupations that should see the 60-hour question
+  const shouldShow60HourQuestion = [
+    'Biokineticists',
+    'Chiropractor', 
+    'Dentist_excluding_Cosmetics__Aesthetics',
+    'Oral_Medicine__Periodontics',
+    'Orthodontics__excluding_Cosmetics__Aesthetics',
+    'GP_minor_procedures_in_rooms',
+    'GP_NonProcedural',
+    'GP_AE_or_procedural_excl_scans_excl_obstetrics',
+    'GP_Procedural_incl_basic_scans_excl_deliveries',
+    'GP_Anaesthetics',
+    'Internal_Medicine',
+    'Physician_incl_int_medicine_or_nephrology_no_surgery',
+    'Endocrinologist',
+    'Family_Medicine',
+    'Family_Physician',
+    'Geriatrics_Specialist_Family_Medicine',
+    'Clinical_Associate',
+    'Homeopaths',
+    'Nurse_Practitioner',
+    'Occupational_nurse_or_nurse_wound_care_only',
+    'Physiotherapists',
+    'Activities_of_physiotherapists',
+    'Nephrology',
+    'Pulmonologist',
+    'Rheumatology',
+    'Oncologist',
+    'Pathology',
+    'Ophthalmology_excluding_laser_refractive_surgery'
+  ].some(code => occupationName.includes(code));
+
   // Clinical practitioners include GPs, specialists, dentists, and paramedical
   const isClinicalPractitioner = isGP || isSpecialist || isDentist || isParamedical;
   
@@ -458,8 +490,8 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Hours per Week - Show for clinical practitioners */}
-      {isClinicalPractitioner && (
+      {/* Hours per Week - Show for specific occupations only */}
+      {shouldShow60HourQuestion && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['Doyouconfirmlessthan60MEDICALMALPRACTICE'] && "text-red-500")}>
             Do you confirm that you spend less than 60 hours per week in private consultations?
