@@ -119,6 +119,12 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
     'Ophthalmology_excluding_laser_refractive_surgery'
   ].some(code => occupationName.includes(code));
 
+  // Specific occupations for Botox/Aesthetics question
+  const shouldShowBotoxQuestion = [
+    'Beauty_therapist_Facial_chemical_peels_<30%',
+    'Skin_Care_Clinic'
+  ].some(code => occupationName.includes(code));
+
   // Clinical practitioners include GPs, specialists, dentists, and paramedical
   const isClinicalPractitioner = isGP || isSpecialist || isDentist || isParamedical;
   
@@ -463,8 +469,8 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         )}
       </motion.div>
 
-      {/* Botox/Aesthetics Exclusion - Show for specialists and GPs */}
-      {isProceduralPractitioner && (
+      {/* Botox/Aesthetics Exclusion - Show for specific beauty/skincare occupations only */}
+      {shouldShowBotoxQuestion && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['BotoxFillersMEDICALMALPRACTICE_1'] && "text-red-500")}>
             Can you confirm that your practice does not include botox, aesthetics, threading, and fillers?
