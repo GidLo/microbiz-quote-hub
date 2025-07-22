@@ -517,8 +517,8 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Number of Patients - Show for clinical practitioners */}
-      {isClinicalPractitioner && (
+      {/* Number of Patients - Show for specific occupations only */}
+      {shouldShow60HourQuestion && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['HowmanypatientsMEDICALMALPRACTICE'] && "text-red-500")}>
             How many patients do you consult per annum? *
@@ -542,8 +542,8 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Number of Procedures - Show for procedural practitioners */}
-      {isProceduralPractitioner && (
+      {/* Number of Procedures - Show for specific occupations only */}
+      {shouldShow60HourQuestion && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['HowmanyproceduresMEDICALMALPRACTICE'] && "text-red-500")}>
             How many procedures do you perform per annum? *
@@ -619,8 +619,8 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, cont
         </motion.div>
       )}
 
-      {/* Surgical Treatments - Show for procedural practitioners */}
-      {isProceduralPractitioner && (
+      {/* Surgical Treatments - Show for specific occupations only */}
+      {shouldShow60HourQuestion && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['DoyouperformsurgiMEDICALMALPRACTICE'] && "text-red-500")}>
             Do you perform any surgical treatments or aesthetics and cosmetic procedures?
