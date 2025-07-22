@@ -31,12 +31,10 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
 
   const sumInsuredOptions = [
     'R1,000,000',
-    'R2,000,000',
+    'R2,000,000', 
     'R3,000,000',
     'R4,000,000',
-    'R5,000,000',
-    'R10,000,000',
-    'Other'
+    'R5,000,000'
   ];
 
   const patientVolumeOptions = [
