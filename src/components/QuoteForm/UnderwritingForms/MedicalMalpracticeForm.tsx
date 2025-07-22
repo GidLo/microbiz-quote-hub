@@ -1,4 +1,6 @@
+
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -9,15 +11,88 @@ import { Button } from '@/components/ui/button';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MedicalMalpracticeFormProps {
   formData: Record<string, any>;
   setFormData: (data: Record<string, any>) => void;
   errors: Record<string, string>;
   setErrors: (errors: Record<string, string>) => void;
+  contactDetails?: any;
 }
 
-const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: MedicalMalpracticeFormProps) => {
+const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors, contactDetails }: MedicalMalpracticeFormProps) => {
+  const [occupationName, setOccupationName] = useState<string>('');
+
+  // Fetch occupation name when contactDetails change
+  useEffect(() => {
+    const fetchOccupationName = async () => {
+      if (contactDetails?.occupationId) {
+        const { data } = await supabase
+          .from('occupations')
+          .select('name')
+          .eq('id', contactDetails.occupationId)
+          .single();
+        
+        if (data) {
+          setOccupationName(data.name);
+        }
+      }
+    };
+
+    fetchOccupationName();
+  }, [contactDetails]);
+
+  // Define occupation groups based on occupation codes
+  const isAlliedHealth = [
+    'Biokineticists',
+    'Chiropractor',
+    'Physiotherapists',
+    'Activities_of_physiotherapists',
+    'Homeopaths'
+  ].some(code => occupationName.includes(code));
+
+  const isDentist = [
+    'Dentist_excluding_Cosmetics__Aesthetics',
+    'Oral_Medicine__Periodontics',
+    'Orthodontics__excluding_Cosmetics__Aesthetics'
+  ].some(code => occupationName.includes(code));
+
+  const isGP = [
+    'GP_minor_procedures_in_rooms',
+    'GP_NonProcedural',
+    'GP_AE_or_procedural_excl_scans_excl_obstetrics',
+    'GP_Procedural_incl_basic_scans_excl_deliveries',
+    'GP_Anaesthetics',
+    'Family_Medicine',
+    'Family_Physician',
+    'Geriatrics_Specialist_Family_Medicine'
+  ].some(code => occupationName.includes(code));
+
+  const isSpecialist = [
+    'Internal_Medicine',
+    'Physician_incl_int_medicine_or_nephrology_no_surgery',
+    'Endocrinologist',
+    'Nephrology',
+    'Pulmonologist',
+    'Rheumatology',
+    'Oncologist',
+    'Pathology',
+    'Ophthalmology_excluding_laser_refractive_surgery'
+  ].some(code => occupationName.includes(code));
+
+  const isParamedical = [
+    'Clinical_Associate',
+    'Nurse_Practitioner',
+    'Occupational_nurse_or_nurse_wound_care_only'
+  ].some(code => occupationName.includes(code));
+
+  // Clinical practitioners include GPs, specialists, dentists, and paramedical
+  const isClinicalPractitioner = isGP || isSpecialist || isDentist || isParamedical;
+  
+  // Procedural practitioners include GPs with procedures and specialists
+  const isProceduralPractitioner = isGP || isSpecialist || isDentist;
+
   const handleFieldChange = (fieldName: string, value: any) => {
     setFormData({ [fieldName]: value });
     
@@ -77,7 +152,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
 
   return (
     <div className="space-y-6">
-      {/* Current Cover */}
+      {/* Current Cover - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyoucurrentlyhaveMEDICALMALPRACTICE_1'] && "text-red-500")}>
           Do you currently have Medical Malpractice cover in place?
@@ -102,7 +177,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Inception Date for Existing Cover */}
+      {/* Inception Date for Existing Cover - Universal */}
       {formData['DoyoucurrentlyhaveMEDICALMALPRACTICE_1'] && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['InceptiondateforexistingcoverMEDICALMALPRACTICE_1'] && "text-red-500")}>
@@ -140,7 +215,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         </motion.div>
       )}
 
-      {/* Sum Insured Required */}
+      {/* Sum Insured Required - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['SuminsuredrequiMEDICALMALPRACTICE_10'] && "text-red-500")}>
           Sum insured required (Limit of indemnity) for Medical Malpractice *
@@ -163,7 +238,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Registration Confirmation */}
+      {/* Registration Confirmation - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouconfirmthaMEDICALMALPRACTICE_1'] && "text-red-500")}>
           Are you registered with the relevant regulatory body and hold all necessary qualifications for your profession?
@@ -188,7 +263,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Registration Number */}
+      {/* Registration Number - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['HPCSAAHPCSAregMEDICALMALPRACTICE'] && "text-red-500")}>
           Enter your (A/HPCSA, SANC, SAPC) registration number (If not applicable, simply note NA) *
@@ -203,7 +278,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* South Africa Domiciled */}
+      {/* South Africa Domiciled - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouconfirmthaMEDICALMALPRACTICE_2'] && "text-red-500")}>
           Are you domiciled in South Africa and solely operate within the country?
@@ -228,7 +303,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* State/Government Facility Exclusion */}
+      {/* State/Government Facility Exclusion - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouconfirmthaMEDICALMALPRACTICE_3'] && "text-red-500")}>
           Do you acknowledge/confirm that under this policy, you will not have cover for any work you undertake in or on behalf of any state/government owned/ run clinic/ facility?
@@ -253,7 +328,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Multiple Confirmations */}
+      {/* Multiple Confirmations - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouconfirmthaMEDICALMALPRACTICE_4'] && "text-red-500", "leading-relaxed")}>
           Do you confirm that:
@@ -281,7 +356,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Consent Forms */}
+      {/* Consent Forms - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouconfirmthaMEDICALMALPRACTICE_5'] && "text-red-500")}>
           Do you require patients/third parties to complete consent forms in line with the HPCSA/relevant professional regulatory body guidelines?
@@ -306,7 +381,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Patient Records */}
+      {/* Patient Records - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouconfirmyouMEDICALMALPRACTICE_6'] && "text-red-500")}>
           Do you maintain accurate patient records as per the guidelines of the HPCSA/relevant professional regulatory body?
@@ -331,7 +406,7 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Policy Coverage Acknowledgment */}
+      {/* Policy Coverage Acknowledgment - Universal */}
       <motion.div variants={itemVariants} className="space-y-2">
         <Label className={cn(errors['DoyouacknowledgepolicyMEDICALMALPRACTICE_1'] && "text-red-500")}>
           Do you confirm that this policy is solely for covering you as a medical professional and acknowledge that it will not cover other medical professionals?
@@ -356,129 +431,139 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         )}
       </motion.div>
 
-      {/* Botox/Aesthetics Exclusion */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['BotoxFillersMEDICALMALPRACTICE_1'] && "text-red-500")}>
-          Can you confirm that your practice does not include botox, aesthetics, threading, and fillers?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('BotoxFillersMEDICALMALPRACTICE_1', value === 'yes')}
-          defaultValue={formData['BotoxFillersMEDICALMALPRACTICE_1'] === true ? 'yes' : 
-                       formData['BotoxFillersMEDICALMALPRACTICE_1'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="BotoxFillersMEDICALMALPRACTICE_1-yes" />
-            <Label htmlFor="BotoxFillersMEDICALMALPRACTICE_1-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="BotoxFillersMEDICALMALPRACTICE_1-no" />
-            <Label htmlFor="BotoxFillersMEDICALMALPRACTICE_1-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['BotoxFillersMEDICALMALPRACTICE_1'] && (
-          <p className="text-sm text-red-500">{errors['BotoxFillersMEDICALMALPRACTICE_1']}</p>
-        )}
-      </motion.div>
+      {/* Botox/Aesthetics Exclusion - Show for specialists and GPs */}
+      {isProceduralPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['BotoxFillersMEDICALMALPRACTICE_1'] && "text-red-500")}>
+            Can you confirm that your practice does not include botox, aesthetics, threading, and fillers?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('BotoxFillersMEDICALMALPRACTICE_1', value === 'yes')}
+            defaultValue={formData['BotoxFillersMEDICALMALPRACTICE_1'] === true ? 'yes' : 
+                         formData['BotoxFillersMEDICALMALPRACTICE_1'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="BotoxFillersMEDICALMALPRACTICE_1-yes" />
+              <Label htmlFor="BotoxFillersMEDICALMALPRACTICE_1-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="BotoxFillersMEDICALMALPRACTICE_1-no" />
+              <Label htmlFor="BotoxFillersMEDICALMALPRACTICE_1-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['BotoxFillersMEDICALMALPRACTICE_1'] && (
+            <p className="text-sm text-red-500">{errors['BotoxFillersMEDICALMALPRACTICE_1']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Hours per Week */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['Doyouconfirmlessthan60MEDICALMALPRACTICE'] && "text-red-500")}>
-          Do you confirm that you spend less than 60 hours per week in private consultations?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('Doyouconfirmlessthan60MEDICALMALPRACTICE', value === 'yes')}
-          defaultValue={formData['Doyouconfirmlessthan60MEDICALMALPRACTICE'] === true ? 'yes' : 
-                       formData['Doyouconfirmlessthan60MEDICALMALPRACTICE'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="Doyouconfirmlessthan60MEDICALMALPRACTICE-yes" />
-            <Label htmlFor="Doyouconfirmlessthan60MEDICALMALPRACTICE-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="Doyouconfirmlessthan60MEDICALMALPRACTICE-no" />
-            <Label htmlFor="Doyouconfirmlessthan60MEDICALMALPRACTICE-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['Doyouconfirmlessthan60MEDICALMALPRACTICE'] && (
-          <p className="text-sm text-red-500">{errors['Doyouconfirmlessthan60MEDICALMALPRACTICE']}</p>
-        )}
-      </motion.div>
+      {/* Hours per Week - Show for clinical practitioners */}
+      {isClinicalPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['Doyouconfirmlessthan60MEDICALMALPRACTICE'] && "text-red-500")}>
+            Do you confirm that you spend less than 60 hours per week in private consultations?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('Doyouconfirmlessthan60MEDICALMALPRACTICE', value === 'yes')}
+            defaultValue={formData['Doyouconfirmlessthan60MEDICALMALPRACTICE'] === true ? 'yes' : 
+                         formData['Doyouconfirmlessthan60MEDICALMALPRACTICE'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="Doyouconfirmlessthan60MEDICALMALPRACTICE-yes" />
+              <Label htmlFor="Doyouconfirmlessthan60MEDICALMALPRACTICE-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="Doyouconfirmlessthan60MEDICALMALPRACTICE-no" />
+              <Label htmlFor="Doyouconfirmlessthan60MEDICALMALPRACTICE-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['Doyouconfirmlessthan60MEDICALMALPRACTICE'] && (
+            <p className="text-sm text-red-500">{errors['Doyouconfirmlessthan60MEDICALMALPRACTICE']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Number of Patients */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['HowmanypatientsMEDICALMALPRACTICE'] && "text-red-500")}>
-          How many patients do you consult per annum? *
-        </Label>
-        <Select
-          value={formData['HowmanypatientsMEDICALMALPRACTICE'] || ''}
-          onValueChange={(value) => handleFieldChange('HowmanypatientsMEDICALMALPRACTICE', value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select patient volume" />
-          </SelectTrigger>
-          <SelectContent>
-            {patientVolumeOptions.map(option => (
-              <SelectItem key={option} value={option}>{option}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors['HowmanypatientsMEDICALMALPRACTICE'] && (
-          <p className="text-sm text-red-500">{errors['HowmanypatientsMEDICALMALPRACTICE']}</p>
-        )}
-      </motion.div>
+      {/* Number of Patients - Show for clinical practitioners */}
+      {isClinicalPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['HowmanypatientsMEDICALMALPRACTICE'] && "text-red-500")}>
+            How many patients do you consult per annum? *
+          </Label>
+          <Select
+            value={formData['HowmanypatientsMEDICALMALPRACTICE'] || ''}
+            onValueChange={(value) => handleFieldChange('HowmanypatientsMEDICALMALPRACTICE', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select patient volume" />
+            </SelectTrigger>
+            <SelectContent>
+              {patientVolumeOptions.map(option => (
+                <SelectItem key={option} value={option}>{option}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors['HowmanypatientsMEDICALMALPRACTICE'] && (
+            <p className="text-sm text-red-500">{errors['HowmanypatientsMEDICALMALPRACTICE']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Number of Procedures */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['HowmanyproceduresMEDICALMALPRACTICE'] && "text-red-500")}>
-          How many procedures do you perform per annum? *
-        </Label>
-        <Select
-          value={formData['HowmanyproceduresMEDICALMALPRACTICE'] || ''}
-          onValueChange={(value) => handleFieldChange('HowmanyproceduresMEDICALMALPRACTICE', value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select procedure volume" />
-          </SelectTrigger>
-          <SelectContent>
-            {procedureVolumeOptions.map(option => (
-              <SelectItem key={option} value={option}>{option}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors['HowmanyproceduresMEDICALMALPRACTICE'] && (
-          <p className="text-sm text-red-500">{errors['HowmanyproceduresMEDICALMALPRACTICE']}</p>
-        )}
-      </motion.div>
+      {/* Number of Procedures - Show for procedural practitioners */}
+      {isProceduralPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['HowmanyproceduresMEDICALMALPRACTICE'] && "text-red-500")}>
+            How many procedures do you perform per annum? *
+          </Label>
+          <Select
+            value={formData['HowmanyproceduresMEDICALMALPRACTICE'] || ''}
+            onValueChange={(value) => handleFieldChange('HowmanyproceduresMEDICALMALPRACTICE', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select procedure volume" />
+            </SelectTrigger>
+            <SelectContent>
+              {procedureVolumeOptions.map(option => (
+                <SelectItem key={option} value={option}>{option}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors['HowmanyproceduresMEDICALMALPRACTICE'] && (
+            <p className="text-sm text-red-500">{errors['HowmanyproceduresMEDICALMALPRACTICE']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Telehealth Services */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['DoyouperformteleMEDICALMALPRACTICE'] && "text-red-500")}>
-          Do you perform any telehealth services?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('DoyouperformteleMEDICALMALPRACTICE', value === 'yes')}
-          defaultValue={formData['DoyouperformteleMEDICALMALPRACTICE'] === true ? 'yes' : 
-                       formData['DoyouperformteleMEDICALMALPRACTICE'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="DoyouperformteleMEDICALMALPRACTICE-yes" />
-            <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="DoyouperformteleMEDICALMALPRACTICE-no" />
-            <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['DoyouperformteleMEDICALMALPRACTICE'] && (
-          <p className="text-sm text-red-500">{errors['DoyouperformteleMEDICALMALPRACTICE']}</p>
-        )}
-      </motion.div>
+      {/* Telehealth Services - Show for clinical practitioners */}
+      {isClinicalPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['DoyouperformteleMEDICALMALPRACTICE'] && "text-red-500")}>
+            Do you perform any telehealth services?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('DoyouperformteleMEDICALMALPRACTICE', value === 'yes')}
+            defaultValue={formData['DoyouperformteleMEDICALMALPRACTICE'] === true ? 'yes' : 
+                         formData['DoyouperformteleMEDICALMALPRACTICE'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="DoyouperformteleMEDICALMALPRACTICE-yes" />
+              <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="DoyouperformteleMEDICALMALPRACTICE-no" />
+              <Label htmlFor="DoyouperformteleMEDICALMALPRACTICE-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['DoyouperformteleMEDICALMALPRACTICE'] && (
+            <p className="text-sm text-red-500">{errors['DoyouperformteleMEDICALMALPRACTICE']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Telehealth Percentage */}
-      {formData['DoyouperformteleMEDICALMALPRACTICE'] && (
+      {/* Telehealth Percentage - Show for clinical practitioners who do telehealth */}
+      {isClinicalPractitioner && formData['DoyouperformteleMEDICALMALPRACTICE'] && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['PercentageofyourMEDICALMALPRACTICE'] && "text-red-500")}>
             What percentage of your work involves telehealth services? *
@@ -502,83 +587,89 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         </motion.div>
       )}
 
-      {/* Surgical Treatments */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['DoyouperformsurgiMEDICALMALPRACTICE'] && "text-red-500")}>
-          Do you perform any surgical treatments or aesthetics and cosmetic procedures?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('DoyouperformsurgiMEDICALMALPRACTICE', value === 'yes')}
-          defaultValue={formData['DoyouperformsurgiMEDICALMALPRACTICE'] === true ? 'yes' : 
-                       formData['DoyouperformsurgiMEDICALMALPRACTICE'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="DoyouperformsurgiMEDICALMALPRACTICE-yes" />
-            <Label htmlFor="DoyouperformsurgiMEDICALMALPRACTICE-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="DoyouperformsurgiMEDICALMALPRACTICE-no" />
-            <Label htmlFor="DoyouperformsurgiMEDICALMALPRACTICE-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['DoyouperformsurgiMEDICALMALPRACTICE'] && (
-          <p className="text-sm text-red-500">{errors['DoyouperformsurgiMEDICALMALPRACTICE']}</p>
-        )}
-      </motion.div>
+      {/* Surgical Treatments - Show for procedural practitioners */}
+      {isProceduralPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['DoyouperformsurgiMEDICALMALPRACTICE'] && "text-red-500")}>
+            Do you perform any surgical treatments or aesthetics and cosmetic procedures?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('DoyouperformsurgiMEDICALMALPRACTICE', value === 'yes')}
+            defaultValue={formData['DoyouperformsurgiMEDICALMALPRACTICE'] === true ? 'yes' : 
+                         formData['DoyouperformsurgiMEDICALMALPRACTICE'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="DoyouperformsurgiMEDICALMALPRACTICE-yes" />
+              <Label htmlFor="DoyouperformsurgiMEDICALMALPRACTICE-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="DoyouperformsurgiMEDICALMALPRACTICE-no" />
+              <Label htmlFor="DoyouperformsurgiMEDICALMALPRACTICE-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['DoyouperformsurgiMEDICALMALPRACTICE'] && (
+            <p className="text-sm text-red-500">{errors['DoyouperformsurgiMEDICALMALPRACTICE']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Additional Coverage */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['AdditionalcoveragesMEDICALMALPRACTICE'] && "text-red-500")}>
-          One of our insurers offers an additional coverage at an increased premium. This includes fidelity guarantee. Do you wish to add this coverage?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('AdditionalcoveragesMEDICALMALPRACTICE', value === 'yes')}
-          defaultValue={formData['AdditionalcoveragesMEDICALMALPRACTICE'] === true ? 'yes' : 
-                       formData['AdditionalcoveragesMEDICALMALPRACTICE'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="AdditionalcoveragesMEDICALMALPRACTICE-yes" />
-            <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="AdditionalcoveragesMEDICALMALPRACTICE-no" />
-            <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['AdditionalcoveragesMEDICALMALPRACTICE'] && (
-          <p className="text-sm text-red-500">{errors['AdditionalcoveragesMEDICALMALPRACTICE']}</p>
-        )}
-      </motion.div>
+      {/* Additional Coverage - Show for specialists */}
+      {isSpecialist && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['AdditionalcoveragesMEDICALMALPRACTICE'] && "text-red-500")}>
+            One of our insurers offers an additional coverage at an increased premium. This includes fidelity guarantee. Do you wish to add this coverage?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('AdditionalcoveragesMEDICALMALPRACTICE', value === 'yes')}
+            defaultValue={formData['AdditionalcoveragesMEDICALMALPRACTICE'] === true ? 'yes' : 
+                         formData['AdditionalcoveragesMEDICALMALPRACTICE'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="AdditionalcoveragesMEDICALMALPRACTICE-yes" />
+              <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="AdditionalcoveragesMEDICALMALPRACTICE-no" />
+              <Label htmlFor="AdditionalcoveragesMEDICALMALPRACTICE-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['AdditionalcoveragesMEDICALMALPRACTICE'] && (
+            <p className="text-sm text-red-500">{errors['AdditionalcoveragesMEDICALMALPRACTICE']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Medico-Legal Work */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] && "text-red-500")}>
-          Do you undertake Medico-legal work?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1', value === 'yes')}
-          defaultValue={formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] === true ? 'yes' : 
-                       formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-yes" />
-            <Label htmlFor="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-no" />
-            <Label htmlFor="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] && (
-          <p className="text-sm text-red-500">{errors['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1']}</p>
-        )}
-      </motion.div>
+      {/* Medico-Legal Work - Show for specialists and GPs */}
+      {(isSpecialist || isGP) && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] && "text-red-500")}>
+            Do you undertake Medico-legal work?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1', value === 'yes')}
+            defaultValue={formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] === true ? 'yes' : 
+                         formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-yes" />
+              <Label htmlFor="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-no" />
+              <Label htmlFor="DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] && (
+            <p className="text-sm text-red-500">{errors['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1']}</p>
+          )}
+        </motion.div>
+      )}
 
-      {/* Medico-Legal Work Percentage */}
-      {formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] && (
+      {/* Medico-Legal Work Percentage - Show for specialists and GPs who do medico-legal work */}
+      {(isSpecialist || isGP) && formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] && (
         <motion.div variants={itemVariants} className="space-y-2">
           <Label className={cn(errors['DoesMedicoLegalWorkContributeMEDICALMALPRACTICE'] && "text-red-500")}>
             What percentage does medico-legal work contribute to your work? *
@@ -602,30 +693,32 @@ const MedicalMalpracticeForm = ({ formData, setFormData, errors, setErrors }: Me
         </motion.div>
       )}
 
-      {/* Public Liability Addition */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <Label className={cn(errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && "text-red-500")}>
-          Do you wish to add Public Liability cover to your policy for the same amount as the main limit?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => handleFieldChange('DoyouwishtoaddPMEDICALMALPRACTICE_11', value === 'yes')}
-          defaultValue={formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === true ? 'yes' : 
-                       formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === false ? 'no' : undefined}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes" />
-            <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes">YES</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-no" />
-            <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-no">NO</Label>
-          </div>
-        </RadioGroup>
-        {errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && (
-          <p className="text-sm text-red-500">{errors['DoyouwishtoaddPMEDICALMALPRACTICE_11']}</p>
-        )}
-      </motion.div>
+      {/* Public Liability Addition - Show for clinical practitioners */}
+      {isClinicalPractitioner && (
+        <motion.div variants={itemVariants} className="space-y-2">
+          <Label className={cn(errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && "text-red-500")}>
+            Do you wish to add Public Liability cover to your policy for the same amount as the main limit?
+          </Label>
+          <RadioGroup
+            onValueChange={(value) => handleFieldChange('DoyouwishtoaddPMEDICALMALPRACTICE_11', value === 'yes')}
+            defaultValue={formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === true ? 'yes' : 
+                         formData['DoyouwishtoaddPMEDICALMALPRACTICE_11'] === false ? 'no' : undefined}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes" />
+              <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-yes">YES</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="DoyouwishtoaddPMEDICALMALPRACTICE_11-no" />
+              <Label htmlFor="DoyouwishtoaddPMEDICALMALPRACTICE_11-no">NO</Label>
+            </div>
+          </RadioGroup>
+          {errors['DoyouwishtoaddPMEDICALMALPRACTICE_11'] && (
+            <p className="text-sm text-red-500">{errors['DoyouwishtoaddPMEDICALMALPRACTICE_11']}</p>
+          )}
+        </motion.div>
+      )}
     </div>
   );
 };

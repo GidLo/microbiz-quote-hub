@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,6 @@ import EventLiabilityForm from './UnderwritingForms/EventLiabilityForm';
 import MedicalMalpracticeForm from './UnderwritingForms/MedicalMalpracticeForm';
 import CyberLiabilityForm from './UnderwritingForms/CyberLiabilityForm';
 import DiversSureThingForm from './UnderwritingForms/DiversSureThingForm';
-
 
 interface UnderwritingFormProps {
   selectedInsuranceType: InsuranceType;
@@ -56,8 +54,68 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         industryName = data.name;
       }
     }
+
+    // Get occupation name for medical malpractice validation
+    let occupationName = '';
+    if (selectedInsuranceType === 'medical-malpractice' && contactDetails?.occupationId) {
+      const { data } = await supabase
+        .from('occupations')
+        .select('name')
+        .eq('id', contactDetails.occupationId)
+        .single();
+      if (data) {
+        occupationName = data.name;
+      }
+    }
     
     const isBuiltDesign = industryName === 'Built & Design';
+    
+    // Define occupation groups for medical malpractice validation
+    const isAlliedHealth = [
+      'Biokineticists',
+      'Chiropractor',
+      'Physiotherapists',
+      'Activities_of_physiotherapists',
+      'Homeopaths'
+    ].some(code => occupationName.includes(code));
+
+    const isDentist = [
+      'Dentist_excluding_Cosmetics__Aesthetics',
+      'Oral_Medicine__Periodontics',
+      'Orthodontics__excluding_Cosmetics__Aesthetics'
+    ].some(code => occupationName.includes(code));
+
+    const isGP = [
+      'GP_minor_procedures_in_rooms',
+      'GP_NonProcedural',
+      'GP_AE_or_procedural_excl_scans_excl_obstetrics',
+      'GP_Procedural_incl_basic_scans_excl_deliveries',
+      'GP_Anaesthetics',
+      'Family_Medicine',
+      'Family_Physician',
+      'Geriatrics_Specialist_Family_Medicine'
+    ].some(code => occupationName.includes(code));
+
+    const isSpecialist = [
+      'Internal_Medicine',
+      'Physician_incl_int_medicine_or_nephrology_no_surgery',
+      'Endocrinologist',
+      'Nephrology',
+      'Pulmonologist',
+      'Rheumatology',
+      'Oncologist',
+      'Pathology',
+      'Ophthalmology_excluding_laser_refractive_surgery'
+    ].some(code => occupationName.includes(code));
+
+    const isParamedical = [
+      'Clinical_Associate',
+      'Nurse_Practitioner',
+      'Occupational_nurse_or_nurse_wound_care_only'
+    ].some(code => occupationName.includes(code));
+
+    const isClinicalPractitioner = isGP || isSpecialist || isDentist || isParamedical;
+    const isProceduralPractitioner = isGP || isSpecialist || isDentist;
     
     const requiredFields: Record<string, string[]> = {
       'professional-indemnity': [
@@ -114,8 +172,9 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
       'medical-malpractice': [
         'SuminsuredrequiMEDICALMALPRACTICE_10',
         'HPCSAAHPCSAregMEDICALMALPRACTICE',
-        'HowmanypatientsMEDICALMALPRACTICE',
-        'HowmanyproceduresMEDICALMALPRACTICE'
+        // Conditional required fields based on occupation
+        ...(isClinicalPractitioner ? ['HowmanypatientsMEDICALMALPRACTICE'] : []),
+        ...(isProceduralPractitioner ? ['HowmanyproceduresMEDICALMALPRACTICE'] : [])
       ],
       'cyber-liability': [
         'SuminsuredforcyCYBER',
@@ -195,6 +254,24 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
         newErrors['EventInceptionDate'] = 'Event date cannot be more than 6 months in the future';
       }
     }
+
+    // Special validation for medical malpractice conditional fields
+    if (selectedInsuranceType === 'medical-malpractice') {
+      // Telehealth percentage is required if telehealth services are yes
+      if (isClinicalPractitioner && formData['DoyouperformteleMEDICALMALPRACTICE'] === true) {
+        if (!formData['PercentageofyourMEDICALMALPRACTICE']) {
+          newErrors['PercentageofyourMEDICALMALPRACTICE'] = 'This field is required';
+        }
+      }
+      
+      // Medico-legal percentage is required if medico-legal work is yes
+      if ((isSpecialist || isGP) && formData['DoyouUndertakeMedicoLegalMEDICALMALPRACTICE_1'] === true) {
+        if (!formData['DoesMedicoLegalWorkContributeMEDICALMALPRACTICE']) {
+          newErrors['DoesMedicoLegalWorkContributeMEDICALMALPRACTICE'] = 'This field is required';
+        }
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -322,6 +399,7 @@ const UnderwritingForm = ({ selectedInsuranceType, onSubmit, onBack, contactId, 
             setFormData={handleFormDataChange}
             errors={errors}
             setErrors={setErrors}
+            contactDetails={contactDetails}
           />
         );
       case 'cyber-liability':
