@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import Layout from '@/components/Layout';
+import QuoteLayout from '@/components/QuoteLayout';
 import QuoteProgress from '@/components/QuoteForm/QuoteProgress';
 import ContactForm from '@/components/QuoteForm/ContactForm';
 import BusinessForm from '@/components/QuoteForm/BusinessForm';
@@ -367,7 +367,7 @@ const QuotePage = () => {
   };
   
   return (
-    <Layout>
+    <QuoteLayout>
       <div className="bg-secondary/50 py-12 md:py-16">
         <div className="container max-w-4xl mx-auto px-6 md:px-8">
           
@@ -380,7 +380,7 @@ const QuotePage = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </QuoteLayout>
   );
 };
 
